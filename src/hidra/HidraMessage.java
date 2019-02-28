@@ -4,11 +4,14 @@ import java.util.Random;
 
 
 /**
- * This class implements a DHCP message packet, based on RFC 2131 and 2132.
+ * This class implements a EBNF policy codified with APBR codification.
  *
  */
-public class DHCPMessage {
+public class HidraMessage {
 
+	
+	//TODO pas dit allemaal aan
+	
 	public static final int MAX_BYTE_SIZE = 1023; 
 	public static final byte REQUEST = 1;
 	public static final byte REPLY = 2;
@@ -38,7 +41,7 @@ public class DHCPMessage {
 	/**
 	 * Construct an DHCPMessage object, to be filled in differently in the stages of the protocol.
 	 */
-	public DHCPMessage(){
+	public HidraMessage(){
 		setHtype(ETHERNET10MB); 
 		setHlen((byte) 6);
 		setHops((byte) 0);
@@ -56,7 +59,7 @@ public class DHCPMessage {
 	/**
 	 * Construct a DHCPMessage object out of a byte array.
 	 */
-	public DHCPMessage(byte[] dataByte){
+	public HidraMessage(byte[] dataByte){
 		bytesToDHCPMessage(dataByte);
 	}
 
@@ -71,7 +74,7 @@ public class DHCPMessage {
 	public byte[] discoverDHCPMessage(byte[] mac, byte[] leaseTime){
 		setOp(REQUEST); 
 		setXid(randomXid.nextInt()); 
-		setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
+//		setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
 		setCiaddr(zeroByte); 
 		setYiaddr(zeroByte); 
 		setSiaddr(zeroByte);
@@ -107,11 +110,11 @@ public class DHCPMessage {
 	 * @param transactionID The number that the server gave in the offer-message in the field 'xid'.
 	 * @return requestDHCPMessage as an array of bytes.
 	 */
-	public byte[] requestDHCPMessage(byte[] mac, DHCPMessage answerOnDiscover, byte[] newLeaseTime){
+	public byte[] requestDHCPMessage(byte[] mac, HidraMessage answerOnDiscover, byte[] newLeaseTime){
 		if (answerOnDiscover.getOptionsList().getOption(DHCPOptions.MESSAGETYPE)[0] == DHCPOptions.DHCPOFFER){
 			byte[] ipToRequest = answerOnDiscover.getYiaddr();
 			setOp(REQUEST);
-			setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
+//			setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
 			setCiaddr(zeroByte); 
 			setYiaddr(zeroByte);
 			setSiaddr(zeroByte);
@@ -138,7 +141,7 @@ public class DHCPMessage {
 		}
 	}
 	
-	public byte[] requestDHCPMessage(byte[] mac, DHCPMessage answerOnDiscover){
+	public byte[] requestDHCPMessage(byte[] mac, HidraMessage answerOnDiscover){
 		return requestDHCPMessage(mac, answerOnDiscover, null);
 	}
 
@@ -147,7 +150,7 @@ public class DHCPMessage {
 	public byte[] renewRequestDHCPMessage(byte[] mac, byte[] ownIP){
 		setOp(REQUEST);
 		setXid(randomXid.nextInt()); 
-		setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
+//		setSecs((short) (System.currentTimeMillis()-DHCPClient.start));
 		setCiaddr(ownIP); 
 		setYiaddr(zeroByte);
 		setSiaddr(zeroByte);

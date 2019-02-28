@@ -18,9 +18,11 @@ public class Terminal {
 		Runtime rt = Runtime.getRuntime();
 		Terminal rte = new Terminal();
 		printOutput errorReported, outputMessage;
- 
+		
 		try {
+			
 			Process proc = rt.exec(command);
+			
 			errorReported = rte.getStreamWrapper(proc.getErrorStream(), "ERROR");
 			outputMessage = rte.getStreamWrapper(proc.getInputStream(), "OUTPUT");
 			errorReported.start();
