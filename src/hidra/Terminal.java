@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
  * Helper class to execute terminal commands.
@@ -21,7 +22,12 @@ public class Terminal {
 		
 		try {
 			
-			Process proc = rt.exec(command);
+			Process proc = rt.exec("sudo -S " + command);
+			
+			OutputStream stdin = proc.getOutputStream();
+			String line = "user" + "\n";
+			stdin.write(line.getBytes());
+			stdin.flush();
 			
 			errorReported = rte.getStreamWrapper(proc.getErrorStream(), "ERROR");
 			outputMessage = rte.getStreamWrapper(proc.getInputStream(), "OUTPUT");

@@ -1,24 +1,16 @@
 package hidra;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.util.Date;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class HidraACS {
 	
-	private static String borderRouterIP = ACSConfig.getServerIP();
+	private static String serverIP = ACSConfig.getServerIP();
 	public static final int SERVER_PORT = ACSConfig.getServerPort();		
 	public static final int CLIENT_PORT = ACSConfig.getClientPort(); 
 	private static String clientIP;
@@ -29,7 +21,7 @@ public class HidraACS {
 	
 	public HidraACS(){
 		start = System.currentTimeMillis();
-		System.out.println("Trying to connect to Border Router at IP = "+borderRouterIP+" on port = "+SERVER_PORT);
+		System.out.println("Trying to connect to WSN using socket on port = "+CLIENT_PORT);
 
 		try{
 			socket = new DatagramSocket(CLIENT_PORT);
@@ -48,8 +40,11 @@ public class HidraACS {
 	 */
 	public static void sendDataPacketTo(byte[] data, String serverIP){
 
+		//TODO werkt met IPv6 adressen? Normaal subklasse van InetAddress, dus automatisch?? 
+		//TODO verbonden met juiste client socket? 
+		//TODO maken server ip en poort uit voor eerste stap? 
 		try{
-			DatagramPacket packet = new DatagramPacket(data,data.length,InetAddress.getByName(serverIP), SERVER_PORT);
+			DatagramPacket packet = new DatagramPacket(data,data.length,InetAddress.getByName(serverIP) , SERVER_PORT);
 			socket.send(packet);	
 		}
 		catch(Exception e){
@@ -61,8 +56,8 @@ public class HidraACS {
 	 * Sending a datagram packet over the socket to the IP of the test server.
 	 * @param data
 	 */
-	public static void sendDataPackToSavedIP(byte[] data){ //TODO naam: border router
-		sendDataPacketTo(data,borderRouterIP);
+	public static void sendDataPackToServerIP(byte[] data){ //TODO naam: border router
+		sendDataPacketTo(data,serverIP);
 	}
 	
 	/**
@@ -112,15 +107,6 @@ public class HidraACS {
 		System.out.println("Start ACS");
 		
 		// Set up connection with RPL border router
-		
-		//TODO In Terminal.java Create a Runtime to run each of the process. Get the OutputStream from the first Runtime and copy it into the InputStream from the second one.
-		//TODO Feed askpass program and/or script that spits out password to the call 
-		//TODO voeg toe echo "user\n" | sudo -S
-		//TODO sudo -A /home/user/bin/pwd
-		//TODO als je een simpel script maakt en dit uitvoert, dan gebeurt alles binnen een shell die daarna weer gesloten wordt. Is dat erg? 
-		//TODO User ProcessBuilder : better interface, it uses Process itself
-//					Maybe with .inheritIO
-//		Terminal.execute("mkdir /home/user/thesis-code/test");
 		Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
 		
 		// Initialize Datagram Socket
@@ -134,12 +120,16 @@ public class HidraACS {
 		// Wait for connection to be set up
 		TimeUnit.SECONDS.sleep(5);
 		
+//		String address = ACSConfig.getServerIP();
+//		System.out.println("Trying if " + address + " is reachable");
+//		System.out.println(InetAddress.getByName(address).isReachable(10000)); // for 10 seconds
+		
 		while(true) {
 			getUserInput("Enter to send another standard package; write a line to send a specific message: ");
 			if (input == null) {
-				sendDataPackToSavedIP(testPacket);
+				sendDataPackToServerIP(testPacket);
 			} else {
-				sendDataPackToSavedIP(input.getBytes());
+				sendDataPackToServerIP(input.getBytes());
 			}
 			input = null;
 		}
