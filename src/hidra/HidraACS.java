@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class HidraACS {
 	public static final int ACS_RESOURCE_PORT = HidraConfig.getAcsResourcePort();
-	public static final int SUBJECT_PORT = HidraConfig.getSubjectToAcsPort();
-	public static final int ACS_SUBJECT_PORT = HidraConfig.getAcsToSubjectPort();
+//	public static final int SUBJECT_TO_ACS_PORT = HidraConfig.getSubjectToAcsPort();
+//	public static final int ACS_SUBJECT_PORT = HidraConfig.getAcsToSubjectPort();
 
 	//TODO misschien pas veel later handig, want nu reageer je normaal alleen op berichten.
 	private static String resourceIP = HidraConfig.getResourceIP();
@@ -38,8 +38,8 @@ public class HidraACS {
 			socketForResource = new DatagramSocket(ACS_RESOURCE_PORT);
 			System.out.println("Opened socket on port "+ ACS_RESOURCE_PORT);
 			
-			socketForSubject = new DatagramSocket(ACS_SUBJECT_PORT);
-			System.out.println("Opened socket on port "+ ACS_SUBJECT_PORT);
+			socketForSubject = new DatagramSocket(HidraConfig.getAcsPortForCommWithSubject());
+			System.out.println("Opened socket on port "+ HidraConfig.getAcsPortForCommWithSubject());
 		}
 		catch(SocketException e){
 			e.getMessage();
@@ -79,8 +79,8 @@ public class HidraACS {
 		try{
 			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
 			socket.send(dataPack);
-			System.out.println("Sending data to port: "+ dataPack.getPort() +" with address: "+ dataPack.getAddress());
-			System.out.println("Length of data right before it leaves: "+ dataPack.getData().length);
+//			System.out.println("Sending data to port: "+ dataPack.getPort() +" with address: "+ dataPack.getAddress());
+//			System.out.println("Length of data right before it leaves: "+ dataPack.getData().length);
 		}
 		catch(Exception e){
 			System.out.println("DHCPServer.sendDataPacket() Exception ");
@@ -99,7 +99,7 @@ public class HidraACS {
 	 * Sending a datagram packet over the socket to the subject.
 	 */
 	public static void sendDataToSubject(byte[] packet){
-		sendDataPacket(packet,subjectIP, socketForSubject, SUBJECT_PORT);
+		sendDataPacket(packet,subjectIP, socketForSubject, HidraConfig.getSubjectPortForCommWithAcs());
 	}
 
 	/**
@@ -182,9 +182,15 @@ public class HidraACS {
 	}
 
 	/**
-	 * main method, which runs when testing the DHCPServer
-	 * @param dataBytes | DatagramPacket wich is received
+	 * Execute the ACS functionalities.
+	 * Current aspired functionality: 
+	 * 	Set up connection with Cooja WSN border router
+	 * 	Send UDP message to Cooja/Contiki motes through this router
+	 * @param args
+	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
+	
 	public static void main(String[] args){
 		new HidraACS();
 		
@@ -208,16 +214,18 @@ public class HidraACS {
 				
 				// TODO Waar ook getLength wordt gezegd bij receive: Relevant voor jou? Note that this means that if you're calling receive() in a loop, you have to recreate the DatagramPacket each time around the loop, or reset its length to the maximum before the receive. Otherwise getLength() keeps shrinking to the size of the smallest datagram received so far.
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				System.out.println("Content of datagram: " + new String(actualMessage));
 				handleResourceMessage(actualMessage);
 			} 
-			else if (receivedDatagram.getPort() == SUBJECT_PORT) {
+			//TODO filter op juiste poort? of net die van subject zijde?
+			else if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) { 
 				System.out.println("Received datagram from subject with IP " + receivedDatagram.getAddress() + 
 						" on port " + receivedDatagram.getPort() + " with content: ");
 				System.out.println(receivedDatagram.getData());
 			}
 
 			else {
-				System.out.println("Error in main server");
+				System.out.println("Error in main server: Received datagram on a wrong port.");
 			}
 
 		}
@@ -228,25 +236,45 @@ public class HidraACS {
 	 * @param dataBytes
 	 */
 	private static void handleResourceMessage(byte[] dataBytes) {
-		//TODO how about reliability? Will socket.send make sure it is resend until and ack is received? 
-		//		At the moment, when I sent 5 datagrams, 2/3 arrive. Later on all 3 messages were received. 
-		//		Internet: suggestions? Sven: suggestions?  
+		//TODO how about reliability? Will socket.send make sure it is resend until and ack is received?
+		//TODO does the border router have a size limit? -> weird that in some case only a part of the packets arrive?
+		//		TODO Internet: suggestions? Sven: suggestions?  
+		// Later test: packet of length 10 is received from hidra-r, multiplied (with factor a) and sent back.
+		//				if 1 =< a =< 6 
+		//				if 7 =< a =< 8, then 2 of the 3 packets are received in hidra-r,
+		// 					when only one packet is sent, it was always received hidra-r in 5 consecutive tests 
+		//				if 9 =< a (so the data length is 90), nothing is received, 
+		// 					also when only one packet is sent, so the immediate following of other packets is not a cause.
+		//	Not directly to do with this, but TODO check max buffer length for simple-udp in hidra!
 		
-		int a = 2;
-		byte[] multiplied = new byte[dataBytes.length*a];
-		for (int i = 0 ; i < a ; i++) {
-			for (int j = 0 ; j < dataBytes.length ; j++) {
-				multiplied[i*dataBytes.length + j] = dataBytes[j];
-			}
-		}
-		System.out.println(new String(multiplied)); //TODO knip ff laatste stukje van buffer eraf
-		for (int i = 0 ; i < multiplied.length ; i++) {
-			System.out.println(multiplied[i]);
-		}
+		sendDataToResource(dataBytes);
 		
-		for (int i = 0 ; i < 3 ; i++) { //TODO for the moment all packets are received for some reason
-			sendDataToResource(multiplied);
-		}
+		//TODO voor data size tests als je er nog doet
+//		int a = 9;
+//		byte[] multiplied = new byte[dataBytes.length*a];
+//		for (int i = 0 ; i < a ; i++) {
+//			for (int j = 0 ; j < dataBytes.length ; j++) {
+//				multiplied[i*dataBytes.length + j] = dataBytes[j];
+//				// so that full buffer is processed in hidra-r and 
+//				if (j == dataBytes.length - 1 && i < a-1) {
+//					multiplied[i*dataBytes.length + j] = 32; // 32 is een spatie
+//				}
+//			}
+//		}
+//		System.out.println(new String(multiplied));
+//		for (int i = 0 ; i < multiplied.length ; i++) {
+//			System.out.println(multiplied[i]);
+//		}
+		
+//		for (int i = 0 ; i < 3 ; i++) { 
+//			try {
+//				TimeUnit.SECONDS.sleep(1);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			sendDataToResource(multiplied);
+//		}
 	}
 	
 	/**

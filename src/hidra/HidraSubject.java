@@ -5,27 +5,25 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class HidraSubject { //TODO scheid config van subject en acs? of hoe anders het ook uitkomt 
 	
 	private static String acsIP = HidraConfig.getLocalIP();
-	public static final int ACS_PORT = HidraConfig.getSubjectToAcsPort(); 
-	public static final int SUBJECT_PORT = HidraConfig.getAcsToSubjectPort(); 
-	private static String clientIP = HidraConfig.getLocalIP(); //TODO maak meteen socket met deze ip?! zei server 
-	private static DatagramSocket socket = null; 
-	public static long start; 
+	public static final int SUBJECT_TO_RESOURCE_PORT = HidraConfig.getSujectToResourcePort();
+	private static String subjectIP = HidraConfig.getLocalIP();
+	private static DatagramSocket socketForACS = null; 
+	private static DatagramSocket socketForResource = null;
 	
 	public static final byte[] testPacket = "Test message".getBytes(); 
 //			new byte[] {4,3,2,1};
 	
 	public HidraSubject(){
-		start = System.currentTimeMillis();
-		System.out.println("Trying to connect to WSN using socket on port = "+SUBJECT_PORT);
-
 		try{
-			socket = new DatagramSocket(SUBJECT_PORT);
+			socketForACS = new DatagramSocket(HidraConfig.getSubjectPortForCommWithAcs());
+			socketForResource = new DatagramSocket(SUBJECT_TO_RESOURCE_PORT);
 		}
 
 		catch(SocketException e) {
@@ -37,23 +35,17 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	/**
 	 * Sending a datagram packet over the socket to the given IP.
 	 * @param data		| a byteArray which contains the packet to send
-	 * @param serverIP	| a string containing the IP to which the data is send
+	 * @param receiverIP	| a string containing the IP to which the data is send
 	 */
-	public static void sendDataPacketTo(byte[] data, String serverIP){
-		
+	public static void sendDataPacket(byte[] data, String receiverIP, DatagramSocket socket, int port){
 		try{
-			DatagramPacket packet = new DatagramPacket(data,data.length,InetAddress.getByName(serverIP) , ACS_PORT);
-			System.out.println("Sending packet to address " + InetAddress.getByName(serverIP) + " on port " + ACS_PORT + " with data " + data + " on socket with"); 
-			System.out.println("local port: " + socket.getLocalPort());
-//			System.out.println("port: " + socket.getPort());
-//			System.out.println("ip: " + socket.getInetAddress());
-//			System.out.println("local address: " + socket.getLocalAddress());
-//			System.out.println("local socket address: " + socket.getLocalSocketAddress());
-//			System.out.println("remote socket address: " + socket.getRemoteSocketAddress());
-//			System.out.println("reuse address: " + socket.getReuseAddress());
-			socket.send(packet);	
+			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
+			socket.send(dataPack);
+//			System.out.println("Sending data to port: "+ dataPack.getPort() +" with address: "+ dataPack.getAddress());
+//			System.out.println("Length of data right before it leaves: "+ dataPack.getData().length);
 		}
 		catch(Exception e){
+			System.out.println("HidraSubject.sendDataPacket() Exception ");
 			e.printStackTrace();
 		}
 	}
@@ -62,25 +54,25 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	 * Sending a datagram packet over the socket to the IP of the test server.
 	 * @param data
 	 */
-	public static void sendDataPackToServerIP(byte[] data){ //TODO naam: border router
-		sendDataPacketTo(data,acsIP);
+	public static void sendDataPackToACS(byte[] data){ 
+		sendDataPacket(data,acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
 	}
 	
 	/**
 	 * Receiving a datagram packet from the socket.
 	 * @return | result == dataPack
 	 */
-	public static byte[] receiveDataPacket(){ 
+	public static DatagramPacket receiveDataPacket(){ //TODO meer dan alleen de data terug geven, omdat je meerdere contacten gaat hebben?
 		byte[] data = new byte[1024]; 
 		DatagramPacket packet = new DatagramPacket(data, data.length);		
 		try {
-			socket.receive(packet);
+			socketForACS.receive(packet);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		return packet.getData();
+		
+		return packet;
 	}
 	
 	/**
@@ -93,10 +85,8 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	}
 	
 	/**
-	 * Execute the ACS functionalities.
-	 * Current aspired functionality: 
-	 * 	Set up connection with Cooja WSN border router
-	 * 	Send UDP message to Border Router
+	 * Current functionality: 
+	 * 	Send UDP message to ACS and catch+print response
 	 * @param args
 	 * @throws IOException
 	 * @throws InterruptedException 
@@ -114,7 +104,22 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 		
 		while(true) {
 			getUserInput("Enter to send another standard package");
-			sendDataPackToServerIP(testPacket);
+			
+			sendDataPackToACS(testPacket);
+			
+			DatagramPacket receivedDatagram = receiveDataPacket();
+			byte[] actualMessage = null; 
+			
+			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
+				System.out.println("Received datagram from resource with IP " + receivedDatagram.getAddress() + 
+						" on port " + receivedDatagram.getPort() + " with length: " + receivedDatagram.getLength());
+				
+				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				handleACSMessage(actualMessage);
+			} 
+			else {
+				System.out.println("Error in main server: Received datagram on a wrong port.");
+			}
 		}
 
 
@@ -141,6 +146,10 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 //			System.out.println("Client received following DHCPNAK from test server: "+ answerOnRequest.toString());
 //		}		
 		
+	}
+
+	private static void handleACSMessage(byte[] message) {
+		System.out.println("Content of datagram: " + new String(message));
 	}
 	
 	
