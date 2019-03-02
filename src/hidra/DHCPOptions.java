@@ -17,7 +17,7 @@ public class DHCPOptions {
 	public static final int DHCPRELEASE = 7;
 
 	// The DHCP-server for testing purposes.
-	private static final byte[] serverIP = DHCPUtility.strIPtoByteArray(ACSConfig.getServerIP());
+	private static final byte[] serverIP = null;
 
 
 
@@ -105,7 +105,7 @@ public class DHCPOptions {
 	 */
 	public void setOfferOptions(byte[] leaseTime){
 		setOption(MESSAGETYPE, new byte[]{DHCPOFFER});
-		setOption(SERVERID, DHCPUtility.strIPtoByteArray(ACSConfig.getServerIP())); 
+//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
 		setOption(IPLEASETIME, leaseTime);
 	}
 	
@@ -122,7 +122,7 @@ public class DHCPOptions {
 	 */
 	public void setAcknowledgeOptions(byte[] leaseTime) {
 		setOption(MESSAGETYPE, new byte[]{DHCPACK});
-		setOption(SERVERID, DHCPUtility.strIPtoByteArray(ACSConfig.getServerIP())); 
+//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
 		setOption(IPLEASETIME, leaseTime);
 	}
 	
@@ -135,7 +135,7 @@ public class DHCPOptions {
 	 */
 	public void setNacknowledgeOptions() {
 		setOption(MESSAGETYPE, new byte[]{DHCPNAK});
-		setOption(SERVERID, DHCPUtility.strIPtoByteArray(ACSConfig.getServerIP())); 
+//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
 	}
 
 	/**
