@@ -342,31 +342,22 @@ public class HidraACS {
 				}
 				catch (NullPointerException e){
 //					sendDataToClient(replyMessage);
-
 				}
-
 			}
-
-
 			else if (type == DHCPOptions.DHCPRELEASE){
 				System.out.println("\nServer received following DHCPRELEASE from client" + message.toString());
 				// The clients gives back its IP address to the server
 				// Server needs to remove that IP address from the list of IP addresses being in use a the IP pool. 
 				String ipToDisclaim = DHCPUtility.printIP(message.getCiaddr());
 //				getPool().disclaimIP(ipToDisclaim);
-
 			}
-
-
 			else {
 				System.out.println("\n The DHCPServer couldn't handle the message because its MESSAGETYPE: " + type + " is unknown.");
 			}
 		}
-
 		else{
 			System.out.println("\n ERROR: The DHCPServer received a reply, but a request was expected!");
 		}
-
 	}
 
 }
