@@ -210,39 +210,42 @@ public class HidraACS {
 			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 				System.out.println("Received " + (new String(actualMessage)));
-				if(actualMessage == "HID_ANS_REQ".getBytes()) {
+				if((new String(actualMessage)).equals("HID_ANS_REQ")) {
 					sendDataToSubject("HID_ANS_REP".getBytes());
 					receivedDatagram = receiveDataPacket(socketForSubject); 
 					if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Content of datagram: " + new String(actualMessage));
-						if(actualMessage == "HID_CM_REQ".getBytes()) {
+						if((new String(actualMessage)).equals("HID_CM_REQ")) {
 							sendDataToResource("HID_CM_IND".getBytes());
 							receivedDatagram = receiveDataPacket(socketForResource);
 							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
 								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 								System.out.println("Content of datagram: " + new String(actualMessage));
-								if(actualMessage == "HID_CM_IND_REQ".getBytes()) {
+								if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
 									sendDataToResource("HID_CM_IND_REP".getBytes());
 									sendDataToSubject("HID_CM_REP".getBytes());
 								}
 							} else {
 								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
 							}
+						} else {
+							System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
 					}
+				} else {
+					System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 				}
-			}
-			else {
+			} else {
 				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
 		}
 	}
 
 	private static void handleSubjectMessage(byte[] dataBytes) {
-		
+		System.out.println("Why you using this method?");
 	}
 
 	/**

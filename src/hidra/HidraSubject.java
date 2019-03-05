@@ -119,7 +119,7 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 			if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 				System.out.println("Received " + (new String(actualMessage)));
-				if(actualMessage == "HID_ANS_REP".getBytes()) {
+				if((new String(actualMessage)).equals("HID_ANS_REP")) {
 					sendDataPackToACS("HID_CM_REQ".getBytes());
 					
 					receivedDatagram = receiveDataPacket(socketForACS);
@@ -127,13 +127,20 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 					if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Received " + (new String(actualMessage)));
-						if(actualMessage == "HID_CM_REP".getBytes()) {
+						if((new String(actualMessage)).equals("HID_CM_REP")) {
+							try {
+								//TODO delete again? Shouldn't be necessary?  
+								// Because otherwise this message tends to arrive too early in hidra-r
+								TimeUnit.MILLISECONDS.sleep(500);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							sendDataPackToResource("HID_S_R_REQ".getBytes());
 							receivedDatagram = receiveDataPacket(socketForResource);
 							if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
 								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 								System.out.println("Received " + (new String(actualMessage)));
-								if(actualMessage == "HID_S_R_REP".getBytes()) {
+								if((new String(actualMessage)).equals("HID_S_R_REP")) {
 									System.out.println("Succesful Empty Hidra protocol exchange");
 								}
 							} else {
