@@ -289,15 +289,15 @@ public class DHCPOptions {
 		if (optionsList.get(optionID) != null) {
 			byte[] option = optionsList.get(optionID);
 			if (optionID == REQUESTEDIP) {
-				stringToPrint = "Requested IP: " + DHCPUtility.printIP(option[2], option[3], option[4],
+				stringToPrint = "Requested IP: " + HidraUtility.printIP(option[2], option[3], option[4],
 						option[5]);
 			} else if (optionID == MESSAGETYPE) {
 				stringToPrint = "Message type: " + stringifyType(option[2]);
 			} else if (optionID == SERVERID) {
-				stringToPrint = "Server ID (IP address): " + DHCPUtility.printIP(option[2], option[3], option[4],
+				stringToPrint = "Server ID (IP address): " + HidraUtility.printIP(option[2], option[3], option[4],
 						option[5]);
 			} else if (optionID == IPLEASETIME ){
-				stringToPrint = "IP lease time: "+DHCPUtility.byteArrayToInt(new byte[]{option[2], option[3], option[4],option[5]}) + " secs";
+				stringToPrint = "IP lease time: "+HidraUtility.byteArrayToInt(new byte[]{option[2], option[3], option[4],option[5]}) + " secs";
 			}
 		} else {
 			stringToPrint = "<Empty>";

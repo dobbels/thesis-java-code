@@ -22,26 +22,6 @@ public class HidraConfig {
 //	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
 	
 	
-	//TODO hopefully all irrelevant: delete when communication Sub <-> ACS <-> Resource works
-	// fe80::20c:29ff:fe76:bdb //eth0 is wel link adres momenteel, misschien niet hiervoor bedoeld
-	// 192.168.206.134 // eth0 inet address
-	// 192.168.206.255 // eth0 Bcast
-	//tODO probeer allemaal eens, zowel eth0 als tun0
-	//		tODO eerst binnen java met client en server
-	//		tODO dan met cooja
-	// tun0
-	// inet addr:127.0.1.1  P-t-P:127.0.1.1  Mask:255.255.255.255
-    // inet6 addr: fd00::1/64 Scope:Global
-    // inet6 addr: fe80::1/64 Scope:Link
-	
-	// Tun0 interface
-	// inet : 127.0.1.1
-	// inet6 : fd00::1/64 (Global)
-	//TODO denk eraan dat je bij DHCP toen twee aparte testen had. 1 met jou als server, 1 met lab als server. 
-	// Dus snap de code uit dat perspectief
-	
-	
-
 	public static String getLocalIP() {
 		return localIP;
 	}

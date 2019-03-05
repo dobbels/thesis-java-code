@@ -34,7 +34,7 @@ public class IPPair {
 	
 	public String stringify() {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		return "MAC: " + DHCPUtility.printMACAsString(getMac()) + "  End Lease: " + dateFormat.format(getEndLease());
+		return "End Lease: " + dateFormat.format(getEndLease());
 	}
  
 }

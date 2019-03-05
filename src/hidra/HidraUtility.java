@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 /**
  * Shared utilities to be use by different classes
  */
-public class DHCPUtility {
+public class HidraUtility {
 	/**
 	 * Method copied from source: http://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
 	 * @param value is integer
@@ -73,7 +73,7 @@ public class DHCPUtility {
 		return printIP(ba[0], ba[1], ba[2], ba[3]);
 	}
 
-	/**
+	/** TODO dit voor IPv6 ipv IPv4 !
 	 * Converts 4 byte values to an ip string
 	 * @param a - 1st byte value
 	 * @param b - 2nd byte value
@@ -119,35 +119,6 @@ public class DHCPUtility {
 	public static String byteToHexString(byte b) {
 		String str = new String(Integer.toHexString(new Integer(b & 0xff)));
 		return str;
-	}
-	
-	public static String printMACAsString(byte a, byte b, byte c, byte d, byte e, byte f) {
-		String str;
-		//assumption: Ethernet MAC Address, so 6 bytes.
-		str = DHCPUtility.byteToHexString(a) + ":" +
-			  DHCPUtility.byteToHexString(b) + ":" +
-			  DHCPUtility.byteToHexString(c) + ":" +
-			  DHCPUtility.byteToHexString(d) + ":" +
-			  DHCPUtility.byteToHexString(e) + ":" +
-			  DHCPUtility.byteToHexString(f);
-		return str;
-	}
-
-	public static String printMACAsString(byte[] ba) {
-		assert(ba.length >= 6);
-		return printMACAsString(ba[0], ba[1], ba[2], ba[3], ba[4], ba[5]);
-	}
-
-	public static byte[] macToByteArray(String MAC){
-		String[] macAddressParts = MAC.split(":");
-
-		// convert hex string to byte values
-		byte[] macAddressBytes = new byte[6];
-		for(int i=0; i<6; i++){
-		    Integer hex = Integer.parseInt(macAddressParts[i], 16);
-		    macAddressBytes[i] = hex.byteValue();
-		}
-		return macAddressBytes; 
 	}
 	
 	/**

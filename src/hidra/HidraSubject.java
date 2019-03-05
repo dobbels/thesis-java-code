@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-public class HidraSubject { //TODO scheid config van subject en acs? of hoe anders het ook uitkomt 
+public class HidraSubject { 
 	
 	private static String acsIP = HidraConfig.getLocalIP();
 	private static String resourceIP = HidraConfig.getResourceIP();
@@ -35,15 +35,11 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	
 	/**
 	 * Sending a datagram packet over the socket to the given IP.
-	 * @param data		| a byteArray which contains the packet to send
-	 * @param receiverIP	| a string containing the IP to which the data is send
 	 */
 	public static void sendDataPacket(byte[] data, String receiverIP, DatagramSocket socket, int port){
 		try{
 			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
 			socket.send(dataPack);
-//			System.out.println("Sending data to port: "+ dataPack.getPort() +" with address: "+ dataPack.getAddress());
-//			System.out.println("Length of data right before it leaves: "+ dataPack.getData().length);
 		}
 		catch(Exception e){
 			System.out.println("HidraSubject.sendDataPacket() Exception ");
@@ -51,10 +47,6 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 		}
 	}
 	
-	/**
-	 * Sending a datagram packet over the socket to the IP of the test server.
-	 * @param data
-	 */
 	public static void sendDataPackToACS(byte[] data){ 
 		sendDataPacket(data, acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
 	}
@@ -63,10 +55,6 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 		sendDataPacket(data, resourceIP, socketForResource, SUBJECT_TO_RESOURCE_PORT);
 	}
 
-	/**
-	 * Receiving a datagram packet from a given socket.
-	 * @return | result == dataPack
-	 */
 	public static DatagramPacket receiveDataPacket(DatagramSocket socket){
 		byte[] buffer = new byte[HidraMessage.MAX_BYTE_SIZE]; 
 		DatagramPacket dataPack = new DatagramPacket(buffer, buffer.length);
@@ -74,14 +62,15 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 			socket.receive(dataPack); 
 		}
 		catch(Exception e){
-			System.out.println("DHCPServer.receiveDataPacket() Exception");
+			System.out.println("HidraSubject.receiveDataPacket() Exception");
 			e.printStackTrace();
 		}
 		return dataPack;
 	}
 	
 	/**
-	 * Method to ask user for answer to a question
+	 * Method to ask user for answer to a question or simply to make the user control when something happens, by asking to 'Enter to continue'. 
+	 * In the latter case, the user input is not used.  
 	 */
 	public static String getUserInput(String question){
 		Scanner scan = new Scanner(System.in);
@@ -91,21 +80,13 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	
 	/**
 	 * Current functionality: 
-	 * 	Send UDP message to ACS and catch+print response
-	 * @param args
-	 * @throws IOException
-	 * @throws InterruptedException 
+	 * 	Execute empty Hidra protocol when a user indicates this through the console by pressing Enter 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 		System.out.println("Start Subject");
 		
 		// Initialize Datagram Socket
 		HidraSubject acs = new HidraSubject();
-		
-		// From earlier test TODO delete when general connection is achieved.
-//		String address = ACSConfig.getServerIP();
-//		System.out.println("Trying if " + address + " is reachable");
-//		System.out.println(InetAddress.getByName(address).isReachable(10000)); // for 10 seconds
 		
 		while(true) {
 			getUserInput("Enter to send start Hidra protocol");
@@ -128,14 +109,14 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Received " + (new String(actualMessage)));
 						if((new String(actualMessage)).equals("HID_CM_REP")) {
-							try {
-								//TODO delete again? Shouldn't be necessary?  
-								// Because otherwise this message tends to arrive too early in hidra-r
+							try {  
+								// Because otherwise this message tends to arrive too early in hidra-r. TODO delete again? Shouldn't be necessary?
 								TimeUnit.MILLISECONDS.sleep(500);
-							} catch (Exception e) {
+								sendDataPackToResource("HID_S_R_REQ".getBytes());
+							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							sendDataPackToResource("HID_S_R_REQ".getBytes());
+							
 							receivedDatagram = receiveDataPacket(socketForResource);
 							if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
 								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
@@ -155,31 +136,6 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
 		}
-
-
-		/////////////////////////////////////////////////:
-		
-		
-//		HidraMessage message = new HidraMessage();		
-//		sendDataPackToSavedIP(message.convertToBytes());
-		
-		//TODO use a similar method to receive reply on message. (don't worry about having multiple resource to attend to, you're writing a PoC) 
-//		System.out.println("Client sent following DHCPDiscover to test server: " + message.toString());
-//		HidraMessage answerOnDiscover = new HidraMessage(receiveDataPacket());
-//		System.out.println("Client received following DHCPOFFER from test server: "+ answerOnDiscover.toString());
-//		System.out.println("Buiding a request message and sending it to the test server\n");
-//		
-//		sendDataPackToSavedIP(message.convertToBytes());
-//		System.out.println("Client sent following DHCPREQUEST to test server: " + message.toString());
-//		HidraMessage answerOnRequest = new HidraMessage(receiveDataPacket());
-//		if (DHCPUtility.areEqual(answerOnRequest.getOptionsList().getOption(DHCPOptions.MESSAGETYPE),DHCPUtility.intToByteArray(DHCPOptions.DHCPACK))) {
-//			System.out.println("Client received following DHCPACK from test server: "+ answerOnRequest.toString());
-//			setClientIP(DHCPUtility.printIP(answerOnRequest.getYiaddr()));
-//		}
-//		else {
-//			System.out.println("Client received following DHCPNAK from test server: "+ answerOnRequest.toString());
-//		}		
-		
 	}	
 }
 

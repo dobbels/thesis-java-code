@@ -31,14 +31,14 @@ public class Pool {
 	 */
 	public Pool(String serverIP) {
 		this.setServerIP(serverIP);
-		int lowestIP = DHCPUtility.strIPToInt(lowestIPInPool);
+		int lowestIP = HidraUtility.strIPToInt(lowestIPInPool);
 		for (int i = 0; i < poolWidth; i++) {
-			allIPs.add(DHCPUtility.intToStrIP(lowestIP+i));
+			allIPs.add(HidraUtility.intToStrIP(lowestIP+i));
 		}
 		
 		if (allIPs.contains(serverIP)) {
 			allIPs.remove(serverIP);
-			allIPs.add(DHCPUtility.intToStrIP(lowestIP+poolWidth));
+			allIPs.add(HidraUtility.intToStrIP(lowestIP+poolWidth));
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class Pool {
 	public String claimIP(byte[] mac, String ip) {
 		if (getAllIPs().contains(ip)) {
 			if (getClaimedIPs().containsKey(ip)) {
-				if (DHCPUtility.areEqual(getClaimedIPs().get(ip).getMac(), mac)) {
+				if (HidraUtility.areEqual(getClaimedIPs().get(ip).getMac(), mac)) {
 					Date endTime = new Date(); 
 					endTime.setTime(endTime.getTime()+standardLeaseTime);
 					getClaimedIPs().get(ip).setEndLease(endTime);

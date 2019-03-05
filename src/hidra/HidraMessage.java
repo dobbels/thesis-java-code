@@ -4,13 +4,18 @@ import java.util.Random;
 
 
 /**
- * This class implements a EBNF policy codified with APBR codification.
- *
+ * This class implements a Hidra message, containing the necessary identifiers, token, keys and possibly an EBNF policy (codified with APBR codification).
  */
 public class HidraMessage {
 
 	
-	//TODO pas dit allemaal aan
+	// Om dit allemaal aan te passen
+	// TODO kijk in paper of berichten echt deftig beschreven
+	// TODO anders: code van een char om aan te geven welk bericht van het protocol het is
+	// TODO maak alle velden aan die nodig zijn in bepaalde berichten en schrijf de beschrijving over van de paper
+	// Maak methoden als 'isAnAnsReqMessage' alleen op een as-needed basis. Je weet dat anders veel dingen onnodig gemaakt zullen zijn
+			// !! Want echt veel verspilde tijd om altijd voor te bereiden op dingen. Werk van PoC naar PoC!
+	// TODO (in constructor zonder argumenten: zet al alle gemeenschappelijke delen. -> obviously)
 	
 	public static final int MAX_BYTE_SIZE = 1023; 
 	public static final byte REQUEST = 1;
@@ -289,10 +294,10 @@ public class HidraMessage {
 		//----------------------/----------------------------/---------------------------/----------------------------// 4x 1 byte 
 		byteMessage[0] = getOp(); byteMessage[1] = getHtype(); byteMessage[2] = getHlen(); byteMessage[3] = getHops();
 		//------------------------------------------------------------------------------------------------------------// 1x 4 bytes (int)
-		for (int i=0; i < 4; i++) { byteMessage[4+i] = DHCPUtility.intToByteArray(getXid())[i];}
+		for (int i=0; i < 4; i++) { byteMessage[4+i] = HidraUtility.intToByteArray(getXid())[i];}
 		//---------------------------------------------------/--------------------------------------------------------// 2x 2 bytes (short) 
-		for (int i=0; i < 2; i++) { byteMessage[8+i] = DHCPUtility.shortToByteArray(getSecs())[i];} 
-		for (int i=0; i < 2; i++) { byteMessage[10+i] = DHCPUtility.shortToByteArray(getFlags())[i];}
+		for (int i=0; i < 2; i++) { byteMessage[8+i] = HidraUtility.shortToByteArray(getSecs())[i];} 
+		for (int i=0; i < 2; i++) { byteMessage[10+i] = HidraUtility.shortToByteArray(getFlags())[i];}
 		//---------------------------------------------------/--------------------------------------------------------// 1x X bytes (byte[X])
 		for (int i=0; i < 4; i++) { byteMessage[12+i] = getCiaddr()[i];}
 		for (int i=0; i < 4; i++) { byteMessage[16+i] = getYiaddr()[i];}
@@ -324,9 +329,9 @@ public class HidraMessage {
 		setHlen(byteArray[2]);  
 		setHops(byteArray[3]);  
 
-		setXid(DHCPUtility.byteArrayToInt(new byte[]{byteArray[4],byteArray[5],byteArray[6],byteArray[7]})); 	
-		setSecs(DHCPUtility.byteArrayToShort(new byte[]{byteArray[8],byteArray[9]})); 							
-		setFlags(DHCPUtility.byteArrayToShort(new byte[]{byteArray[10], byteArray[11]})); 
+		setXid(HidraUtility.byteArrayToInt(new byte[]{byteArray[4],byteArray[5],byteArray[6],byteArray[7]})); 	
+		setSecs(HidraUtility.byteArrayToShort(new byte[]{byteArray[8],byteArray[9]})); 							
+		setFlags(HidraUtility.byteArrayToShort(new byte[]{byteArray[10], byteArray[11]})); 
 
 		setCiaddr(new byte[]{byteArray[12],byteArray[13],byteArray[14],byteArray[15]});  
 		setYiaddr(new byte[]{byteArray[16],byteArray[17],byteArray[18],byteArray[19]}); 
@@ -351,9 +356,9 @@ public class HidraMessage {
 	}
 	
 	/**
-	 * Stringify DHCPMessage to a structured, easy readable overview. 
+	 * Stringify HidraMessage to a structured, easy readable overview. 
 	 */
-	public String toString() {
+	public String toString() { //TODO wrs wel handig voor hidra message ook. Maak in HidraPolicy dan ook zo'n methode (naar JSON achtige structuur)
 		String printString = new String();
 		String[] row = new String[10];
 
@@ -367,11 +372,11 @@ public class HidraMessage {
 		row[2] = "secs: " +getSecs() + " miliseconds  | flags: ";
 		row[2] += getFlags() + " --> UNICAST";
 		
-		row[3] = "ciaddr: " + DHCPUtility.printIP(getCiaddr());
-		row[4] = "yiaddr: " + DHCPUtility.printIP(getYiaddr());
-		row[5] = "siaddr: " + DHCPUtility.printIP(getSiaddr());
-		row[6] = "giaddr: " + DHCPUtility.printIP(getGiaddr());
-		row[7] = "chaddr: " + DHCPUtility.printMACAsString(getChaddr());
+		row[3] = "ciaddr: " + HidraUtility.printIP(getCiaddr());
+		row[4] = "yiaddr: " + HidraUtility.printIP(getYiaddr());
+		row[5] = "siaddr: " + HidraUtility.printIP(getSiaddr());
+		row[6] = "giaddr: " + HidraUtility.printIP(getGiaddr());
+		row[7] = "chaddr: ";
 		row[8] = "sname: 	There is no server host name provided.";
 		row[9] = "file:	No file added.";
 		
