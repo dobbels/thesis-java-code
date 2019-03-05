@@ -47,17 +47,14 @@ public class HidraACS {
 	}
 
 	/**
-	 * Receiving a datagram packet from the socket.
+	 * Receiving a datagram packet from a given socket.
 	 * @return | result == dataPack
 	 */
-	public static DatagramPacket receiveDataPacket(){
+	public static DatagramPacket receiveDataPacket(DatagramSocket socket){
 		byte[] buffer = new byte[HidraMessage.MAX_BYTE_SIZE]; 
 		DatagramPacket dataPack = new DatagramPacket(buffer, buffer.length);
 		try{
-			socketForResource.receive(dataPack); 
-			//TODO luister op allebei de sockets wanneer je ze allebei al eens apart hebt getest
-			// ZIE https://www.baeldung.com/a-guide-to-java-sockets
-			//     https://www.codeproject.com/Questions/312389/Listening-on-multiple-ports-on-a-single-server
+			socket.receive(dataPack); 
 		}
 		catch(Exception e){
 			System.out.println("DHCPServer.receiveDataPacket() Exception");
@@ -183,14 +180,13 @@ public class HidraACS {
 
 	/**
 	 * Execute the ACS functionalities.
-	 * Current aspired functionality: 
-	 * 	Set up connection with Cooja WSN border router
-	 * 	Send UDP message to Cooja/Contiki motes through this router
+	 * Current functionality: 
+	 * 	 
 	 * @param args
 	 * @throws IOException
 	 * @throws InterruptedException 
 	 */
-	
+	//TODO After PoC works where only 1 association is made: Listen on different threads and make handle-methods that can link back to previously sent messages by accessing some kind of state? -> Is this ever necessary in this thesis?? Not actually. Only listening for the accountability messages maybe, but that's also 'bijzaak'
 	public static void main(String[] args){
 		new HidraACS();
 		
@@ -199,36 +195,54 @@ public class HidraACS {
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
 
 			// Wait for connection to be set up
-			TimeUnit.SECONDS.sleep(5);
+			TimeUnit.SECONDS.sleep(2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		while (true){ //Server starts listening to see if it receives any messages
-			DatagramPacket receivedDatagram = receiveDataPacket();
+			//TODO Wanneer je ook stappen 8 en 9 doet (initiatief bij resource), best nieuwe thread starten en daar accounting info ontvangen (mss ook op andere poort dan al de rest voor het gemak?)
+			// Voor voorbeeld van socket in nieuwe thread, zie https://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-serverluister op allebei de sockets op een manier
+
+			DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
 			byte[] actualMessage = null; 
 			
-			if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-				System.out.println("Received datagram from resource with IP " + receivedDatagram.getAddress() + 
-						" on port " + receivedDatagram.getPort() + " with length: " + receivedDatagram.getLength());
-				
-				// TODO Waar ook getLength wordt gezegd bij receive: Relevant voor jou? Note that this means that if you're calling receive() in a loop, you have to recreate the DatagramPacket each time around the loop, or reset its length to the maximum before the receive. Otherwise getLength() keeps shrinking to the size of the smallest datagram received so far.
+			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				System.out.println("Content of datagram: " + new String(actualMessage));
-				handleResourceMessage(actualMessage);
-			} 
-			//TODO filter op juiste poort? of net die van subject zijde?
-			else if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) { 
-				System.out.println("Received datagram from subject with IP " + receivedDatagram.getAddress() + 
-						" on port " + receivedDatagram.getPort() + " with content: ");
-				System.out.println(receivedDatagram.getData());
+				System.out.println("Received " + (new String(actualMessage)));
+				if(actualMessage == "HID_ANS_REQ".getBytes()) {
+					sendDataToSubject("HID_ANS_REP".getBytes());
+					receivedDatagram = receiveDataPacket(socketForSubject); 
+					if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
+						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+						System.out.println("Content of datagram: " + new String(actualMessage));
+						if(actualMessage == "HID_CM_REQ".getBytes()) {
+							sendDataToResource("HID_CM_IND".getBytes());
+							receivedDatagram = receiveDataPacket(socketForResource);
+							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+								System.out.println("Content of datagram: " + new String(actualMessage));
+								if(actualMessage == "HID_CM_IND_REQ".getBytes()) {
+									sendDataToResource("HID_CM_IND_REP".getBytes());
+									sendDataToSubject("HID_CM_REP".getBytes());
+								}
+							} else {
+								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+							}
+						}
+					} else {
+						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+					}
+				}
 			}
-
 			else {
-				System.out.println("Error in main server: Received datagram on a wrong port.");
+				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
-
 		}
+	}
+
+	private static void handleSubjectMessage(byte[] dataBytes) {
+		
 	}
 
 	/**
@@ -247,7 +261,9 @@ public class HidraACS {
 		// 					also when only one packet is sent, so the immediate following of other packets is not a cause.
 		//	Not directly to do with this, but TODO check max buffer length for simple-udp in hidra!
 		
-		sendDataToResource(dataBytes);
+//		sendDataToResource(dataBytes);
+		
+		System.out.println("Content of datagram: " + new String(dataBytes));
 		
 		//TODO voor data size tests als je er nog doet
 //		int a = 9;

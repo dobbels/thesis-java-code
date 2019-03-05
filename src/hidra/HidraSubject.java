@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class HidraSubject { //TODO scheid config van subject en acs? of hoe anders het ook uitkomt 
 	
 	private static String acsIP = HidraConfig.getLocalIP();
+	private static String resourceIP = HidraConfig.getResourceIP();
 	public static final int SUBJECT_TO_RESOURCE_PORT = HidraConfig.getSujectToResourcePort();
 	private static String subjectIP = HidraConfig.getLocalIP();
 	private static DatagramSocket socketForACS = null; 
@@ -55,24 +56,28 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 	 * @param data
 	 */
 	public static void sendDataPackToACS(byte[] data){ 
-		sendDataPacket(data,acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
+		sendDataPacket(data, acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
 	}
 	
+	public static void sendDataPackToResource(byte[] data){ 
+		sendDataPacket(data, resourceIP, socketForResource, SUBJECT_TO_RESOURCE_PORT);
+	}
+
 	/**
-	 * Receiving a datagram packet from the socket.
+	 * Receiving a datagram packet from a given socket.
 	 * @return | result == dataPack
 	 */
-	public static DatagramPacket receiveDataPacket(){ //TODO meer dan alleen de data terug geven, omdat je meerdere contacten gaat hebben?
-		byte[] data = new byte[1024]; 
-		DatagramPacket packet = new DatagramPacket(data, data.length);		
-		try {
-			socketForACS.receive(packet);
-		} 
-		catch (IOException e) {
+	public static DatagramPacket receiveDataPacket(DatagramSocket socket){
+		byte[] buffer = new byte[HidraMessage.MAX_BYTE_SIZE]; 
+		DatagramPacket dataPack = new DatagramPacket(buffer, buffer.length);
+		try{
+			socket.receive(dataPack); 
+		}
+		catch(Exception e){
+			System.out.println("DHCPServer.receiveDataPacket() Exception");
 			e.printStackTrace();
 		}
-		
-		return packet;
+		return dataPack;
 	}
 	
 	/**
@@ -103,22 +108,44 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 //		System.out.println(InetAddress.getByName(address).isReachable(10000)); // for 10 seconds
 		
 		while(true) {
-			getUserInput("Enter to send another standard package");
+			getUserInput("Enter to send start Hidra protocol");
 			
-			sendDataPackToACS(testPacket);
+			sendDataPackToACS("HID_ANS_REQ".getBytes());
 			
-			DatagramPacket receivedDatagram = receiveDataPacket();
+			DatagramPacket receivedDatagram = receiveDataPacket(socketForACS);
 			byte[] actualMessage = null; 
 			
-			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
-				System.out.println("Received datagram from resource with IP " + receivedDatagram.getAddress() + 
-						" on port " + receivedDatagram.getPort() + " with length: " + receivedDatagram.getLength());
-				
+			// Filter on the port the datagram was sent from 
+			if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				handleACSMessage(actualMessage);
-			} 
-			else {
-				System.out.println("Error in main server: Received datagram on a wrong port.");
+				System.out.println("Received " + (new String(actualMessage)));
+				if(actualMessage == "HID_ANS_REP".getBytes()) {
+					sendDataPackToACS("HID_CM_REQ".getBytes());
+					
+					receivedDatagram = receiveDataPacket(socketForACS);
+					// Filter on the port the datagram was sent from 
+					if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
+						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+						System.out.println("Received " + (new String(actualMessage)));
+						if(actualMessage == "HID_CM_REP".getBytes()) {
+							sendDataPackToResource("HID_S_R_REQ".getBytes());
+							receivedDatagram = receiveDataPacket(socketForResource);
+							if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
+								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+								System.out.println("Received " + (new String(actualMessage)));
+								if(actualMessage == "HID_S_R_REP".getBytes()) {
+									System.out.println("Succesful Empty Hidra protocol exchange");
+								}
+							} else {
+								System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+							}
+						}
+					} else {
+						System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+					}
+				}
+			} else {
+				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
 		}
 
@@ -146,12 +173,6 @@ public class HidraSubject { //TODO scheid config van subject en acs? of hoe ande
 //			System.out.println("Client received following DHCPNAK from test server: "+ answerOnRequest.toString());
 //		}		
 		
-	}
-
-	private static void handleACSMessage(byte[] message) {
-		System.out.println("Content of datagram: " + new String(message));
-	}
-	
-	
+	}	
 }
 
