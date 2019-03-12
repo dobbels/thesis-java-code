@@ -38,6 +38,8 @@ public class HidraMessage {
 	private byte[] chaddr;     		// Client hardware address, filled by client (only MAC-address, 6 bytes, the rest is filled with 0's) / 16 octets 
 	private byte[] sname;			// Optional server host name / 64 octets
 	private byte[] file;       		// Boot file name / 128 octets
+	
+	//TODO zien hoe met deze om te gaan kan handig zijn omdat je in hidra message ook veel verschillende velden hebt, maar verder niet echt handig. 
 	private DHCPOptions optionsList;  // Optional parameters field / variable length
 
 	private static Random randomXid = new Random();	// Instance of Random class, which will be used for creating a random xid. 

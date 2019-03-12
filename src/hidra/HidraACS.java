@@ -25,6 +25,8 @@ public class HidraACS {
 
 	public static final byte[] zeroByte = new byte[] {0,0,0,0}; 
 	public static final byte[] testPacket = "Test message".getBytes(); 	
+	
+	public static final HidraPolicy testPolicy = new HidraPolicy();
 
 	public HidraACS(){
 		System.out.println("Server opens socket, both for resource and subject");
@@ -66,6 +68,7 @@ public class HidraACS {
 		try{
 			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
 			socket.send(dataPack);
+			System.out.println("ACS sent datagram with UDP payload " + (new String(data)) + " of length " + dataPack.getLength());
 		}
 		catch(Exception e){
 			System.out.println("HidraACS.sendDataPacket() Exception ");
@@ -73,6 +76,10 @@ public class HidraACS {
 		}
 	}
 
+	/**
+	 * Limit on packet length in one test: 84 bytes. Packets longer than that don't get forwarded by the border router, probably because the maximum
+	 * 802.15.4 link layer length is 127 bytes. This means that is this test MAC headers + IP headers + UDP header were 127-84 = 43 bytes. 
+	 */
 	public static void sendDataToResource(byte[] packet){
 		sendDataPacket(packet,resourceIP, socketForResource, ACS_RESOURCE_PORT);
 	}
@@ -116,47 +123,61 @@ public class HidraACS {
 			e.printStackTrace();
 		}
 		
-		while (true){
-			//Server starts listening for messages from a Subject
-			DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
-			byte[] actualMessage = null; 
-			
-			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
-				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				System.out.println("Received " + (new String(actualMessage)));
-				if((new String(actualMessage)).equals("HID_ANS_REQ")) {
-					sendDataToSubject("HID_ANS_REP".getBytes());
-					receivedDatagram = receiveDataPacket(socketForSubject); 
-					if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
-						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-						System.out.println("Content of datagram: " + new String(actualMessage));
-						if((new String(actualMessage)).equals("HID_CM_REQ")) {
-							sendDataToResource("HID_CM_IND".getBytes());
-							receivedDatagram = receiveDataPacket(socketForResource);
-							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-								System.out.println("Content of datagram: " + new String(actualMessage));
-								if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
-									sendDataToResource("HID_CM_IND_REP".getBytes());
-									sendDataToSubject("HID_CM_REP".getBytes());
-								}
-							} else {
-								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-							}
-						} else {
-							System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
-						}
-					} else {
-						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-					}
-				} else {
-					System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
-				}
-			} else {
-				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
-			}
-		}
+		//Sending test-policy-instances 
+		sendDataToResource(testPolicy.codify());
+		
+//		while (true){
+//			//Server starts listening for messages from a Subject
+//			DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
+//			byte[] actualMessage = null; 
+//			
+//			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
+//				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+//				System.out.println("Received " + (new String(actualMessage)));
+//				if((new String(actualMessage)).equals("HID_ANS_REQ")) {
+//					sendDataToSubject("HID_ANS_REP".getBytes());
+//					receivedDatagram = receiveDataPacket(socketForSubject); 
+//					if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
+//						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+//						System.out.println("Content of datagram: " + new String(actualMessage));
+//						if((new String(actualMessage)).equals("HID_CM_REQ")) {
+//							sendDataToResource("HID_CM_IND".getBytes());							
+//							receivedDatagram = receiveDataPacket(socketForResource);
+//							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+//								System.out.println("Content of datagram: " + new String(actualMessage));
+//								if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
+//									sendDataToResource("HID_CM_IND_REP".getBytes());
+//									sendDataToSubject("HID_CM_REP".getBytes());
+//								}
+//							} else {
+//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+//							}
+//						} else {
+//							System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+//						}
+//					} else {
+//						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+//					}
+//				} else {
+//					System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+//				}
+//			} else {
+//				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+//			}
+//		}
 	}
+	
+	/**
+	 * Method to ask user for answer to a question or simply to make the user control when something happens, by asking to 'Enter to continue'. 
+	 * In the latter case, the user input is not used.  
+	 */
+	public static String getUserInput(String question){
+		Scanner scan = new Scanner(System.in);
+		System.out.println(question);
+		return scan.nextLine();
+	}
+	
 }
 
 

@@ -40,6 +40,9 @@ public class DHCPOptions {
 	public static final byte[] magicCookie = new byte[] {99, (byte)130, 83, 99};
 	public static final int lengthMagicCookie = magicCookie.length;
 
+	public static final int LEASETIME_DEFAULT_INT = 0; // seconds = 1 day
+	public static final byte[] LEASETIME_DEFAULT_4BYTES = null;
+
 	private ConcurrentHashMap<Integer,byte[]> optionsList;
 
 	
@@ -105,7 +108,7 @@ public class DHCPOptions {
 	 */
 	public void setOfferOptions(byte[] leaseTime){
 		setOption(MESSAGETYPE, new byte[]{DHCPOFFER});
-//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
+		setOption(SERVERID, null); 
 		setOption(IPLEASETIME, leaseTime);
 	}
 	
@@ -113,7 +116,7 @@ public class DHCPOptions {
 	 * Sets the options for an DHCP offer message created by the server to default leaseTime. 
 	 */
 	public void setOfferOptions() {
-//		setOfferOptions(LEASETIME_DEFAULT_4BYTES);
+		setOfferOptions(LEASETIME_DEFAULT_4BYTES);
 	}
 	
 
@@ -122,12 +125,12 @@ public class DHCPOptions {
 	 */
 	public void setAcknowledgeOptions(byte[] leaseTime) {
 		setOption(MESSAGETYPE, new byte[]{DHCPACK});
-//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
+		setOption(SERVERID, null); 
 		setOption(IPLEASETIME, leaseTime);
 	}
 	
 	public void setAcknowledgeOptions() {
-//		setAcknowledgeOptions(LEASETIME_DEFAULT_4BYTES);
+		setAcknowledgeOptions(LEASETIME_DEFAULT_4BYTES);
 	}
 
 	/**
@@ -135,7 +138,7 @@ public class DHCPOptions {
 	 */
 	public void setNacknowledgeOptions() {
 		setOption(MESSAGETYPE, new byte[]{DHCPNAK});
-//		setOption(SERVERID, DHCPUtility.strIPtoByteArray(HidraConfig.getServerIP())); 
+		setOption(SERVERID, null); 
 	}
 
 	/**
@@ -289,15 +292,13 @@ public class DHCPOptions {
 		if (optionsList.get(optionID) != null) {
 			byte[] option = optionsList.get(optionID);
 			if (optionID == REQUESTEDIP) {
-				stringToPrint = "Requested IP: " + HidraUtility.printIP(option[2], option[3], option[4],
-						option[5]);
+				stringToPrint = "Requested IP: ";
 			} else if (optionID == MESSAGETYPE) {
 				stringToPrint = "Message type: " + stringifyType(option[2]);
 			} else if (optionID == SERVERID) {
-				stringToPrint = "Server ID (IP address): " + HidraUtility.printIP(option[2], option[3], option[4],
-						option[5]);
+				stringToPrint = "Server ID (IP address): ";
 			} else if (optionID == IPLEASETIME ){
-				stringToPrint = "IP lease time: "+HidraUtility.byteArrayToInt(new byte[]{option[2], option[3], option[4],option[5]}) + " secs";
+				stringToPrint = "IP lease time: blabla secs";
 			}
 		} else {
 			stringToPrint = "<Empty>";
