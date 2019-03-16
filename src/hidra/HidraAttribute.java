@@ -43,7 +43,36 @@ public class HidraAttribute {
 	public void prettyPrint(String startingIndentation, boolean last) {
 		System.out.println(startingIndentation + "{");
 		
+		System.out.println(startingIndentation + "\t\"type\" : \"" + type.name() + "\",");
 		
+		switch(type) {
+		  case BOOLEAN:
+			  System.out.println(startingIndentation + "\t\"value\" : " + boolValue);
+		    break;
+		  case BYTE:
+			  System.out.println(startingIndentation + "\t\"value\" : " + byteValue);
+			    break;
+		  case INTEGER:
+			  System.out.println(startingIndentation + "\t\"value\" : " + intValue);
+			    break;
+		  case FLOAT:
+			  System.out.println(startingIndentation + "\t\"value\" : " + floatValue);
+			    break;
+		  case STRING:
+			  System.out.println(startingIndentation + "\t\"value\" : \"" + stringValue + "\"");
+			  break;
+		  case REQUEST_REFERENCE:
+			  System.out.println(startingIndentation + "\t\"value\" : \"" + HidraUtility.requestRereferences.get(byteValue) + "\"");
+			  break;
+		  case SYSTEM_REFERENCE:
+			  System.out.println(startingIndentation + "\t\"value\" : \"" + HidraUtility.systemRereferences.get(byteValue) + "\"");
+			  break;
+		  case LOCAL_REFERENCE:
+		    System.out.println(startingIndentation + "\t\"value\" : " + byteValue);
+		    break;
+		  default:
+			  System.out.println("Error: Atrribute type");
+		}
 		
 		if (last) {
 			System.out.println(startingIndentation + "}");

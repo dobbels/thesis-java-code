@@ -55,9 +55,52 @@ public class HidraRule {
 	}
 	
 	public void prettyPrint(String startingIndentation, boolean last) {
-		System.out.println(startingIndentation + "{");
+		System.out.println(startingIndentation + "{"); 
 		
+		System.out.println(startingIndentation + "\t\"id\" : " + id + ",");
 		
+		System.out.println(startingIndentation + "\t\"effect\" : \"" + effect.name() + "\",");
+		
+		if (optionFlags.get(0)) {
+			System.out.println(startingIndentation + "\t\"periodicity\" : " + periodicity + ",");
+		}
+		if (optionFlags.get(1)) {
+			System.out.println(startingIndentation + "\t\"iteration\" : " + iteration + ",");
+		}
+		if (optionFlags.get(2)) {
+			System.out.println(startingIndentation + "\t\"resource\" : " + resource + ",");
+		}
+		if (optionFlags.get(3)) {
+			System.out.println(startingIndentation + "\t\"action\" : \"" + action.name() + "\",");
+		}
+		
+		System.out.println(startingIndentation + "\t\"conditionset\" : [");
+		
+		for (HidraExpression e : conditionset) {
+			// To print like JSON, the last rule should not include a comma. 
+			if (conditionset.indexOf(e) == conditionset.size() - 1) {
+				e.prettyPrint(startingIndentation + "\t\t", false, true);
+			} else {
+				e.prettyPrint(startingIndentation + "\t\t", false, false);
+			}
+		}
+		
+		System.out.println(startingIndentation + "\t]");
+
+		if (optionFlags.get(4)) {
+			System.out.println(startingIndentation + "\t\"obligationset\" : [");
+			
+			for (HidraObligation o : obligationset) {
+				// To print like JSON, the last rule should not include a comma. 
+				if (obligationset.indexOf(o) == obligationset.size() - 1) {
+					o.prettyPrint(startingIndentation + "\t\t", true);
+				} else {
+					o.prettyPrint(startingIndentation + "\t\t", false);
+				}
+			}
+			
+			System.out.println(startingIndentation + "\t]");
+		}
 		
 		if (last) {
 			System.out.println(startingIndentation + "}");

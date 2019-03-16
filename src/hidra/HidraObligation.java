@@ -22,9 +22,12 @@ public class HidraObligation {
 	}
 	
 	public void prettyPrint(String startingIndentation, boolean last) {
-		System.out.println(startingIndentation + "{");
+		System.out.println(startingIndentation + "{"); 
 		
-		
+		System.out.println(startingIndentation + "\t\"task\" :");
+		task.prettyPrint(startingIndentation + "\t\t", true, false);
+
+		System.out.println(startingIndentation + "\t\"fulfillOn\" : \"" + fulfillOn.name() + "\"");
 		
 		if (last) {
 			System.out.println(startingIndentation + "}");
