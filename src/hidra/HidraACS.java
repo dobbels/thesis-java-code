@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -210,8 +211,8 @@ public class HidraACS {
 	 * When accountability messages are included, an extra thread will be introduced to listen for exchanged initiated by the resource.  
 	 */
 	public static void main(String[] args){
-		new HidraACS();
-		
+//		new HidraACS();
+//		
 //		try {
 //			// Set up connection with RPL border router
 //			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
@@ -222,7 +223,9 @@ public class HidraACS {
 //			e.printStackTrace();
 //		}
 		
-		constructInstanceSample4().prettyPrint();
+//		constructInstanceSample4().prettyPrint();
+		
+		
 
 		//Sending test-policy-instances 
 //		sendDataToResource(testPolicy.codify());

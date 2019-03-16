@@ -108,4 +108,8 @@ public class HidraRule {
 			System.out.println(startingIndentation + "},");
 		}
 	}
+	
+	public byte[] codifyUsingAPBR() {
+		
+	}
 }

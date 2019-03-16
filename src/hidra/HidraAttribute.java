@@ -80,4 +80,8 @@ public class HidraAttribute {
 			System.out.println(startingIndentation + "},");
 		}
 	}
+	
+	public byte[] codifyUsingAPBR() {
+		//TODO use utility function: inttoBytearray -> int to bitset ?
+	}
 }

@@ -3,6 +3,8 @@ package hidra;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -82,6 +84,49 @@ public class HidraUtility {
 		return zeroByte;
 	}
 	
+	/**
+	 * Pad ending of boolean array and convert to bytes.
+	 */
+	public static byte[] booleanArrayToByteArray(ArrayList<Boolean> input){
+		int nbOfBytes = (input.size() + 7) / 8;
+		byte[] bytes = new byte[nbOfBytes]; 
+		
+		int emptyRemainder = nbOfBytes*8 - input.size();
+		for (int r = 0 ; r < emptyRemainder ; r ++) {
+			input.add(false);  
+		}
+		
+		for (int i = 0 ; i < nbOfBytes ; i++) {
+			bytes[i] = booleanArrayToByte((ArrayList<Boolean>) input.subList(i*8, (i+1)*8));
+		}
+		
+		//TODO check that the last byte is handled well, i.e. is padded up  
+		return bytes;
+	}
+	
+	public static byte booleanArrayToByte(ArrayList<Boolean> input){
+		if (input.size() != 8) {
+			System.out.println("Error in codification: booleanArrayToByte");
+		}
+		
+		byte result = 0;
+		byte increment = 64;
+		
+		// A byte is signed in Java! First the other bits are handled.
+		for (int i = 1 ; i < 8 ; i++) {
+			if (input.get(i)) {
+				result += increment;
+			}
+			increment /= 2;
+		}
+		
+		// Then the first bit is handled. 
+		if (input.get(0)) {
+			result = (byte) (result - 128);
+		}
+		
+		return result;
+	}
 	
 	/**
 	 * Method copied from source: http://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java

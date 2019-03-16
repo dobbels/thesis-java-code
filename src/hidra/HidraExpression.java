@@ -56,4 +56,8 @@ public class HidraExpression {
 			System.out.println(startingIndentation + "},");
 		}
 	}
+	
+	public byte[] codifyUsingAPBR() {
+		
+	}
 }

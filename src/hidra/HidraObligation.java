@@ -35,4 +35,8 @@ public class HidraObligation {
 			System.out.println(startingIndentation + "},");
 		}
 	}
+	
+	public byte[] codifyUsingAPBR() {
+		
+	}
 }
