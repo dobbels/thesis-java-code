@@ -3,11 +3,86 @@ package hidra;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Shared utilities to be use by different classes
  */
 public class HidraUtility {
+	
+	private static byte zeroByte = 0;
+	
+	enum Effect { 
+		  DENY,
+		  PERMIT
+		}
+	
+	enum Action {
+		GET,
+		POST,
+		PUT,
+		DELETE,
+		ANY
+	}
+	
+	enum AttributeType {
+		BOOLEAN,
+		BYTE,
+		INTEGER,
+		FLOAT,
+		STRING,
+		REQUEST_REFERENCE,
+		SYSTEM_REFERENCE,
+		LOCAL_REFERENCE
+	}
+	
+	// All reference tables originate from the resource and are shared with the ACS.
+	public static HashMap<Byte, String> expressionRereferences = new HashMap<Byte, String>() {{
+		byte a = 17;
+		put(a, "lowBattery");
+		put(++a,"<");
+		put(++a,"contains");
+		put(++a, "isTrue");
+	}};
+	
+	public static HashMap<Byte, String> taskRereferences = new HashMap<Byte, String>() {{
+		byte a = 27;
+		put(a, "activate");
+		put(++a, "++");
+	}};
+	
+	public static HashMap<Byte, String> systemRereferences = new HashMap<Byte, String>() {{
+		byte a = 37;
+		put(a, "onMaintenance");
+		put(++a,"bios_upgrades");
+	}};
+	
+	public static HashMap<Byte, String> requestRereferences = new HashMap<Byte, String>() {{
+		byte a = 47;
+		put(a, "roles");
+	}};
+	
+	public static byte getId(HashMap<Byte,String> referenceTable, String name) {
+		Set<Entry<Byte, String>> entrySet = referenceTable.entrySet();
+		Iterator<Entry<Byte, String>> it = entrySet.iterator();
+		
+		Entry<Byte, String> temp;
+		
+		while (it.hasNext()) {
+			temp = it.next();
+			if (temp.getValue().equals(name)) {
+				return temp.getKey();
+			}
+		}
+		System.out.println("Error: no match for given expression name");
+		return zeroByte;
+	}
+	
+	
 	/**
 	 * Method copied from source: http://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
 	 * @param value is integer

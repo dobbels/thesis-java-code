@@ -1,5 +1,9 @@
 package hidra;
 
+import hidra.HidraUtility.*;
+
+import java.util.ArrayList;
+
 import org.json.*;
 
 /**
@@ -12,22 +16,15 @@ import org.json.*;
  * Then APBR? 
  */
 public class HidraPolicy {
-	//TODO codificatie hier als functie? Best aparte klasse? 
 	
 	private byte id; // Use of ints is avoided, as on the hidra resource, an integer consists of 2 bytes, while in java that is 4 bytes. 
 	private Effect effect;
-	private HidraRuleSet ruleset; 
+	private ArrayList<HidraRule> ruleset; 
 	
-	enum Effect {
-		  DENY,
-		  PERMIT
-		}
-	
-	public HidraPolicy(){
-		// id is constant for now
-		id = 1;
-		effect = Effect.PERMIT;
-		ruleset = new HidraRuleSet();
+	public HidraPolicy(byte id, Effect e, ArrayList<HidraRule> ruleset){
+		this.id = id;
+		this.effect = e;
+		this.ruleset = ruleset;
 	}
 	
 	public byte[] codify() {
@@ -35,7 +32,7 @@ public class HidraPolicy {
 	}
 	
 //	private byte[] codifyUsingAPBR(byte id, Effect effect, HidraRuleSet ruleset) {
-		//TODO zie convertToBytes in HidraMessage
+		//TODO zie paper + convertToBytes in HidraMessage
 //	}
 	
 	private JSONObject codifyUsingJSON() {
@@ -50,4 +47,24 @@ public class HidraPolicy {
 
 	      return obj;
 	}
+	
+	// Print the policy instance in a JSON-like structure 
+	public void prettyPrint() {
+		System.out.println("{");
+		System.out.println("\t\"id\" : " + id + ",");
+		System.out.println("\t\"effect\" : \"" + effect.name() + "\",");
+		System.out.println("\t\"rules\" : [");
+		
+		for (HidraRule r : ruleset) {
+			// To print like JSON, the last rule should not include a comma. 
+			if (ruleset.indexOf(r) == ruleset.size() - 1) {
+				r.prettyPrint("\t\t", true);
+			} else {
+				r.prettyPrint("\t\t", false);
+			}
+		}
+		
+		System.out.println("\t]");
+		System.out.println("}");
+	}	
 }
