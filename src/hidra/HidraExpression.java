@@ -57,7 +57,26 @@ public class HidraExpression {
 		}
 	}
 	
-	public byte[] codifyUsingAPBR() {
+	public ArrayList<Boolean> codifyUsingAPBR() {
+		//Function id
+		ArrayList<Boolean> codification  = HidraUtility.byteToBoolList(function);
 		
+		//InputExistenceMask
+		if (!attributesExist) {
+			codification.add(false);
+		} else {
+			codification.add(true);
+		
+			// MaxInputIndex 
+			byte maxInputIndex = (byte) (inputset.size() - 1);
+			// Should be a number between 0 and 7 => only add last 3 booleans
+			codification.addAll(HidraUtility.byteToBoolList(maxInputIndex, 3));
+			
+			// At least one obligation
+			for (HidraAttribute a : inputset) {
+				codification.addAll(a.codifyUsingAPBR());
+			}
+		}
+		return codification;
 	}
 }

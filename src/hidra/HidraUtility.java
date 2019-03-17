@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -91,13 +92,20 @@ public class HidraUtility {
 		int nbOfBytes = (input.size() + 7) / 8;
 		byte[] bytes = new byte[nbOfBytes]; 
 		
+		// Pad bitset so its length l mod 8 = 0. 
+		// 	Extra bits come at the end, so that they can be easily ignored by the receiver.
 		int emptyRemainder = nbOfBytes*8 - input.size();
 		for (int r = 0 ; r < emptyRemainder ; r ++) {
 			input.add(false);  
 		}
-		
-		for (int i = 0 ; i < nbOfBytes ; i++) {
-			bytes[i] = booleanArrayToByte((ArrayList<Boolean>) input.subList(i*8, (i+1)*8));
+
+		ArrayList<Boolean> nextPart = new ArrayList<Boolean>();
+		for (int i = 0 ; i < 8 ; i++) {nextPart.add(false);};
+		for (int currentByte = 0 ; currentByte < nbOfBytes ; currentByte++) {
+			for (int bit = 0 ; bit < 8 ; bit++) {
+				nextPart.set(bit, input.get(currentByte*8 + bit));
+			}
+			bytes[currentByte] = booleanArrayToByte(nextPart);
 		}
 		
 		//TODO check that the last byte is handled well, i.e. is padded up  
@@ -129,6 +137,82 @@ public class HidraUtility {
 	}
 	
 	/**
+	 * Limitation: From -127 to 127, not 0 - 255!
+	 * Java's two complement representation is copied exactly. 
+	 */
+	public static ArrayList<Boolean> byteToBoolList(byte b) {
+		ArrayList<Boolean> result = new ArrayList<>();
+		
+		if (b < 0) {
+			result.add(true);
+		} else {
+			result.add(false);
+		}
+		
+		// Make room to set later
+		for (int j = 0 ; j < 7 ; j++) {
+			result.add(false);
+		}
+		
+		for (int i = 7; i > 0; i--) {
+        	result.set(i, ((b & 1) == 1) ? true : false);
+            b >>= 1;
+        }
+        
+		return result;
+	}
+	
+	/**
+	 * @param nb | a number between 1 and 8 specifying how many bits wanted (counted from least to most significant)
+	 */
+	public static ArrayList<Boolean> byteToBoolList(byte b, int nb) {
+		ArrayList<Boolean> boolList = new ArrayList<>();
+		
+		if (b < 0) {
+			boolList.add(true);
+		} else {
+			boolList.add(false);
+		}
+		
+		// Make room to set later
+		for (int j = 0 ; j < 7 ; j++) {
+			boolList.add(false);
+		}
+		
+		for (int i = 7; i > 0; i--) {
+        	boolList.set(i, ((b & 1) == 1) ? true : false);
+            b >>= 1;
+        }
+		
+		ArrayList<Boolean> necessaryBits = new ArrayList<>();
+		
+		for (int i = (8-nb) ; i < 8 ; i++) {
+			necessaryBits.add(boolList.get(i));
+		}
+        
+		return necessaryBits;
+	}
+	
+	public static void printBoolList(ArrayList<Boolean> bl) {
+		StringBuilder sb = new StringBuilder();
+
+        for (boolean b : bl) {
+            sb.append((b) ? '1' : '0');
+        }
+
+        System.out.println(sb.toString());
+	}
+	
+	public static ArrayList<Boolean> byteArrayToBooleanList(byte[] byteArray) {
+		ArrayList<Boolean> boolList = new ArrayList<>();
+		
+		for (int i=0; i < byteArray.length; i++) {
+			boolList.addAll(byteToBoolList(byteArray[i]));
+		}
+		return boolList;
+	}
+	
+	/**
 	 * Method copied from source: http://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
 	 * @param value is integer
 	 * @return a byte array
@@ -143,6 +227,15 @@ public class HidraUtility {
 		byte[] result = new byte[size];
 		System.arraycopy(small, 0, result, size-small.length, small.length);
 		return result;
+	}
+	
+	/**
+	 * From https://www.baeldung.com/java-convert-float-to-byte-array
+	 */
+	public static byte[] floatToByteArray(float value) {
+	    int intBits =  Float.floatToIntBits(value);
+	    return new byte[] {
+	      (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };
 	}
 	
 	/**
@@ -254,5 +347,17 @@ public class HidraUtility {
 			}
 		}
 		return areEqual;
+	}
+
+	public static ArrayList<Boolean> intToBoolList(int intValue) {
+		return byteArrayToBooleanList(intToByteArray(intValue));
+	}
+
+	public static ArrayList<Boolean> floatToBoolList(float floatValue) {
+		return byteArrayToBooleanList(floatToByteArray(floatValue));
+	}
+
+	public static ArrayList<Boolean> stringToBoolList(String str) {
+		return byteArrayToBooleanList(str.getBytes());
 	}
 }

@@ -1,5 +1,7 @@
 package hidra;
 
+import java.util.ArrayList;
+
 import hidra.HidraUtility.*;
 
 public class HidraObligation {
@@ -36,7 +38,23 @@ public class HidraObligation {
 		}
 	}
 	
-	public byte[] codifyUsingAPBR() {
+	public ArrayList<Boolean> codifyUsingAPBR() {
+		//Function id
+		ArrayList<Boolean> codification  = task.codifyUsingAPBR();
 		
+		//FulfillOnExistenceMask (ALWAYS by default)
+		if (alwaysExecuteTask) {
+			codification.add(false);
+		} else {
+			codification.add(true);
+		
+			// FulfillOn
+			if (fulfillOn == Effect.PERMIT) {
+				codification.add(true);
+			} else {
+				codification.add(false);
+			}
+		}
+		return codification;
 	}
 }

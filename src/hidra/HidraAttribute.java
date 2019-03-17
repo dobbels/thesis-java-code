@@ -1,5 +1,7 @@
 package hidra;
 
+import java.util.ArrayList;
+
 import hidra.HidraUtility.*;
 
 public class HidraAttribute {
@@ -48,16 +50,16 @@ public class HidraAttribute {
 		switch(type) {
 		  case BOOLEAN:
 			  System.out.println(startingIndentation + "\t\"value\" : " + boolValue);
-		    break;
+			  break;
 		  case BYTE:
 			  System.out.println(startingIndentation + "\t\"value\" : " + byteValue);
-			    break;
+			  break;
 		  case INTEGER:
 			  System.out.println(startingIndentation + "\t\"value\" : " + intValue);
-			    break;
+			  break;
 		  case FLOAT:
 			  System.out.println(startingIndentation + "\t\"value\" : " + floatValue);
-			    break;
+			  break;
 		  case STRING:
 			  System.out.println(startingIndentation + "\t\"value\" : \"" + stringValue + "\"");
 			  break;
@@ -68,8 +70,8 @@ public class HidraAttribute {
 			  System.out.println(startingIndentation + "\t\"value\" : \"" + HidraUtility.systemRereferences.get(byteValue) + "\"");
 			  break;
 		  case LOCAL_REFERENCE:
-		    System.out.println(startingIndentation + "\t\"value\" : " + byteValue);
-		    break;
+			  System.out.println(startingIndentation + "\t\"value\" : " + byteValue);
+			  break;
 		  default:
 			  System.out.println("Error: Atrribute type");
 		}
@@ -81,7 +83,62 @@ public class HidraAttribute {
 		}
 	}
 	
-	public byte[] codifyUsingAPBR() {
-		//TODO use utility function: inttoBytearray -> int to bitset ?
+	public ArrayList<Boolean> codifyUsingAPBR() {
+		
+		// Type id [0-7]
+		byte typeId = 8;
+		switch(type) {
+		  case BOOLEAN:
+			  typeId = 0;
+			  break;
+		  case BYTE:
+			  typeId = 1;
+			  break;
+		  case INTEGER:
+			  typeId = 2;
+			  break;
+		  case FLOAT:
+			  typeId = 3;
+			  break;
+		  case STRING:
+			  typeId = 4;
+			  break;
+		  case REQUEST_REFERENCE:
+			  typeId = 5;
+			  break;
+		  case SYSTEM_REFERENCE:
+			  typeId = 6;
+			  break;
+		  case LOCAL_REFERENCE:
+			  typeId = 7;
+			  break;
+		  default:
+			  System.out.println("Error: Atrribute type");
+		}
+		
+		ArrayList<Boolean> codification  = HidraUtility.byteToBoolList(typeId, 3);
+		
+		// Value of attribute
+		switch(type) {
+		  case BOOLEAN:
+			  codification.add(boolValue);
+			  break;
+		  case INTEGER:
+			  codification.addAll(HidraUtility.intToBoolList(intValue));
+			  break;
+		  case FLOAT:
+			  codification.addAll(HidraUtility.floatToBoolList(floatValue));
+			  break;
+		  case STRING:
+			  codification.addAll(HidraUtility.stringToBoolList(stringValue));
+			  break;
+		  case LOCAL_REFERENCE:
+			  codification.addAll(HidraUtility.byteToBoolList(byteValue,3));
+			  break;
+		  default:
+			  codification.addAll(HidraUtility.byteToBoolList(byteValue));
+		}
+		
+		return codification;
 	}
 }

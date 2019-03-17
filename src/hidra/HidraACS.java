@@ -52,7 +52,7 @@ public class HidraACS {
 	 * @return | result == dataPack
 	 */
 	public static DatagramPacket receiveDataPacket(DatagramSocket socket){
-		byte[] buffer = new byte[HidraMessage.MAX_BYTE_SIZE]; 
+		byte[] buffer = new byte[1023]; //TODO normally never a packet longer than 127 bytes?  Variabele in HidraMessage, zodat zelfde hier als in Subject?
 		DatagramPacket dataPack = new DatagramPacket(buffer, buffer.length);
 		try{
 			socket.receive(dataPack); 
@@ -186,20 +186,22 @@ public class HidraACS {
 				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
 		
 		// rule 1
-		Effect r1e = Effect.DENY;
 		ArrayList<HidraExpression> r1expressions = new ArrayList<>();
 		r1expressions.add(r1e1);
 		ArrayList<HidraObligation> r1obligations = new ArrayList<>();
 		r1obligations.add(r1o1);
-		HidraRule r1 = new HidraRule((byte) 0, r1e, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
 		
 		// policy
-		Effect pe = Effect.PERMIT; 
 		ArrayList<HidraRule> rules = new ArrayList<>();
 		rules.add(r1);
 		rules.add(r2);
 		
-		return (new HidraPolicy((byte) 104, pe, rules));
+		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+	private static HidraPolicy constructPartOfInstanceSample4() {
+		return (new HidraPolicy((byte) 104, Effect.PERMIT, null));
 	}
 	
 	/**
@@ -211,25 +213,25 @@ public class HidraACS {
 	 * When accountability messages are included, an extra thread will be introduced to listen for exchanged initiated by the resource.  
 	 */
 	public static void main(String[] args){
-//		new HidraACS();
-//		
-//		try {
-//			// Set up connection with RPL border router
-//			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
-//
-//			// Wait for connection to be set up
-//			TimeUnit.SECONDS.sleep(2);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		new HidraACS();
+		
+		try {
+			// Set up connection with RPL border router
+			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
+
+			// Wait for connection to be set up
+			TimeUnit.SECONDS.sleep(2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 //		constructInstanceSample4().prettyPrint();
 		
-		
-
+		getUserInput("Enter wanneer RPL is geconvergeerd.");
 		//Sending test-policy-instances 
-//		sendDataToResource(testPolicy.codify());
+		sendDataToResource(constructPartOfInstanceSample4().codify());
 		
+//		System.out.println("Length (should be 32): " + constructInstanceSample4().codify().length);
 		
 //		while (true){
 //			//Server starts listening for messages from a Subject

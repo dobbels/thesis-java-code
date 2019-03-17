@@ -56,7 +56,7 @@ public class HidraSubject {
 	}
 
 	public static DatagramPacket receiveDataPacket(DatagramSocket socket){
-		byte[] buffer = new byte[HidraMessage.MAX_BYTE_SIZE]; 
+		byte[] buffer = new byte[1023]; 
 		DatagramPacket dataPack = new DatagramPacket(buffer, buffer.length);
 		try{
 			socket.receive(dataPack); 

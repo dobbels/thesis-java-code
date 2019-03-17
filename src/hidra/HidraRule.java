@@ -109,7 +109,80 @@ public class HidraRule {
 		}
 	}
 	
-	public byte[] codifyUsingAPBR() {
+	public ArrayList<Boolean> codifyUsingAPBR() {
+		//Rule id
+		ArrayList<Boolean> codification  = HidraUtility.byteToBoolList(id);
 		
+		//Policy effect
+		if (effect == Effect.PERMIT) {
+			codification.add(true);
+		} else {
+			codification.add(false);
+		}
+		
+		//Logical jumpers
+		codification.addAll(optionFlags);
+		
+		// Periodicity in minutes		
+		if (optionFlags.get(0)) {
+			codification.addAll(HidraUtility.byteToBoolList(periodicity));
+		}
+		
+		// Repetitions
+		if (optionFlags.get(1)) {
+			codification.addAll(HidraUtility.byteToBoolList(iteration));
+		}
+		
+		// Resource id
+		if (optionFlags.get(2)) {
+			codification.addAll(HidraUtility.byteToBoolList(resource));
+		}
+		
+		// Action id [0-4]
+		if (optionFlags.get(3)) {
+			byte actionId = 8;
+			if (action == Action.GET) {
+				actionId = 0;
+			} else if (action == Action.POST) {
+				actionId = 1;
+			} else if (action == Action.PUT) {
+				actionId = 2;
+			} else if (action == Action.DELETE) {
+				actionId = 3;
+			} else if (action == Action.ANY) {
+				actionId = 4;
+			} else {
+				System.out.println("Error: did not find action type.");
+			}
+			
+			// Should be a number between 0 and 7 => only add last 3 booleans
+			ArrayList<Boolean> actionIdList = HidraUtility.byteToBoolList(actionId);
+			for (int i = 5 ; i < 8 ; i++) {
+				codification.add(actionIdList.get(i));
+			}
+		}
+		
+		// MaxExpressionIndex 
+		byte maxExpressionIndex = (byte) (conditionset.size() - 1);
+		// Should be a number between 0 and 7 => only add last 3 booleans
+		codification.addAll(HidraUtility.byteToBoolList(maxExpressionIndex, 3));
+		
+		// At least one expression
+		for (HidraExpression e : conditionset) {
+			codification.addAll(e.codifyUsingAPBR());
+		}
+		
+		if (optionFlags.get(4)) {
+			// MaxExpressionIndex 
+			byte maxObligationIndex = (byte) (obligationset.size() - 1);
+			// Should be a number between 0 and 7 => only add last 3 booleans
+			codification.addAll(HidraUtility.byteToBoolList(maxObligationIndex, 3));
+			
+			// At least one obligation
+			for (HidraObligation o : obligationset) {
+				codification.addAll(o.codifyUsingAPBR());
+			}
+		}
+		return codification;
 	}
 }

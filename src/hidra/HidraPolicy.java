@@ -34,61 +34,37 @@ public class HidraPolicy {
 		return codifyUsingAPBR();
 	}
 	
-	private byte[] codifyUsingAPBR() { //TODO Using BitSet? Using boolean[]? ArrayList<Boolean>? 
-		// Get codification of rules
+	private byte[] codifyUsingAPBR() { 
+		//Policy id
+		ArrayList<Boolean> codification  = HidraUtility.byteToBoolList(id);
 		
-		// Make codification of id, effect and RuleExistenceMask
-		
-		// Merge codifications
-		ArrayList<Boolean> finalCodification;
-		
-		
-		
-		---------------------------------------------------------
-		// TODO zie paper + convertToBytes in HidraMessage
-		byte[] optionData = optionsList.convertToBytes();
-		int fixedLength = 236;
-		int varLength = optionData.length;
-		int totalLength = fixedLength + varLength;
-		byte[] byteMessage = new byte[totalLength];
-
-		//----------------------/----------------------------/---------------------------/----------------------------// 4x 1 byte 
-		byteMessage[0] = getOp(); byteMessage[1] = getHtype(); byteMessage[2] = getHlen(); byteMessage[3] = getHops();
-		//------------------------------------------------------------------------------------------------------------// 1x 4 bytes (int)
-		for (int i=0; i < 4; i++) { byteMessage[4+i] = HidraUtility.intToByteArray(getXid())[i];}
-		//---------------------------------------------------/--------------------------------------------------------// 2x 2 bytes (short) 
-		for (int i=0; i < 2; i++) { byteMessage[8+i] = HidraUtility.shortToByteArray(getSecs())[i];} 
-		for (int i=0; i < 2; i++) { byteMessage[10+i] = HidraUtility.shortToByteArray(getFlags())[i];}
-		//---------------------------------------------------/--------------------------------------------------------// 1x X bytes (byte[X])
-		for (int i=0; i < 4; i++) { byteMessage[12+i] = getCiaddr()[i];}
-		for (int i=0; i < 4; i++) { byteMessage[16+i] = getYiaddr()[i];}
-		for (int i=0; i < 4; i++) { byteMessage[20+i] = getSiaddr()[i];}
-		for (int i=0; i < 4; i++) { byteMessage[24+i] = getGiaddr()[i];}
-		for (int i=0; i < 16; i++) { byteMessage[28+i] = getChaddr()[i];}
-		for (int i=0; i < 64; i++) { byteMessage[44+i] = getSname()[i];}
-		for (int i=0; i < 128; i++) { byteMessage[108+i] = file[i];}
-		for (int i=0; i < varLength; i++) {
-			byteMessage[fixedLength+i] = optionData[i];
+		//Policy effect
+		if (effect == Effect.PERMIT) {
+			codification.add(true);
+		} else {
+			codification.add(false);
 		}
-
 		
-		//TODO Pad bitset so its length l mod 8 = 0. Extra bits come at the end, so that they can be easily ignored by the receiver.
-		return HidraUtility.booleanArrayToByteArray(finalCodification);
+		//RuleExistenceMask
+		if (ruleset == null) {
+			codification.add(false);
+		} else {
+			codification.add(true);
+			
+			// MaxRuleIndex 
+			byte maxRuleIndex = (byte) (ruleset.size() - 1);
+			// Should be a number between 0 and 7 => only add last 3 booleans
+			codification.addAll(HidraUtility.byteToBoolList(maxRuleIndex, 3));
+			
+			// Get codification of rules
+			for (HidraRule r : ruleset) {
+				codification.addAll(r.codifyUsingAPBR());
+			}
+		}		
+		// For debugging
+//		HidraUtility.printBoolList(codification);
+		return HidraUtility.booleanArrayToByteArray(codification);
 	}
-	
-//	private JSONObject codifyUsingJSON() { //TODO this + JSON pretty print would have been waaaay cleaner than the pretty printing you implemented yourself. Remember
-//		JSONObject obj = new JSONObject();
-//
-//	      obj.put("id", id);
-//	      obj.put("effect", effect.name());
-//	      
-//	      if (!ruleset.isEmpty()) {
-//	    	  System.out.println("Insert rules, not yet implemented");
-//			  //Put rules array in the object
-//	      }
-//
-//	      return obj;
-//	}
 	
 	// Print the policy instance in a JSON-like structure 
 	public void prettyPrint() {
@@ -109,4 +85,18 @@ public class HidraPolicy {
 		System.out.println("\t]");
 		System.out.println("}");
 	}	
+	
+//	private JSONObject codifyUsingJSON() { //TODO this + JSON pretty print would have been waaaay cleaner than the pretty printing you implemented yourself. Remember
+//		JSONObject obj = new JSONObject();
+//
+//	      obj.put("id", id);
+//	      obj.put("effect", effect.name());
+//	      
+//	      if (!ruleset.isEmpty()) {
+//	    	  System.out.println("Insert rules, not yet implemented");
+//			  //Put rules array in the object
+//	      }
+//
+//	      return obj;
+//	}
 }
