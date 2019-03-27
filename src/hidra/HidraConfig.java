@@ -18,8 +18,8 @@ public class HidraConfig {
 	private static final int ACS_RESOURCE_PORT = 1234;
 	private static final int SUJECT_RESOURCE_PORT = 4321;
 	private static String globalACSIP = "fd00::1";
-	private static String resourceIP = "fd00::212:7402:2:202";
-//	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
+//	private static String resourceIP = "fd00::212:7402:2:202"; // If the mote is a sky mote (and the 2nd that was added to the simulation)
+	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
 	
 	
 	public static String getLocalIP() {
