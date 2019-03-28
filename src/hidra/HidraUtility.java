@@ -45,7 +45,7 @@ public class HidraUtility {
 	
 	// All reference tables originate from the resource and are shared with the ACS.
 	public static HashMap<Byte, String> expressionRereferences = new HashMap<Byte, String>() {{
-		byte a = 17;
+		byte a = 4;
 		put(a, "lowBattery");
 		put(++a,"<");
 		put(++a,"contains");
@@ -53,19 +53,19 @@ public class HidraUtility {
 	}};
 	
 	public static HashMap<Byte, String> taskRereferences = new HashMap<Byte, String>() {{
-		byte a = 27;
+		byte a = 8;
 		put(a, "activate");
 		put(++a, "++");
 	}};
 	
 	public static HashMap<Byte, String> systemRereferences = new HashMap<Byte, String>() {{
-		byte a = 37;
+		byte a = 16;
 		put(a, "onMaintenance");
 		put(++a,"bios_upgrades");
 	}};
 	
 	public static HashMap<Byte, String> requestRereferences = new HashMap<Byte, String>() {{
-		byte a = 47;
+		byte a = 32;
 		put(a, "roles");
 	}};
 	

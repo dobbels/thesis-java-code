@@ -23,8 +23,12 @@ public class HidraAttribute {
 	}
 	
 	public HidraAttribute(String s) {
-		this.type = AttributeType.STRING;
-		this.stringValue = s;
+		if (s.length() <= 6) {
+			this.type = AttributeType.STRING;
+			this.stringValue = s;
+		} else {
+			System.out.println("Error: String should have maximum length 6");
+		}
 	}
 	
 	public HidraAttribute(int i) {
@@ -130,6 +134,7 @@ public class HidraAttribute {
 			  codification.addAll(HidraUtility.floatToBoolList(floatValue));
 			  break;
 		  case STRING:
+			  codification.addAll(HidraUtility.byteToBoolList((byte)stringValue.length(),3));
 			  codification.addAll(HidraUtility.stringToBoolList(stringValue));
 			  break;
 		  case LOCAL_REFERENCE:

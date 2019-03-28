@@ -201,7 +201,23 @@ public class HidraACS {
 	}
 	
 	private static HidraPolicy constructPartOfInstanceSample4() {
-		return (new HidraPolicy((byte) 104, Effect.PERMIT, null));
+		// r2e2
+		ArrayList<HidraAttribute> e2inputset = new ArrayList<>();
+		HidraAttribute intTest = new HidraAttribute(69);
+		e2inputset.add(intTest);
+		
+		HidraExpression r2e2 = new HidraExpression(
+				HidraUtility.getId(HidraUtility.expressionRereferences, "contains"), e2inputset); 
+		
+		// rule 2
+		ArrayList<HidraExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e2);
+		HidraRule r2 = new HidraRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, null);
+		
+		// policy
+		ArrayList<HidraRule> rules = new ArrayList<>();
+		rules.add(r2);
+		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
 	}
 	
 	/**
@@ -220,16 +236,18 @@ public class HidraACS {
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
 
 			// Wait for connection to be set up
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.SECONDS.sleep(3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-//		constructInstanceSample4().prettyPrint();
-		
-		getUserInput("Enter wanneer RPL is geconvergeerd.");
+//		getUserInput("Enter wanneer RPL is geconvergeerd.");
 		//Sending test-policy-instances 
 		sendDataToResource(constructPartOfInstanceSample4().codify());
+		constructPartOfInstanceSample4().prettyPrint();
+		
+//		sendDataToResource(constructInstanceSample4().codify());
+//		constructInstanceSample4().prettyPrint();
 		
 //		System.out.println("Length (should be 32): " + constructInstanceSample4().codify().length);
 		

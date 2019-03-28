@@ -62,7 +62,8 @@ public class HidraPolicy {
 			}
 		}		
 		// For debugging
-//		HidraUtility.printBoolList(codification);
+		System.out.println("Policy after codification (with length " + codification.size() +"):");
+		HidraUtility.printBoolList(codification);
 		return HidraUtility.booleanArrayToByteArray(codification);
 	}
 	
