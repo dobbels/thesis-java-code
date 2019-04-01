@@ -29,7 +29,10 @@ public class HidraObligation {
 		System.out.println(startingIndentation + "\t\"task\" :");
 		task.prettyPrint(startingIndentation + "\t\t", true, false);
 
-		System.out.println(startingIndentation + "\t\"fulfillOn\" : \"" + fulfillOn.name() + "\"");
+		if (!alwaysExecuteTask) {
+			System.out.println(startingIndentation + "\t\"fulfillOn\" : \"" + fulfillOn.name() + "\"");
+		}
+		
 		
 		if (last) {
 			System.out.println(startingIndentation + "}");

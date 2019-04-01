@@ -212,27 +212,18 @@ public class HidraUtility {
 		return boolList;
 	}
 	
-	/**
-	 * Method copied from source: http://stackoverflow.com/questions/1936857/convert-integer-into-byte-array-java
-	 * @param value is integer
-	 * @return a byte array
-	 */
-	public static byte[] intToByteArray( final int value ) {
-	    BigInteger bigInt = BigInteger.valueOf(value);      
-	    return bigInt.toByteArray();
-	}
-	
-	public static byte[] intToByteArray( final int value, int size){
-		byte[] small = intToByteArray(value);
-		byte[] result = new byte[size];
-		System.arraycopy(small, 0, result, size-small.length, small.length);
-		return result;
-	}
+//	public static byte[] intToByteArray( final short value ) {
+//		return new byte[] {
+//			      (byte) (value >> 8), (byte) (value) };
+//	}
 	
 	/**
 	 * From https://www.baeldung.com/java-convert-float-to-byte-array
 	 */
 	public static byte[] floatToByteArray(float value) {
+//		FloatBuffer fb = ByteBuffer.allocateDirect(size*4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
 	    int intBits =  Float.floatToIntBits(value);
 	    return new byte[] {
 	      (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };
@@ -244,7 +235,6 @@ public class HidraUtility {
 	 * @return a byte array
 	 */
 	public static byte[] shortToByteArray(short value) {
-	    
 	    byte[] bytes = new byte[2];
 	    ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
 	    buffer.putShort(value);
@@ -312,22 +302,6 @@ public class HidraUtility {
 		return bytes;
 		
 	}
-	
-	/**
-	 * Convert a IP-string (of 4 bytes) to an integer (4 bytes).
-	 * @param stringIP
-	 */
-	public static int strIPToInt(String stringIP) {
-		return byteArrayToInt(strIPtoByteArray(stringIP));
-	}
-	
-	/**
-	 * Convert an integer (4 bytes) to a IP-string (of 4 bytes).
-	 * @param nb
-	 */
-	public static String intToStrIP(int nb) {
-		return printIP(intToByteArray(nb));
-	}
 
 	public static String byteToHexString(byte b) {
 		String str = new String(Integer.toHexString(new Integer(b & 0xff)));
@@ -349,8 +323,8 @@ public class HidraUtility {
 		return areEqual;
 	}
 
-	public static ArrayList<Boolean> intToBoolList(int intValue) {
-		return byteArrayToBooleanList(intToByteArray(intValue));
+	public static ArrayList<Boolean> intToBoolList(short intValue) {
+		return byteArrayToBooleanList(shortToByteArray(intValue));
 	}
 
 	public static ArrayList<Boolean> floatToBoolList(float floatValue) {

@@ -9,7 +9,7 @@ public class HidraAttribute {
 	private AttributeType type; //TODO gebruik polymorfisme. Dit lijkt handig om handlen van attribute doenbaar te houden.
 	private boolean boolValue;
 	private String stringValue;
-	private int intValue;
+	private short intValue; // should be 2 bytes according to Hidra documentation 
 	private float floatValue;
 	
 	// Used for all remaining types, as in the current codification, they all take a byte. 
@@ -31,7 +31,7 @@ public class HidraAttribute {
 		}
 	}
 	
-	public HidraAttribute(int i) {
+	public HidraAttribute(short i) {
 		this.type = AttributeType.INTEGER;
 		this.intValue = i;
 	}
@@ -132,6 +132,8 @@ public class HidraAttribute {
 			  break;
 		  case FLOAT:
 			  codification.addAll(HidraUtility.floatToBoolList(floatValue));
+			  System.out.println("Float representation of 69.456");
+			  HidraUtility.printBoolList(HidraUtility.floatToBoolList(floatValue));
 			  break;
 		  case STRING:
 			  codification.addAll(HidraUtility.byteToBoolList((byte)stringValue.length(),3));

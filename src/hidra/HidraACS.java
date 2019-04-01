@@ -180,6 +180,7 @@ public class HidraACS {
 				HidraUtility.getId(HidraUtility.taskRereferences, "activate"), o1inputset);		
 		Effect r1fulfillOn = Effect.DENY;
 		HidraObligation r1o1 = new HidraObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
 		
 		// rule 1 expressions
 		HidraExpression r1e1 = new HidraExpression(
@@ -191,6 +192,7 @@ public class HidraACS {
 		ArrayList<HidraObligation> r1obligations = new ArrayList<>();
 		r1obligations.add(r1o1);
 		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
 		
 		// policy
 		ArrayList<HidraRule> rules = new ArrayList<>();
@@ -203,7 +205,7 @@ public class HidraACS {
 	private static HidraPolicy constructPartOfInstanceSample4() {
 		// r2e2
 		ArrayList<HidraAttribute> e2inputset = new ArrayList<>();
-		HidraAttribute intTest = new HidraAttribute(69);
+		HidraAttribute intTest = new HidraAttribute((short)-169);
 		e2inputset.add(intTest);
 		
 		HidraExpression r2e2 = new HidraExpression(
@@ -243,11 +245,11 @@ public class HidraACS {
 		
 //		getUserInput("Enter wanneer RPL is geconvergeerd.");
 		//Sending test-policy-instances 
-		sendDataToResource(constructPartOfInstanceSample4().codify());
-		constructPartOfInstanceSample4().prettyPrint();
+//		sendDataToResource(constructPartOfInstanceSample4().codify());
+//		constructPartOfInstanceSample4().prettyPrint();
 		
-//		sendDataToResource(constructInstanceSample4().codify());
-//		constructInstanceSample4().prettyPrint();
+		sendDataToResource(constructInstanceSample4().codify());
+		constructInstanceSample4().prettyPrint();
 		
 //		System.out.println("Length (should be 32): " + constructInstanceSample4().codify().length);
 		
