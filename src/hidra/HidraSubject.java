@@ -88,53 +88,59 @@ public class HidraSubject {
 		// Initialize Datagram Socket
 		HidraSubject acs = new HidraSubject();
 		
-		while(true) {
-			getUserInput("Enter to send start Hidra protocol");
-			
-			sendDataPackToACS("HID_ANS_REQ".getBytes());
-			
-			DatagramPacket receivedDatagram = receiveDataPacket(socketForACS);
-			byte[] actualMessage = null; 
-			
-			// Filter on the port the datagram was sent from 
-			if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
-				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				System.out.println("Received " + (new String(actualMessage)));
-				if((new String(actualMessage)).equals("HID_ANS_REP")) {
-					sendDataPackToACS("HID_CM_REQ".getBytes());
-					
-					receivedDatagram = receiveDataPacket(socketForACS);
-					// Filter on the port the datagram was sent from 
-					if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
-						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-						System.out.println("Received " + (new String(actualMessage)));
-						if((new String(actualMessage)).equals("HID_CM_REP")) {
-							try {  
-								// Because otherwise this message tends to arrive too early in hidra-r. TODO delete again? Shouldn't be necessary?
-								TimeUnit.MILLISECONDS.sleep(500);
-								sendDataPackToResource("HID_S_R_REQ".getBytes());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							
-							receivedDatagram = receiveDataPacket(socketForResource);
-							if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
-								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-								System.out.println("Received " + (new String(actualMessage)));
-								if((new String(actualMessage)).equals("HID_S_R_REP")) {
-									System.out.println("Succesful Empty Hidra protocol exchange");
-								}
-							} else {
-								System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
-							}
+		
+//		getUserInput("Enter to send start Hidra protocol");
+		
+		byte[] id = {1}; 
+		sendDataPackToACS(id);
+		
+		DatagramPacket receivedDatagram = receiveDataPacket(socketForACS);
+		byte[] actualMessage = null; 
+		
+		// Filter on the port the datagram was sent from 
+		if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
+			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+			System.out.println("Received " + (new String(actualMessage)));
+			if((new String(actualMessage)).equals("HID_ANS_REP")) {
+				sendDataPackToACS("HID_CM_REQ".getBytes());
+				
+				receivedDatagram = receiveDataPacket(socketForACS);
+				// Filter on the port the datagram was sent from 
+				if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
+					actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+					System.out.println("Received " + (new String(actualMessage)));
+					if((new String(actualMessage)).equals("HID_CM_REP")) {
+						try {  
+							// Because otherwise this message tends to arrive too early in hidra-r. TODO delete again? Shouldn't be necessary?
+							TimeUnit.MILLISECONDS.sleep(500);
+							sendDataPackToResource("HID_S_R_REQ".getBytes());
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
-					} else {
-						System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+						
+						receivedDatagram = receiveDataPacket(socketForResource);
+						if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
+							actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+							System.out.println("Received " + (new String(actualMessage)));
+							if((new String(actualMessage)).equals("HID_S_R_REP")) {
+								System.out.println("Succesful Empty Hidra protocol exchange");
+							}
+						} else {
+							System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+						}
 					}
+				} else {
+					System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 				}
-			} else {
-				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
+		} else {
+			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+		}
+		
+		while(true) {
+			getUserInput("Enter to request access");
+			
+//			sendDataPackToResource("I'd like to have access".getBytes());
 		}
 	}	
 }

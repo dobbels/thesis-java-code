@@ -203,22 +203,35 @@ public class HidraACS {
 	}
 	
 	private static HidraPolicy constructPartOfInstanceSample4() {
-		// r2e2
-		ArrayList<HidraAttribute> e2inputset = new ArrayList<>();
-		HidraAttribute intTest = new HidraAttribute((short)-169);
-		e2inputset.add(intTest);
+		// rule 1 task
+		HidraAttribute r1att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+				HidraUtility.getId(HidraUtility.systemRereferences, "onMaintenance"));
+		ArrayList<HidraAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
 		
-		HidraExpression r2e2 = new HidraExpression(
-				HidraUtility.getId(HidraUtility.expressionRereferences, "contains"), e2inputset); 
+		// rule 1 obligations
+		HidraExpression r1o1e1 = new HidraExpression(
+				HidraUtility.getId(HidraUtility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		HidraObligation r1o1 = new HidraObligation(r1o1e1, r1fulfillOn);
+//				HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
 		
-		// rule 2
-		ArrayList<HidraExpression> r2expressions = new ArrayList<>();
-		r2expressions.add(r2e2);
-		HidraRule r2 = new HidraRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, null);
+		// rule 1 expressions
+		HidraExpression r1e1 = new HidraExpression(
+				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
+		
+		// rule 1
+		ArrayList<HidraExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<HidraObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//				HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
 		
 		// policy
 		ArrayList<HidraRule> rules = new ArrayList<>();
-		rules.add(r2);
+		rules.add(r1);
+		
 		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
 	}
 	
@@ -238,7 +251,7 @@ public class HidraACS {
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
 
 			// Wait for connection to be set up
-			TimeUnit.SECONDS.sleep(3);
+//			TimeUnit.SECONDS.sleep(3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -248,51 +261,57 @@ public class HidraACS {
 //		sendDataToResource(constructPartOfInstanceSample4().codify());
 //		constructPartOfInstanceSample4().prettyPrint();
 		
-		sendDataToResource(constructInstanceSample4().codify());
-		constructInstanceSample4().prettyPrint();
+//		sendDataToResource(constructInstanceSample4().codify());
+//		System.out.println("Instance 4 sent");
+//		constructInstanceSample4().prettyPrint();
 		
 //		System.out.println("Length (should be 32): " + constructInstanceSample4().codify().length);
 		
-//		while (true){
-//			//Server starts listening for messages from a Subject
-//			DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
-//			byte[] actualMessage = null; 
-//			
-//			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
-//				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-//				System.out.println("Received " + (new String(actualMessage)));
-//				if((new String(actualMessage)).equals("HID_ANS_REQ")) {
-//					sendDataToSubject("HID_ANS_REP".getBytes());
-//					receivedDatagram = receiveDataPacket(socketForSubject); 
-//					if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
-//						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-//						System.out.println("Content of datagram: " + new String(actualMessage));
-//						if((new String(actualMessage)).equals("HID_CM_REQ")) {
-//							sendDataToResource("HID_CM_IND".getBytes());							
-//							receivedDatagram = receiveDataPacket(socketForResource);
-//							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-//								System.out.println("Content of datagram: " + new String(actualMessage));
-//								if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
-//									sendDataToResource("HID_CM_IND_REP".getBytes());
-//									sendDataToSubject("HID_CM_REP".getBytes());
-//								}
-//							} else {
-//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-//							}
-//						} else {
-//							System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
-//						}
-//					} else {
-//						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-//					}
-//				} else {
-//					System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
-//				}
-//			} else {
-//				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
-//			}
-//		}
+		while (true){
+			//Server starts listening for messages from a Subject
+			DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
+			byte[] actualMessage = null; 
+			
+			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
+				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				System.out.println("Message length "+ receivedDatagram.getLength() +" == 1.");
+				byte subjectId = actualMessage[0];
+				System.out.println("Received id: " + subjectId);
+				//TODO later komt hier weer een 'if' die checkt of het formaat / de identifier van het bericht juist is?
+				
+				sendDataToSubject("HID_ANS_REP".getBytes());
+				receivedDatagram = receiveDataPacket(socketForSubject); 
+				if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
+					actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+					System.out.println("Content of datagram: " + new String(actualMessage));
+					if((new String(actualMessage)).equals("HID_CM_REQ")) {
+						
+						ArrayList<Boolean> codification = HidraUtility.byteToBoolList(subjectId);
+						codification.addAll(constructPartOfInstanceSample4().codify());
+						sendDataToResource(HidraUtility.booleanArrayToByteArray(codification));
+//						constructPartOfInstanceSample4().prettyPrint();		
+						
+						receivedDatagram = receiveDataPacket(socketForResource);
+						if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+							actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+							System.out.println("Content of datagram: " + new String(actualMessage));
+							if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
+								sendDataToResource("HID_CM_IND_REP".getBytes());
+								sendDataToSubject("HID_CM_REP".getBytes());
+							}
+						} else {
+							System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+						}
+					} else {
+						System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+					}
+				} else {
+					System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+				}
+			} else {
+				System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+			}
+		}
 	}
 	
 	/**

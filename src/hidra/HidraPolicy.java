@@ -30,11 +30,11 @@ public class HidraPolicy {
 		this.ruleset = ruleset;
 	}
 	
-	public byte[] codify() {
+	public ArrayList<Boolean> codify() {
 		return codifyUsingAPBR();
 	}
 	
-	private byte[] codifyUsingAPBR() { 
+	private ArrayList<Boolean> codifyUsingAPBR() { 
 		//Policy id
 		ArrayList<Boolean> codification  = HidraUtility.byteToBoolList(id);
 		
@@ -64,7 +64,7 @@ public class HidraPolicy {
 		// For debugging
 		System.out.println("Policy after codification (with length " + codification.size() +"):");
 		HidraUtility.printBoolList(codification);
-		return HidraUtility.booleanArrayToByteArray(codification);
+		return codification;
 	}
 	
 	// Print the policy instance in a JSON-like structure 
