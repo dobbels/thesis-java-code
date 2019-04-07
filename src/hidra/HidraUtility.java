@@ -62,6 +62,7 @@ public class HidraUtility {
 		byte a = 16;
 		put(a, "onMaintenance");
 		put(++a,"bios_upgrades");
+		put(++a,"temperature");
 	}};
 	
 	public static HashMap<Byte, String> requestRereferences = new HashMap<Byte, String>() {{
@@ -133,6 +134,31 @@ public class HidraUtility {
 			result = (byte) (result - 128);
 		}
 		
+		return result;
+	}
+	
+	public static ArrayList<Boolean> actionToBoolList(Action action) {
+		ArrayList<Boolean> result = new ArrayList<>();
+		byte actionId = 8; 
+		if (action == Action.GET) {
+			actionId = 0;
+		} else if (action == Action.POST) {
+			actionId = 1;
+		} else if (action == Action.PUT) {
+			actionId = 2;
+		} else if (action == Action.DELETE) {
+			actionId = 3;
+		} else if (action == Action.ANY) {
+			actionId = 4;
+		} else {
+			System.out.println("Error: did not find action type.");
+		}
+		
+		// Should be a number between 0 and 7 => only add last 3 booleans
+		ArrayList<Boolean> actionIdList = byteToBoolList(actionId);
+		for (int i = 5 ; i < 8 ; i++) {
+			result.add(actionIdList.get(i));
+		}
 		return result;
 	}
 	

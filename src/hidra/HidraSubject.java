@@ -5,9 +5,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
+
+import hidra.HidraUtility.*;
 
 public class HidraSubject { 
 	
@@ -91,8 +94,9 @@ public class HidraSubject {
 		
 //		getUserInput("Enter to send start Hidra protocol");
 		
-		byte[] id = {1}; 
-		sendDataPackToACS(id);
+		byte id = 1;
+		byte[] idArray = {id}; 
+		sendDataPackToACS(idArray);
 		
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForACS);
 		byte[] actualMessage = null; 
@@ -141,6 +145,14 @@ public class HidraSubject {
 			getUserInput("Enter to request access");
 			
 //			sendDataPackToResource("I'd like to have access".getBytes());
+			
+			ArrayList<Boolean> codification = HidraUtility.byteToBoolList(id);
+//			codification.addAll(HidraUtility.actionToBoolList(Action.GET));
+//			HidraAttribute att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+//					HidraUtility.getId(HidraUtility.systemRereferences, "temperature"));
+//			codification.addAll(att.codifyUsingAPBR());
+			
+			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
 		}
 	}	
 }
