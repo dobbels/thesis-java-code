@@ -56,13 +56,16 @@ public class HidraUtility {
 		byte a = 8;
 		put(a, "activate");
 		put(++a, "++");
+		put(++a, "log");
 	}};
 	
 	public static HashMap<Byte, String> systemRereferences = new HashMap<Byte, String>() {{
 		byte a = 16;
 		put(a, "onMaintenance");
 		put(++a,"bios_upgrades");
-		put(++a,"temperature");
+		put(++a,"switch_light_on");
+		put(++a,"switch_light_off");
+		put(++a,"nb_of_access_requests_made");
 	}};
 	
 	public static HashMap<Byte, String> requestRereferences = new HashMap<Byte, String>() {{

@@ -140,19 +140,80 @@ public class HidraSubject {
 		} else {
 			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 		}
+
+		// For demo purposes: Request with non-existent id
+		getUserInput("Enter to request access");
+		
+		ArrayList<Boolean> codification = HidraUtility.byteToBoolList((byte) (id+1));
+		codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
+		HidraAttribute att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+				HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"));
+		codification.addAll(att.codifyUsingAPBR());
+		
+		sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
+
+		receivedDatagram = receiveDataPacket(socketForResource);
+		if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
+			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+			if (actualMessage[0] == 0) {
+				System.out.println("Request denied");
+			} else if (actualMessage[0] == 1) {
+				System.out.println("Request successful");
+			} else {
+				System.out.println("Unknown answer to request");
+			}
+		} else {
+			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+		}
 		
 		while(true) {
 			getUserInput("Enter to request access");
 			
-//			sendDataPackToResource("I'd like to have access".getBytes());
-			
-			ArrayList<Boolean> codification = HidraUtility.byteToBoolList(id);
-//			codification.addAll(HidraUtility.actionToBoolList(Action.GET));
-//			HidraAttribute att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-//					HidraUtility.getId(HidraUtility.systemRereferences, "temperature"));
-//			codification.addAll(att.codifyUsingAPBR());
+			codification = HidraUtility.byteToBoolList(id);
+			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
+			att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+					HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"));
+			codification.addAll(att.codifyUsingAPBR());
 			
 			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
+			
+			receivedDatagram = receiveDataPacket(socketForResource);
+			if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
+				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				if (actualMessage[0] == 0) {
+					System.out.println("Request denied");
+				} else if (actualMessage[0] == 1) {
+					System.out.println("Request successful");
+				} else {
+					System.out.println("Unknown answer to request");
+				}
+			} else {
+				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+			}
+			
+			getUserInput("Enter to request access");
+			
+			codification = HidraUtility.byteToBoolList(id);
+			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
+			att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+					HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_off"));
+			codification.addAll(att.codifyUsingAPBR());
+			
+			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
+			
+			receivedDatagram = receiveDataPacket(socketForResource);
+			if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
+				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				if (actualMessage[0] == 0) {
+					System.out.println("Request denied");
+				} else if (actualMessage[0] == 1) {
+					System.out.println("Request successful");
+				} else {
+					System.out.println("Unknown answer to request");
+				}
+			} else {
+				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+			}
 		}
 	}	
 }

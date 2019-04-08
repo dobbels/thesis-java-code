@@ -235,6 +235,38 @@ public class HidraACS {
 		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
 	}
 	
+	private static HidraPolicy constructDemoPolicy() {
+		// rule 1 task
+		HidraAttribute r1att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+				HidraUtility.getId(HidraUtility.systemRereferences, "nb_of_access_requests_made"));
+		ArrayList<HidraAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		HidraExpression r1o1e1 = new HidraExpression(
+				HidraUtility.getId(HidraUtility.taskRereferences, "++"), o1inputset);		
+		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+//				HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		HidraExpression r1e1 = new HidraExpression(
+				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
+		
+		// rule 1
+		ArrayList<HidraExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<HidraObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, zeroByte, zeroByte, zeroByte, HidraUtility.Action.PUT, r1expressions, r1obligations);
+//				HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<HidraRule> rules = new ArrayList<>();
+		rules.add(r1);
+		
+		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
+	}
+	
 	/**
 	 * Execute the ACS functionalities.
 	 * Only one thread is listening for incoming Subject requests and from there on executing the Hidra protocol. 
@@ -287,9 +319,9 @@ public class HidraACS {
 					if((new String(actualMessage)).equals("HID_CM_REQ")) {
 						
 						ArrayList<Boolean> codification = HidraUtility.byteToBoolList(subjectId);
-						codification.addAll(constructPartOfInstanceSample4().codify());
+						codification.addAll(constructDemoPolicy().codify());
 						sendDataToResource(HidraUtility.booleanArrayToByteArray(codification));
-//						constructPartOfInstanceSample4().prettyPrint();		
+						constructDemoPolicy().prettyPrint();		
 						
 						receivedDatagram = receiveDataPacket(socketForResource);
 						if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
