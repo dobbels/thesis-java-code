@@ -5,12 +5,10 @@ import hidra.HidraUtility;
 import java.util.ArrayList;
 
 
-public class HidraPolicyAdaptMessage extends HidraMessage {
+public class HidraPolicyAdaptMessage extends HidraACSMessage {
 	
 	enum UpdateType {
-		BLACKLIST,
-		UPDATE,
-		ADD
+		BLACKLIST
 	}
 	
 	byte id;
@@ -29,11 +27,7 @@ public class HidraPolicyAdaptMessage extends HidraMessage {
 		ArrayList<Boolean> result = new ArrayList<>();
 		
 		if (type == UpdateType.BLACKLIST) {
-			result.addAll(HidraUtility.byteToBoolList((byte) 0, 4));
-		} else if (type == UpdateType.UPDATE) {
-			result.addAll(HidraUtility.byteToBoolList((byte) 1, 4));
-		} else if (type == UpdateType.ADD) {
-			result.addAll(HidraUtility.byteToBoolList((byte) 2, 4));
+			result.addAll(HidraUtility.byteToBoolList((byte) 0, 3));
 		} else {
 			System.out.println("Error: did not find update type.");
 		}

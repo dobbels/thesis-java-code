@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import message.HidraBlacklistMessage;
 import message.HidraCmIndRepMessage;
-import message.HidraMessage;
+import message.HidraACSMessage;
 import message.HidraPolicyProvisionMessage;
 
 
@@ -295,9 +295,13 @@ public class HidraACS {
 		}
 		
 		byte subjectId = (byte) 5;
+		byte subject2Id = (byte) 6;
+		byte subject3Id = (byte) 7;
 
 		//Provide policy for resource
 		provideResourceWithPolicy(subjectId);
+//		provideResourceWithPolicy(subject2Id);
+//		provideResourceWithPolicy(subject3Id);
 		
 		//Update policy for subject | Handle one test at a time, because resource handles only 1 subject
 		getUserInput("Enter to blacklist the subject");
@@ -321,7 +325,7 @@ public class HidraACS {
 	
 	private static void provideResourceWithPolicy(byte id) {
 		byte subjectId = id;
-		HidraMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
+		HidraACSMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 		constructDemoPolicy().prettyPrint();		
 		
@@ -358,7 +362,7 @@ public class HidraACS {
 				System.out.println("Content of datagram: " + new String(actualMessage));
 				if((new String(actualMessage)).equals("HID_CM_REQ")) {
 					
-					HidraMessage hm = new HidraPolicyProvisionMessage((byte) subjectId, constructDemoPolicy().codify());
+					HidraACSMessage hm = new HidraPolicyProvisionMessage((byte) subjectId, constructDemoPolicy().codify());
 					sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 					constructDemoPolicy().prettyPrint();		
 					
