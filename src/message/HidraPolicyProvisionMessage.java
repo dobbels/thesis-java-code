@@ -17,8 +17,8 @@ public class HidraPolicyProvisionMessage extends HidraProtocolMessage {
 	}
 	
 	@Override
-	public ArrayList<Boolean> constructByteMessage() {
-		ArrayList<Boolean> codification = super.constructByteMessage();
+	public ArrayList<Boolean> constructBoolMessage() {
+		ArrayList<Boolean> codification = super.constructBoolMessage();
 		codification.addAll(HidraUtility.byteToBoolList(id));
 		codification.addAll(policy);
 		return codification;

@@ -21,7 +21,7 @@ public class HidraMessage {
 		this.messageType = messageType;
 	}
 	
-	public ArrayList<Boolean> constructByteMessage() {
+	public ArrayList<Boolean> constructBoolMessage() {
 		ArrayList<Boolean> codification = messageTypeToBoolList(messageType);
 		return codification;
 	}

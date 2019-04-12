@@ -4,20 +4,12 @@ import hidra.HidraUtility;
 
 import java.util.ArrayList;
 
+import message.HidraPolicyAdaptMessage.UpdateType;
+
 
 public class HidraBlacklistMessage extends HidraPolicyAdaptMessage{
 	
-	private byte id;
-	
 	public HidraBlacklistMessage(byte id) {
-		super();
-		this.id = id;
-	}
-	
-	@Override
-	public ArrayList<Boolean> constructByteMessage() {
-		ArrayList<Boolean> codification = super.constructByteMessage();
-		codification.addAll(HidraUtility.byteToBoolList(id));
-		return codification;
+		super(id, UpdateType.BLACKLIST);
 	}
 }

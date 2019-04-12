@@ -13,8 +13,13 @@ public class HidraPolicyAdaptMessage extends HidraMessage {
 		ADD
 	}
 	
-	public HidraPolicyAdaptMessage() {
+	byte id;
+	UpdateType type;
+	
+	public HidraPolicyAdaptMessage(byte id, UpdateType type) {
 		super(MessageType.POLICY_UPDATE);
+		this.type = type;
+		this.id = id;
 	}
 	
 	/**
@@ -34,5 +39,14 @@ public class HidraPolicyAdaptMessage extends HidraMessage {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public ArrayList<Boolean> constructBoolMessage() {
+		ArrayList<Boolean> codification = super.constructBoolMessage();
+		codification.addAll(HidraUtility.byteToBoolList(id));
+		codification.addAll(updateTypeToBoolList(this.type));
+		HidraUtility.printBoolList(codification);
+		return codification;
 	}
 }
