@@ -189,7 +189,7 @@ public class HidraACS {
 		
 		// rule 1 expressions
 		HidraExpression r1e1 = new HidraExpression(
-				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
+				HidraUtility.getId(HidraUtility.expressionRereferences, "low_battery"), null); 
 		
 		// rule 1
 		ArrayList<HidraExpression> r1expressions = new ArrayList<>();
@@ -223,7 +223,7 @@ public class HidraACS {
 		
 		// rule 1 expressions
 		HidraExpression r1e1 = new HidraExpression(
-				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
+				HidraUtility.getId(HidraUtility.expressionRereferences, "low_battery"), null); 
 		
 		// rule 1
 		ArrayList<HidraExpression> r1expressions = new ArrayList<>();
@@ -241,21 +241,21 @@ public class HidraACS {
 	}
 	
 	private static HidraPolicy constructDemoPolicy() {
-		// rule 1 task
-		HidraAttribute r1att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-				HidraUtility.getId(HidraUtility.systemRereferences, "nb_of_access_requests_made"));
-		ArrayList<HidraAttribute> o1inputset = new ArrayList<>();
-		o1inputset.add(r1att);
-		
-		// rule 1 obligations
+//		// rule 1 task
+//		HidraAttribute r1att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
+//				HidraUtility.getId(HidraUtility.systemRereferences, "nb_of_access_requests_made"));
+//		ArrayList<HidraAttribute> o1inputset = new ArrayList<>();
+//		o1inputset.add(r1att);
+//		
+//		// rule 1 obligations
 		HidraExpression r1o1e1 = new HidraExpression(
-				HidraUtility.getId(HidraUtility.taskRereferences, "++"), o1inputset);		
+				HidraUtility.getId(HidraUtility.taskRereferences, "log_request"), null);		
 		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
 //				HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
 		
 		// rule 1 expressions
 		HidraExpression r1e1 = new HidraExpression(
-				HidraUtility.getId(HidraUtility.expressionRereferences, "lowBattery"), null); 
+				HidraUtility.getId(HidraUtility.expressionRereferences, "low_battery"), null); 
 		
 		// rule 1
 		ArrayList<HidraExpression> r1expressions = new ArrayList<>();

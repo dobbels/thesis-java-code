@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import hidra.HidraUtility.*;
 
+//TODO beter is om verschillende subjects te hebben met verschillende levels of access om te tonen. Dit ga je wel rechtstreeks in Contiki doen! Time's up  
 public class HidraSubject { 
 	
 	private static String acsIP = HidraConfig.getLocalIP();
@@ -146,9 +147,9 @@ public class HidraSubject {
 		
 		ArrayList<Boolean> codification = HidraUtility.byteToBoolList((byte) (id+1));
 		codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-		HidraAttribute att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-				HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"));
-		codification.addAll(att.codifyUsingAPBR());
+		//Making a task
+		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
+		codification.addAll(exp.codifyUsingAPBR());
 		
 		sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
 
@@ -171,9 +172,9 @@ public class HidraSubject {
 			
 			codification = HidraUtility.byteToBoolList(id);
 			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-			att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-					HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"));
-			codification.addAll(att.codifyUsingAPBR());
+			//Making a task
+			exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
+			codification.addAll(exp.codifyUsingAPBR());
 			
 			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
 			
@@ -195,9 +196,9 @@ public class HidraSubject {
 			
 			codification = HidraUtility.byteToBoolList(id);
 			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-			att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-					HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_off"));
-			codification.addAll(att.codifyUsingAPBR());
+			//Making a task
+			exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
+			codification.addAll(exp.codifyUsingAPBR());
 			
 			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
 			
