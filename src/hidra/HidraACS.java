@@ -294,37 +294,22 @@ public class HidraACS {
 			e.printStackTrace();
 		}
 		
-		byte subjectId = (byte) 5;
-		byte subject2Id = (byte) 6;
-		byte subject3Id = (byte) 7;
+//		byte subjectId = (byte) 5;
+//		byte subject2Id = (byte) 6;
+//		byte subject3Id = (byte) 7;
 
 		//Provide policy for resource
-		provideResourceWithPolicy(subjectId);
+//		provideResourceWithPolicy(subjectId);
 //		provideResourceWithPolicy(subject2Id);
 //		provideResourceWithPolicy(subject3Id);
 		
-		//Update policy for subject | Handle one test at a time, because resource handles only 1 subject
-		getUserInput("Enter to blacklist the subject");
-		HidraBlacklistMessage hbm = new HidraBlacklistMessage(subjectId);
-		sendDataToResource(HidraUtility.booleanArrayToByteArray(hbm.constructBoolMessage()));
-		
-		DatagramPacket receivedDatagram = receiveDataPacket(socketForResource);
-		if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-			byte[] actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-			if (actualMessage[0] == 0) {
-				System.out.println("Request denied");
-			} else if (actualMessage[0] == 1) {
-				System.out.println("Request successful");
-			} else {
-				System.out.println("Unknown answer to request");
-			}
-		} else {
-			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
+		while (true) {
+			runHidraProtocolDemo();
 		}
+		
 	}
 	
-	private static void provideResourceWithPolicy(byte id) {
-		byte subjectId = id;
+	private static void provideResourceWithPolicy(byte subjectId) {
 		HidraACSMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 		constructDemoPolicy().prettyPrint();		
@@ -371,7 +356,8 @@ public class HidraACS {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Content of datagram: " + new String(actualMessage));
 						if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
-							sendDataToResource("HID_CM_IND_REP".getBytes());
+							hm = new HidraCmIndRepMessage(subjectId);
+							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							sendDataToSubject("HID_CM_REP".getBytes());
 						}
 					} else {
@@ -385,6 +371,27 @@ public class HidraACS {
 			}
 		} else {
 			System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+		}
+	}
+	
+	public static void blackListSubject(byte subjectId) {
+		//Update policy for subject | Handle one test at a time, because resource handles only 1 subject
+//		getUserInput("Enter to blacklist the subject");
+		HidraBlacklistMessage hbm = new HidraBlacklistMessage(subjectId);
+		sendDataToResource(HidraUtility.booleanArrayToByteArray(hbm.constructBoolMessage()));
+		
+		DatagramPacket receivedDatagram = receiveDataPacket(socketForResource);
+		if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+			byte[] actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+			if (actualMessage[0] == 0) {
+				System.out.println("Request denied");
+			} else if (actualMessage[0] == 1) {
+				System.out.println("Request successful");
+			} else {
+				System.out.println("Unknown answer to request");
+			}
+		} else {
+			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 		}
 	}
 	

@@ -24,7 +24,7 @@ public class HidraUtility {
 		  PERMIT
 		}
 	
-	enum Action {
+	public enum Action {
 		GET,
 		POST,
 		PUT,

@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import message.HidraAccessRequest;
+import message.HidraHidSRReq;
+import message.HidraACSMessage;
+import message.HidraPolicyProvisionMessage;
+import message.HidraSubjectMessage;
+
 import hidra.HidraUtility.*;
 
 //TODO beter is om verschillende subjects te hebben met verschillende levels of access om te tonen. Dit ga je wel rechtstreeks in Contiki doen! Time's up  
@@ -51,11 +57,11 @@ public class HidraSubject {
 		}
 	}
 	
-	public static void sendDataPackToACS(byte[] data){ 
+	public static void sendDataToACS(byte[] data){ 
 		sendDataPacket(data, acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
 	}
 	
-	public static void sendDataPackToResource(byte[] data){ 
+	public static void sendDataToResource(byte[] data){ 
 		sendDataPacket(data, resourceIP, socketForResource, SUBJECT_TO_RESOURCE_PORT);
 	}
 
@@ -82,22 +88,9 @@ public class HidraSubject {
 		return scan.nextLine();
 	}
 	
-	/**
-	 * Current functionality: 
-	 * 	Execute empty Hidra protocol when a user indicates this through the console by pressing Enter 
-	 */
-	public static void main(String[] args) throws IOException, InterruptedException {
-		System.out.println("Start Subject");
-		
-		// Initialize Datagram Socket
-		HidraSubject acs = new HidraSubject();
-		
-		
-//		getUserInput("Enter to send start Hidra protocol");
-		
-		byte id = 1;
-		byte[] idArray = {id}; 
-		sendDataPackToACS(idArray);
+	public static void runHidraProtocol(byte id) {
+		byte[] idArray = {id};
+		sendDataToACS(idArray);
 		
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForACS);
 		byte[] actualMessage = null; 
@@ -107,7 +100,7 @@ public class HidraSubject {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			System.out.println("Received " + (new String(actualMessage)));
 			if((new String(actualMessage)).equals("HID_ANS_REP")) {
-				sendDataPackToACS("HID_CM_REQ".getBytes());
+				sendDataToACS("HID_CM_REQ".getBytes());
 				
 				receivedDatagram = receiveDataPacket(socketForACS);
 				// Filter on the port the datagram was sent from 
@@ -118,7 +111,9 @@ public class HidraSubject {
 						try {  
 							// Because otherwise this message tends to arrive too early in hidra-r. TODO delete again? Shouldn't be necessary?
 							TimeUnit.MILLISECONDS.sleep(500);
-							sendDataPackToResource("HID_S_R_REQ".getBytes());
+							
+							HidraSubjectMessage hm = new HidraHidSRReq(id);
+							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -141,21 +136,12 @@ public class HidraSubject {
 		} else {
 			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 		}
-
-		// For demo purposes: Request with non-existent id
-		getUserInput("Enter to request access");
-		
-		ArrayList<Boolean> codification = HidraUtility.byteToBoolList((byte) (id+1));
-		codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-		//Making a task
-		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
-		codification.addAll(exp.codifyUsingAPBR());
-		
-		sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
-
-		receivedDatagram = receiveDataPacket(socketForResource);
+	}
+	
+	public static void processAckNackResponseFromResource() {
+		DatagramPacket receivedDatagram = receiveDataPacket(socketForResource);
 		if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
-			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+			byte[] actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			if (actualMessage[0] == 0) {
 				System.out.println("Request denied");
 			} else if (actualMessage[0] == 1) {
@@ -166,55 +152,52 @@ public class HidraSubject {
 		} else {
 			System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
 		}
+	}
+	
+	public static void switchRemoteLightOn(byte id) {
+		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
+		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
+		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
+
+		processAckNackResponseFromResource();
+	}
+	
+	public static void switchRemoteLightOff(byte id) {
+		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_off"), null);
+		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
+		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
+
+		processAckNackResponseFromResource();
+	}
+	
+	/**
+	 * Current functionality: 
+	 * 	Execute empty Hidra protocol when a user indicates this through the console by pressing Enter 
+	 */
+	public static void main(String[] args) {
+		System.out.println("Start Subject");
+		
+		// Initialize Datagram Socket
+		HidraSubject acs = new HidraSubject();
+		
+//		getUserInput("Enter to send start Hidra protocol");
+
+		byte id = 1;
+		runHidraProtocol(id);
+
+		// For demo purposes: Request with non-existent id
+		getUserInput("Enter to request access (with wrong id)");
+		
+		switchRemoteLightOn((byte)(id+1));
 		
 		while(true) {
 			getUserInput("Enter to request access");
 			
-			codification = HidraUtility.byteToBoolList(id);
-			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-			//Making a task
-			exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
-			codification.addAll(exp.codifyUsingAPBR());
-			
-			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
-			
-			receivedDatagram = receiveDataPacket(socketForResource);
-			if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
-				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				if (actualMessage[0] == 0) {
-					System.out.println("Request denied");
-				} else if (actualMessage[0] == 1) {
-					System.out.println("Request successful");
-				} else {
-					System.out.println("Unknown answer to request");
-				}
-			} else {
-				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
-			}
+			switchRemoteLightOn(id);
 			
 			getUserInput("Enter to request access");
 			
-			codification = HidraUtility.byteToBoolList(id);
-			codification.addAll(HidraUtility.actionToBoolList(Action.PUT));
-			//Making a task
-			exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
-			codification.addAll(exp.codifyUsingAPBR());
-			
-			sendDataPackToResource(HidraUtility.booleanArrayToByteArray(codification));
-			
-			receivedDatagram = receiveDataPacket(socketForResource);
-			if (receivedDatagram.getPort() == SUBJECT_TO_RESOURCE_PORT) {
-				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				if (actualMessage[0] == 0) {
-					System.out.println("Request denied");
-				} else if (actualMessage[0] == 1) {
-					System.out.println("Request successful");
-				} else {
-					System.out.println("Unknown answer to request");
-				}
-			} else {
-				System.out.println("Error in main server: Received datagram on the wrong port: " + receivedDatagram.getPort());
-			}
+			switchRemoteLightOff(id);
 		}
 	}	
 }
