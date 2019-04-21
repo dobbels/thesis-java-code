@@ -183,13 +183,17 @@ public class HidraSubject {
 //		getUserInput("Enter to send start Hidra protocol");
 
 		byte id = 1;
-		runHidraProtocol(id);
+		byte id2 = 2;
+		byte id3 = 3;
 
-		// For demo purposes: Request with non-existent id
-		getUserInput("Enter to request access (with wrong id)");
-		
-		switchRemoteLightOn((byte)(id+1));
-		
+		runHidraProtocol(id);
+		runHidraProtocol(id2);
+		runHidraProtocol(id3);
+
+		// For demo purposes: Request with non-existent id; should be denied
+//		getUserInput("Enter to request access (with wrong id)");
+//		switchRemoteLightOn((byte) 27);
+
 		while(true) {
 			getUserInput("Enter to request access");
 			
@@ -198,6 +202,22 @@ public class HidraSubject {
 			getUserInput("Enter to request access");
 			
 			switchRemoteLightOff(id);
+			
+			getUserInput("Enter to request access");
+			
+			switchRemoteLightOn(id2);
+			
+			getUserInput("Enter to request access");
+			
+			switchRemoteLightOff(id2);
+			
+			getUserInput("Enter to request access");
+			
+			switchRemoteLightOn(id3);
+			
+			getUserInput("Enter to request access");
+			
+			switchRemoteLightOff(id3);
 		}
 	}	
 }

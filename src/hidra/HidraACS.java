@@ -294,9 +294,6 @@ public class HidraACS {
 			e.printStackTrace();
 		}
 		
-//		byte subjectId = (byte) 5;
-//		byte subject2Id = (byte) 6;
-//		byte subject3Id = (byte) 7;
 
 		//Provide policy for resource
 //		provideResourceWithPolicy(subjectId);
