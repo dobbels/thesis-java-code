@@ -182,12 +182,32 @@ public class HidraSubject {
 		
 //		getUserInput("Enter to send start Hidra protocol");
 
+		/////////////////////////////////
+		//                             //
+		//Niet te veel meer aanpassen! //
+		//Dit moet allemaal opnieuw in // 
+		//verschillende subjects       //
+		//wanneer je je demo maakt (na //
+		// je deadline?)               //
+		//                             //
+		/////////////////////////////////
+		
 		byte id = 1;
 		byte id2 = 2;
 		byte id3 = 3;
 
 		runHidraProtocol(id);
+		try {
+			TimeUnit.MILLISECONDS.sleep(500);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		runHidraProtocol(id2);
+		try {
+			TimeUnit.MILLISECONDS.sleep(500);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		runHidraProtocol(id3);
 
 		// For demo purposes: Request with non-existent id; should be denied

@@ -240,13 +240,15 @@ public class HidraACS {
 		return (new HidraPolicy((byte) 104, Effect.PERMIT, rules));
 	}
 	
+
+	private static HidraPolicy constructDemoPolicy3() {
+		return (new HidraPolicy((byte) 106, Effect.PERMIT, null));
+	}
+	private static HidraPolicy constructDemoPolicy2() {
+		return (new HidraPolicy((byte) 105, Effect.DENY, null));
+	}
+	
 	private static HidraPolicy constructDemoPolicy() {
-//		// rule 1 task
-//		HidraAttribute r1att = new HidraAttribute(AttributeType.SYSTEM_REFERENCE, 
-//				HidraUtility.getId(HidraUtility.systemRereferences, "nb_of_access_requests_made"));
-//		ArrayList<HidraAttribute> o1inputset = new ArrayList<>();
-//		o1inputset.add(r1att);
-//		
 //		// rule 1 obligations
 		HidraExpression r1o1e1 = new HidraExpression(
 				HidraUtility.getId(HidraUtility.taskRereferences, "log_request"), null);		
@@ -263,7 +265,6 @@ public class HidraACS {
 		ArrayList<HidraObligation> r1obligations = new ArrayList<>();
 		r1obligations.add(r1o1);
 		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, zeroByte, zeroByte, zeroByte, HidraUtility.Action.PUT, r1expressions, r1obligations);
-//				HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
 		
 		// policy
 		ArrayList<HidraRule> rules = new ArrayList<>();
@@ -293,13 +294,7 @@ public class HidraACS {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-
-		//Provide policy for resource
-//		provideResourceWithPolicy(subjectId);
-//		provideResourceWithPolicy(subject2Id);
-//		provideResourceWithPolicy(subject3Id);
-		
+				
 		while (true) {
 			runHidraProtocolDemo();
 		}
@@ -325,6 +320,20 @@ public class HidraACS {
 		}
 	}
 	
+	private static void sendPolicyProvisionMessage(byte subjectId) {
+		HidraPolicy hp;
+		if (subjectId == 3) {
+			hp = constructDemoPolicy3();
+		} else if (subjectId == 2) {
+			hp = constructDemoPolicy2();
+		} else {
+			hp = constructDemoPolicy();
+		}
+		HidraACSMessage hm = new HidraPolicyProvisionMessage(subjectId, hp.codify());
+		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
+		constructDemoPolicy().prettyPrint();
+	}
+	
 	private static void runHidraProtocolDemo() {
 		//Server starts listening for messages from a Subject
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
@@ -344,16 +353,15 @@ public class HidraACS {
 				System.out.println("Content of datagram: " + new String(actualMessage));
 				if((new String(actualMessage)).equals("HID_CM_REQ")) {
 					
-					HidraACSMessage hm = new HidraPolicyProvisionMessage((byte) subjectId, constructDemoPolicy().codify());
-					sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
-					constructDemoPolicy().prettyPrint();		
+					//Decoupled, because in the demo different subjects might need different policies.
+					sendPolicyProvisionMessage(subjectId);
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Content of datagram: " + new String(actualMessage));
 						if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
-							hm = new HidraCmIndRepMessage(subjectId);
+							HidraCmIndRepMessage hm = new HidraCmIndRepMessage(subjectId);
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							sendDataToSubject("HID_CM_REP".getBytes());
 						}
