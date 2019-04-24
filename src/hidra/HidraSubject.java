@@ -21,10 +21,10 @@ import hidra.HidraUtility.*;
 //TODO beter is om verschillende subjects te hebben met verschillende levels of access om te tonen. Dit ga je wel rechtstreeks in Contiki doen! Time's up  
 public class HidraSubject { 
 	
-	private static String acsIP = HidraConfig.getLocalIP();
+	private static String acsIP = null;
 	private static String resourceIP = HidraConfig.getResourceIP();
-	public static final int SUBJECT_TO_RESOURCE_PORT = HidraConfig.getSujectToResourcePort();
-	private static String subjectIP = HidraConfig.getLocalIP();
+	public static final int SUBJECT_TO_RESOURCE_PORT = 0;
+	private static String subjectIP = null;
 	private static DatagramSocket socketForACS = null; 
 	private static DatagramSocket socketForResource = null;
 	
@@ -33,7 +33,7 @@ public class HidraSubject {
 	
 	public HidraSubject(){
 		try{
-			socketForACS = new DatagramSocket(HidraConfig.getSubjectPortForCommWithAcs());
+			socketForACS = new DatagramSocket(null);
 			socketForResource = new DatagramSocket(SUBJECT_TO_RESOURCE_PORT);
 		}
 
@@ -58,7 +58,7 @@ public class HidraSubject {
 	}
 	
 	public static void sendDataToACS(byte[] data){ 
-		sendDataPacket(data, acsIP, socketForACS, HidraConfig.getAcsPortForCommWithSubject());
+		sendDataPacket(data, acsIP, socketForACS, 0);
 	}
 	
 	public static void sendDataToResource(byte[] data){ 
@@ -96,7 +96,7 @@ public class HidraSubject {
 		byte[] actualMessage = null; 
 		
 		// Filter on the port the datagram was sent from 
-		if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
+		if (receivedDatagram.getPort() == 0) {				
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			System.out.println("Received " + (new String(actualMessage)));
 			if((new String(actualMessage)).equals("HID_ANS_REP")) {
@@ -104,7 +104,7 @@ public class HidraSubject {
 				
 				receivedDatagram = receiveDataPacket(socketForACS);
 				// Filter on the port the datagram was sent from 
-				if (receivedDatagram.getPort() == HidraConfig.getAcsPortForCommWithSubject()) {				
+				if (receivedDatagram.getPort() == 0) {				
 					actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 					System.out.println("Received " + (new String(actualMessage)));
 					if((new String(actualMessage)).equals("HID_CM_REP")) {

@@ -26,9 +26,9 @@ import message.HidraPolicyProvisionMessage;
  */
 public class HidraACS {
 	public static final int ACS_RESOURCE_PORT = HidraConfig.getAcsResourcePort();
+	public static final int ACS_SUBJECT_PORT = HidraConfig.getAcsSubjectPort();
 	
 	private static String resourceIP = HidraConfig.getResourceIP();
-	private static String subjectIP = HidraConfig.getLocalIP();
 	
 	private static DatagramSocket socketForResource = null;
 	private static DatagramSocket socketForSubject = null;
@@ -44,8 +44,8 @@ public class HidraACS {
 			socketForResource = new DatagramSocket(ACS_RESOURCE_PORT);
 			System.out.println("Opened socket on port "+ ACS_RESOURCE_PORT);
 			
-			socketForSubject = new DatagramSocket(HidraConfig.getAcsPortForCommWithSubject());
-			System.out.println("Opened socket on port "+ HidraConfig.getAcsPortForCommWithSubject());
+			socketForSubject = new DatagramSocket(ACS_SUBJECT_PORT);
+			System.out.println("Opened socket on port "+ ACS_SUBJECT_PORT);
 		}
 		catch(SocketException e){
 			e.getMessage();
@@ -98,8 +98,8 @@ public class HidraACS {
 		sendDataPacket(packet,resourceIP, socketForResource, ACS_RESOURCE_PORT);
 	}
 	
-	public static void sendDataToSubject(byte[] packet){
-		sendDataPacket(packet,subjectIP, socketForSubject, HidraConfig.getSubjectPortForCommWithAcs());
+	public static void sendDataToSubject(byte[] packet, int subjectId){
+		sendDataPacket(packet,HidraConfig.getSubjectIPs(subjectId), socketForSubject, ACS_SUBJECT_PORT);
 	}	
 
 	/**TODO
@@ -313,7 +313,7 @@ public class HidraACS {
 			if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
 				hm = new HidraCmIndRepMessage(subjectId);
 				sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
-				sendDataToSubject("HID_CM_REP".getBytes());
+				sendDataToSubject("HID_CM_REP".getBytes(), subjectId);
 			}
 		} else {
 			System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
@@ -339,21 +339,21 @@ public class HidraACS {
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
 		byte[] actualMessage = null; 
 		
-		if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) {
+		if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			System.out.println("Message length "+ receivedDatagram.getLength() +" == 1.");
 			byte subjectId = actualMessage[0];
 			System.out.println("Received id: " + subjectId);
-			//TODO later komt hier weer een 'if' die checkt of het formaat / de identifier van het bericht juist is?
+			//TODO hier validity checken? Gewoon aannemen dat het juiste structuur hef, toch? 
 			
-			sendDataToSubject("HID_ANS_REP".getBytes());
+			sendDataToSubject("HID_ANS_REP".getBytes(), subjectId);
 			receivedDatagram = receiveDataPacket(socketForSubject); 
-			if (receivedDatagram.getPort() == HidraConfig.getSubjectPortForCommWithAcs()) { 
+			if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) { 
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 				System.out.println("Content of datagram: " + new String(actualMessage));
-				if((new String(actualMessage)).equals("HID_CM_REQ")) {
-					
-					//Decoupled, because in the demo different subjects might need different policies.
+				if (subjectId == actualMessage[0]) {
+				
+				//Decoupled, because in the demo different subjects might need different policies.
 					sendPolicyProvisionMessage(subjectId);
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
@@ -363,13 +363,15 @@ public class HidraACS {
 						if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
 							HidraCmIndRepMessage hm = new HidraCmIndRepMessage(subjectId);
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
-							sendDataToSubject("HID_CM_REP".getBytes());
+							// To be sure the subject doesn't send the access request too early
+							try {TimeUnit.MILLISECONDS.sleep(500);} catch (InterruptedException e) {e.printStackTrace();}
+							sendDataToSubject("HID_CM_REP".getBytes(), subjectId);
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
 					}
 				} else {
-					System.out.println("Instead of HID_CM_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+					System.out.println("Instead of message from same subject, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 				}
 			} else {
 				System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
