@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import message.HidraAccessRequest;
 import message.HidraHidSRReq;
-import message.HidraACSMessage;
+import message.HidraACSResourceMessage;
 import message.HidraPolicyProvisionMessage;
 import message.HidraSubjectMessage;
 

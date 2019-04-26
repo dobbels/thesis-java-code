@@ -9,7 +9,7 @@ public class HidraConfig {
 	private static final int ACS_SUBJECT_PORT = 4321;
 //	private static String resourceIP = "fd00::212:7402:2:202"; // If the mote is a sky mote (and the 2nd that was added to the simulation)
 	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
-	private static String[] subjectIPs = {"fd00::c30c:0:0:3", "fd00::c30c:0:0:4", "fd00::c30c:0:0:5"};
+//	private static String[] subjectIPs = {"fd00::c30c:0:0:3", "fd00::c30c:0:0:4", "fd00::c30c:0:0:5"};
 	
 	public static int getAcsResourcePort() {
 		return ACS_RESOURCE_PORT;
@@ -27,8 +27,8 @@ public class HidraConfig {
 		return ACS_SUBJECT_PORT;
 	}
 
-	// Very hardcoded, but should work for the demo
-	public static String getSubjectIPs(int id) {
-		return subjectIPs[id-1];
+	// Very hardcoded, but should work for a demo on Z1 devices
+	public static String getSubjectIP(int id) {
+		return ("fd00::c30c:0:0:" + id);
 	}
 }

@@ -15,9 +15,10 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import message.HidraAnsReq;
 import message.HidraBlacklistMessage;
 import message.HidraCmIndRepMessage;
-import message.HidraACSMessage;
+import message.HidraACSResourceMessage;
 import message.HidraPolicyProvisionMessage;
 
 
@@ -35,6 +36,10 @@ public class HidraACS {
 
 	public static final byte zeroByte = 0; 
 	public static final byte[] testPacket = "Test message".getBytes(); 	
+	
+	public static final String Kcm = "gegevens-sleutel";
+	public static final String Ks = "gebruikersleutel";
+	public static final String Kr = "sensor---sleutel";
 	
 //	public static final HidraPolicy testPolicy = new HidraPolicy();
 
@@ -99,7 +104,7 @@ public class HidraACS {
 	}
 	
 	public static void sendDataToSubject(byte[] packet, int subjectId){
-		sendDataPacket(packet,HidraConfig.getSubjectIPs(subjectId), socketForSubject, ACS_SUBJECT_PORT);
+		sendDataPacket(packet,HidraConfig.getSubjectIP(subjectId), socketForSubject, ACS_SUBJECT_PORT);
 	}	
 
 	/**TODO
@@ -302,7 +307,7 @@ public class HidraACS {
 	}
 	
 	private static void provideResourceWithPolicy(byte subjectId) {
-		HidraACSMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
+		HidraACSResourceMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 		constructDemoPolicy().prettyPrint();		
 		
@@ -322,16 +327,18 @@ public class HidraACS {
 	
 	private static void sendPolicyProvisionMessage(byte subjectId) {
 		HidraPolicy hp;
-		if (subjectId == 3) {
+		if (subjectId == 5) {
 			hp = constructDemoPolicy3();
-		} else if (subjectId == 2) {
+			constructDemoPolicy3().prettyPrint();
+		} else if (subjectId == 4) {
 			hp = constructDemoPolicy2();
+			constructDemoPolicy2().prettyPrint();
 		} else {
 			hp = constructDemoPolicy();
+			constructDemoPolicy().prettyPrint();
 		}
-		HidraACSMessage hm = new HidraPolicyProvisionMessage(subjectId, hp.codify());
+		HidraACSResourceMessage hm = new HidraPolicyProvisionMessage(subjectId, hp.codify());
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
-		constructDemoPolicy().prettyPrint();
 	}
 	
 	private static void runHidraProtocolDemo() {
@@ -341,16 +348,16 @@ public class HidraACS {
 		
 		if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-			System.out.println("Message length "+ receivedDatagram.getLength() +" == 1.");
+//			System.out.println("Message length "+ receivedDatagram.getLength() +" == 1.");
 			byte subjectId = actualMessage[0];
 			System.out.println("Received id: " + subjectId);
-			//TODO hier validity checken? Gewoon aannemen dat het juiste structuur hef, toch? 
+			HidraAnsReq haq = new HidraAnsReq(actualMessage);
+			sendDataToSubject(HidraUtility.booleanArrayToByteArray(haq.processMessage()), subjectId);
 			
-			sendDataToSubject("HID_ANS_REP".getBytes(), subjectId);
 			receivedDatagram = receiveDataPacket(socketForSubject); 
 			if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) { 
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				System.out.println("Content of datagram: " + new String(actualMessage));
+				System.out.println("Content of datagram: " + actualMessage[0]);
 				if (subjectId == actualMessage[0]) {
 				
 				//Decoupled, because in the demo different subjects might need different policies.

@@ -1,8 +1,6 @@
 package message;
 
-import java.util.ArrayList;
-
-public class HidraProtocolMessage extends HidraACSMessage {
+public class HidraProtocolMessage extends HidraACSResourceMessage {
 	
 	public HidraProtocolMessage() {
 		super(MessageType.HIDRA_PROTOCOL);

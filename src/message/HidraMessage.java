@@ -2,7 +2,7 @@ package message;
 
 import java.util.ArrayList;
 
-import message.HidraACSMessage.MessageType;
+import message.HidraACSResourceMessage.MessageType;
 
 /**
  * This class implements a Hidra message, containing the necessary identifiers, token, keys and possibly an EBNF policy (codified with APBR codification).

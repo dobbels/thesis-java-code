@@ -5,7 +5,7 @@ import hidra.HidraUtility;
 import java.util.ArrayList;
 
 
-public class HidraPolicyAdaptMessage extends HidraACSMessage {
+public class HidraPolicyAdaptMessage extends HidraACSResourceMessage {
 	
 	enum UpdateType {
 		BLACKLIST

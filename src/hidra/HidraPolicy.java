@@ -71,20 +71,24 @@ public class HidraPolicy {
 	public void prettyPrint() {
 		System.out.println("{");
 		System.out.println("\t\"id\" : " + id + ",");
-		System.out.println("\t\"effect\" : \"" + effect.name() + "\",");
-		System.out.println("\t\"rules\" : [");
-		
-		for (HidraRule r : ruleset) {
-			// To print like JSON, the last rule should not include a comma. 
-			if (ruleset.indexOf(r) == ruleset.size() - 1) {
-				r.prettyPrint("\t\t", true);
-			} else {
-				r.prettyPrint("\t\t", false);
+		if (ruleset != null) {
+			System.out.println("\t\"effect\" : \"" + effect.name() + "\",");
+			System.out.println("\t\"rules\" : [");
+			for (HidraRule r : ruleset) {
+				// To print like JSON, the last rule should not include a comma. 
+				if (ruleset.indexOf(r) == ruleset.size() - 1) {
+					r.prettyPrint("\t\t", true);
+				} else {
+					r.prettyPrint("\t\t", false);
+				}
 			}
+			System.out.println("\t]");
+			System.out.println("}");
+		} else {
+			System.out.println("\t\"effect\" : \"" + effect.name() + "\"");
+			System.out.println("}");
 		}
 		
-		System.out.println("\t]");
-		System.out.println("}");
 	}	
 	
 //	private JSONObject codifyUsingJSON() { //TODO this + JSON pretty print would have been waaaay cleaner than the pretty printing you implemented yourself. Remember
