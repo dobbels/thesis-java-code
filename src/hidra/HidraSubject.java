@@ -10,11 +10,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-import message.HidraAccessRequest;
-import message.HidraHidSRReq;
 import message.HidraACSResourceMessage;
 import message.HidraPolicyProvisionMessage;
-import message.HidraSubjectMessage;
 
 import hidra.HidraUtility.*;
 
@@ -112,8 +109,8 @@ public class HidraSubject {
 							// Because otherwise this message tends to arrive too early in hidra-r. TODO delete again? Shouldn't be necessary?
 							TimeUnit.MILLISECONDS.sleep(500);
 							
-							HidraSubjectMessage hm = new HidraHidSRReq(id);
-							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
+//							HidraSubjectMessage hm = new HidraHidSRReq(id);
+//							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -156,16 +153,16 @@ public class HidraSubject {
 	
 	public static void switchRemoteLightOn(byte id) {
 		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_on"), null);
-		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
-		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
+//		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
+//		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
 
 		processAckNackResponseFromResource();
 	}
 	
 	public static void switchRemoteLightOff(byte id) {
 		HidraExpression exp = new HidraExpression(HidraUtility.getId(HidraUtility.systemRereferences, "switch_light_off"), null);
-		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
-		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
+//		HidraAccessRequest haq = new HidraAccessRequest(id, Action.PUT, exp);
+//		sendDataToResource(HidraUtility.booleanArrayToByteArray(haq.constructBoolMessage()));
 
 		processAckNackResponseFromResource();
 	}
