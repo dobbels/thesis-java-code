@@ -370,8 +370,8 @@ public class HidraACS {
 					hp.prettyPrint();
 
 					// Construct policy provision message for resource 
-					HidraACSResourceMessage hm = new HidraCmInd(subjectId, hp.codify());
-					sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
+					HidraACSResourceMessage hci = new HidraCmInd(subjectId, hp.codify());
+					sendDataToResource(HidraUtility.booleanArrayToByteArray(hci.constructBoolMessage()));
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
