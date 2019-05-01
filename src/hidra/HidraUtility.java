@@ -3,10 +3,13 @@ package hidra;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import encryption.Alice;
 
 /**
  * Shared utilities to be use by different classes
@@ -326,6 +329,17 @@ public class HidraUtility {
 		return bytes;
 		
 	}
+	
+	public static String bytesToHex(byte[] bytes) {
+		final char[] hexArray = "0123456789ABCDEF".toCharArray();
+	    char[] hexChars = new char[bytes.length * 2];
+	    for ( int j = 0; j < bytes.length; j++ ) {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = hexArray[v >>> 4];
+	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
+	}
 
 	public static String byteToHexString(byte b) {
 		String str = new String(Integer.toHexString(new Integer(b & 0xff)));
@@ -357,5 +371,19 @@ public class HidraUtility {
 
 	public static ArrayList<Boolean> stringToBoolList(String str) {
 		return byteArrayToBooleanList(str.getBytes());
+	}
+	
+	public static byte[] xcrypt(byte[] plain_text, char[] key) {		
+		byte[] encrypted_text = null; 
+		Alice encryptor = new Alice(HidraACS.ctx);
+		try {
+			//Ignore the generated initial vector of size 16
+			byte [] result = encryptor.encrypt(plain_text, key);
+			encrypted_text = Arrays.copyOfRange(result, 16, result.length);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return encrypted_text;
 	}
 }

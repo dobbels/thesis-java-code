@@ -14,6 +14,6 @@ public class HidraMessage {
 	}
 	
 	public ArrayList<Boolean> constructBoolMessage() {
-		return null;
+		return new ArrayList<>();
 	}
 }

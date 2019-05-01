@@ -5,8 +5,6 @@ import hidra.HidraUtility.*;
 import java.util.ArrayList;
 import java.util.BitSet;
 
-import org.json.*;
-
 /**
  * Implements a Hidra policy and specifies functions to codify them using APBR codification, as described in https://ieeexplore.ieee.org/abstract/document/7990134. 
  * 

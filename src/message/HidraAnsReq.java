@@ -1,32 +1,40 @@
 package message;
 
+import hidra.HidraACS;
 import hidra.HidraUtility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import encryption.Alice;
 
 public class HidraAnsReq extends HidraACSSubjectMessage {
-
-	//int type to be sure of unsigned handling up to 3 bytes
-	private int idS;
-	private int idCm;
-	private int lifetimeTGT;
-	private int nonce1;
+	private byte[] idS = new byte[2];
+	private byte[] idCm = new byte[2];
+	private byte[] lifetimeTGT = new byte[3];
+	private byte[] nonce1 = new byte[8];
 	
 	//Assuming the right structure is given by the subject
 	public HidraAnsReq(byte[] message) {
 		super();
-		System.out.println("Expected length 4 == "+message.length);
-		this.idS = message[0];
-		System.out.println("idS: "+idS);
-		this.idCm = message[1];
-		System.out.println("idCM: "+idCm);
-		this.lifetimeTGT = message[2];
-		System.out.println("lifetimeTGT: "+lifetimeTGT);
-		this.nonce1 = message[3];
-		System.out.println("nonce1: "+nonce1);
+		System.out.println("Expected length 15 == "+message.length);
+		System.out.println("Received HidraAnsReq message: "+ HidraUtility.bytesToHex(message));
+		// Some shortcuts because some bytes are not used. They are included to copy the Hidra protocol as good as possible. 
+		for (int i = 0; i < idS.length ; i++) {
+			idS[i] = message[i];
+		}
+		for (int i = 0; i < idCm.length ; i++) {
+			idCm[i] = message[i+2];
+		}		
+		for (int i = 0; i < lifetimeTGT.length ; i++) {
+			lifetimeTGT[i] = message[i+4];
+		}
+		for (int i = 0; i < nonce1.length ; i++) {
+			nonce1[i] = message[i+7];
+		}
 	}
 	
-	public ArrayList<Boolean> processMessage(){
+	public ArrayList<Boolean> processAndConstructReply(){
 		return (new HidraAnsRep(idS, idCm, nonce1)).constructBoolMessage();
 	}
 }
