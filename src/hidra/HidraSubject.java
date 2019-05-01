@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import message.HidraACSResourceMessage;
-import message.HidraPolicyProvisionMessage;
+import message.HidraCmInd;
 
 import hidra.HidraUtility.*;
 

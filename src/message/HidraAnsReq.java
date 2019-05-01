@@ -1,12 +1,8 @@
 package message;
 
-import hidra.HidraACS;
 import hidra.HidraUtility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import encryption.Alice;
 
 public class HidraAnsReq extends HidraACSSubjectMessage {
 	private byte[] idS = new byte[2];

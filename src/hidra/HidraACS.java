@@ -24,7 +24,7 @@ import message.HidraAnsReq;
 import message.HidraBlacklistMessage;
 import message.HidraCmIndRepMessage;
 import message.HidraACSResourceMessage;
-import message.HidraPolicyProvisionMessage;
+import message.HidraCmInd;
 
 
 /**
@@ -316,7 +316,7 @@ public class HidraACS {
 	}
 	
 	private static void provideResourceWithPolicy(byte subjectId) {
-		HidraACSResourceMessage hm = new HidraPolicyProvisionMessage(subjectId, constructDemoPolicy().codify());
+		HidraACSResourceMessage hm = new HidraCmInd(subjectId, constructDemoPolicy().codify());
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 		constructDemoPolicy().prettyPrint();		
 		
@@ -334,20 +334,16 @@ public class HidraACS {
 		}
 	}
 	
-	private static void sendPolicyProvisionMessage(byte subjectId) {
+	private static HidraPolicy getPolicy(byte subjectId) {
 		HidraPolicy hp;
 		if (subjectId == 5) {
 			hp = constructDemoPolicy3();
-//			constructDemoPolicy3().prettyPrint();
 		} else if (subjectId == 4) {
 			hp = constructDemoPolicy2();
-//			constructDemoPolicy2().prettyPrint();
 		} else {
 			hp = constructDemoPolicy();
-//			constructDemoPolicy().prettyPrint();
 		}
-		HidraACSResourceMessage hm = new HidraPolicyProvisionMessage(subjectId, hp.codify());
-		sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
+		return hp;
 	}
 	
 	private static void runHidraProtocolDemo() {
@@ -358,18 +354,24 @@ public class HidraACS {
 		if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			byte subjectId = actualMessage[1];
-			System.out.println("Received id: " + subjectId);
+			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
 			HidraAnsReq haq = new HidraAnsReq(actualMessage);
 			sendDataToSubject(HidraUtility.booleanArrayToByteArray(haq.processAndConstructReply()), subjectId);
-			////////////////////IMPLEMENTED SECURITY UNTIL HERE
 			receivedDatagram = receiveDataPacket(socketForSubject); 
 			if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) { 
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				System.out.println("Content of datagram: " + actualMessage[0]);
-				if (subjectId == actualMessage[0]) {
+				////////////////////IMPLEMENTED SECURITY UNTIL HERE
+				// Resource id is hardcoded to 2
+				if (actualMessage[1] == 2) {
+					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
 				
-				//Decoupled, because in the demo different subjects might need different policies.
-					sendPolicyProvisionMessage(subjectId);
+					//Policy provisioning based on subject id
+					HidraPolicy hp = getPolicy(subjectId);
+					hp.prettyPrint();
+
+					// Construct policy provision message for resource 
+					HidraACSResourceMessage hm = new HidraCmInd(subjectId, hp.codify());
+					sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {

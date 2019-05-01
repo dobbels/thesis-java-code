@@ -8,13 +8,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
-//Upon reception of every authentication request message, first, it checks if the message is for the ANS; 
-//cthen, it checks the identity of the subject on the
-//repository, as shown in Listing 5. In the positive case, it generates a long-term ticket granting
-//ticket (TGT) ciphered with the CM’s secret key KCM. It also cyphers with the subject’s secret
-//key KS a data block containing the shared key KS,CM and a set of nonces for further sequence
-//validation. It also records such a TGT in the active connection repository with a NonceS,CM
-//and the corresponding lifetime.
 public class HidraAnsRep extends HidraACSSubjectMessage {
 	private byte[] idS;
 	private byte[] idCm;
@@ -31,11 +24,11 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 		
 		// Noncescm generation
         new Random().nextBytes(this.nonceSCm);
-        System.out.println("nonceSCm: "+HidraUtility.bytesToHex(nonceSCm));
+//        System.out.println("nonceSCm: "+HidraUtility.bytesToHex(nonceSCm));
 
 		//Kscm generation
         new Random().nextBytes(this.Kscm);
-        System.out.println("Kscm: "+HidraUtility.bytesToHex(Kscm));
+//        System.out.println("Kscm: "+HidraUtility.bytesToHex(Kscm));
         
         // Store information for this subject 
         HidraACS.properties.put((int) idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
@@ -55,9 +48,9 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 		ArrayList<Boolean> codification = super.constructBoolMessage();
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(this.ticketCm, HidraACS.Kcm)));
-		System.out.println("restOfMessage before encryption: "+HidraUtility.bytesToHex(restOfMessage));
+//		System.out.println("restOfMessage before encryption: "+HidraUtility.bytesToHex(restOfMessage));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(restOfMessage, HidraACS.Ks)));
-		
+//		System.out.println(HidraUtility.bytesToHex(HidraUtility.booleanArrayToByteArray(codification)));
 		return codification;
 	}
 	
