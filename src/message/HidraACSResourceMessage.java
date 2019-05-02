@@ -28,9 +28,9 @@ public class HidraACSResourceMessage extends HidraMessage {
 		ArrayList<Boolean> result = new ArrayList<>();
 		
 		if (type == MessageType.HIDRA_PROTOCOL) {
-			result.add(false);
+			result.addAll(HidraUtility.byteToBoolList((byte) 0));
 		} else if (type == MessageType.POLICY_UPDATE) {
-			result.add(true);
+			result.addAll(HidraUtility.byteToBoolList((byte) 1));
 		} else {
 			System.out.println("Error: did not find message type.");
 		}

@@ -3,6 +3,7 @@ package hidra;
 import hidra.HidraUtility.*;
 
 import java.beans.Expression;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -302,6 +303,12 @@ public class HidraACS {
 	public static void main(String[] args){
 		new HidraACS();
 		
+//		byte[] test_vector = { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f };
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
+//		
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
+		
+		
 		try {
 			// Set up connection with RPL border router
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
@@ -412,8 +419,7 @@ public class HidraACS {
 		Scanner scan = new Scanner(System.in);
 		System.out.println(question);
 		return scan.nextLine();
-	}
-	
+	}	
 	
 	//Assumption: only one resource
 	private static ArrayList<byte[]> keyChain;

@@ -29,7 +29,7 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 
 		//Kscm generation
         new Random().nextBytes(this.Kscm);
-        System.out.println("Kscm: "+HidraUtility.bytesToHex(Kscm));
+        System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
         
         // Store information for this subject 
         HidraACS.properties.put((int) idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));

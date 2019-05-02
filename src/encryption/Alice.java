@@ -148,7 +148,7 @@ public class Alice {
      * @return an initialized {@link javax.crypto.Mac}
      * @throws GeneralSecurityException if MAC initialization fails
      */
-    private Mac getMac(AliceContext.MacAlgorithm macAlgorithm, char[] password) throws GeneralSecurityException {
+    public static Mac getMac(AliceContext.MacAlgorithm macAlgorithm, char[] password) throws GeneralSecurityException {
         Mac mac = Mac.getInstance(macAlgorithm.toString());
 
         mac.init(new SecretKeySpec(toBytes(password), macAlgorithm.toString()));
