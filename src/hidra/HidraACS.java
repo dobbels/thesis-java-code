@@ -54,6 +54,8 @@ public class HidraACS {
 	
 	public static HashMap<Integer, HidraSubjectsSecurityProperties> properties = new HashMap<>();
 	
+	
+	
 	public HidraACS(){
 		System.out.println("Server opens socket, both for resource and subject");
 		try{
@@ -348,12 +350,12 @@ public class HidraACS {
 					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
 
 					//Unpack incoming message
-					HidraCmReq hcr = new HidraCmReq(actualMessage);
+					HidraCmReq hcr = new HidraCmReq(subjectId, actualMessage);
 					
 					//Process message, include policy based on subject id and send to resource
 					HidraPolicy hp = getPolicy(subjectId);
 //					hp.prettyPrint();
-					sendDataToResource(HidraUtility.booleanArrayToByteArray(hcr.processAndConstructReply(subjectId, hp)));
+					sendDataToResource(HidraUtility.booleanArrayToByteArray(hcr.processAndConstructReply(hp)));
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
@@ -412,6 +414,27 @@ public class HidraACS {
 		return scan.nextLine();
 	}
 	
+	
+	//Assumption: only one resource
+	private static ArrayList<byte[]> keyChain;
+	private static int currentKeyIndex;
+	
+	public static byte[] getNextKeyChainValue() {
+		if (currentKeyIndex < 0) {
+			System.out.println("Error: all keys have been used");
+			return new byte[16];
+		}
+		return getKeyChain().get(currentKeyIndex--);
+	}
+	
+	public static ArrayList<byte[]> getKeyChain() {
+		return keyChain;
+	}
+	
+	public static void setKeyChain(ArrayList<byte[]> keyChain) {
+		HidraACS.currentKeyIndex = keyChain.size() - 1;
+		HidraACS.keyChain = keyChain;
+	}
 }
 
 

@@ -1,5 +1,7 @@
 package hidra;
 
+import java.util.ArrayList;
+
 public class HidraSubjectsSecurityProperties {
 	private int i = 0; // to keep track of one-way chain function(?)
 	private byte[] KSCM;

@@ -14,8 +14,8 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 	private byte[] nonce1;
 	private byte[] ticketCm = new byte[26]; 
 	private byte[] nonceSCm = new byte[8];
-//	private byte[] Kscm = new byte[16];
-	private byte[] Kscm = { 0x15, 0x15,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
+	private byte[] Kscm = new byte[16];
+//	private byte[] Kscm = { 0x15, 0x15,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
 	
 	public HidraAnsRep(byte[] idS, byte[] idCm, byte[] nonce1) {
 		super();
@@ -28,8 +28,8 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 //        System.out.println("nonceSCm: "+HidraUtility.bytesToHex(nonceSCm));
 
 		//Kscm generation
-//        new Random().nextBytes(this.Kscm);
-//        System.out.println("Kscm: "+HidraUtility.bytesToHex(Kscm));
+        new Random().nextBytes(this.Kscm);
+        System.out.println("Kscm: "+HidraUtility.bytesToHex(Kscm));
         
         // Store information for this subject 
         HidraACS.properties.put((int) idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
