@@ -5,7 +5,14 @@ public class HidraSubjectsSecurityProperties {
 	private byte[] KSCM;
 	private byte[] NonceSCM;
 	public HidraSubjectsSecurityProperties(byte[] KSCM,  byte[] NonceSCM) {
-		this.KSCM = KSCM;
+		this.setKSCM(KSCM);
 		this.NonceSCM = NonceSCM;
+	}
+	public byte[] getKSCM() {
+		return KSCM;
+	}
+	
+	private void setKSCM(byte[] kSCM) {
+		KSCM = kSCM;
 	}
 }

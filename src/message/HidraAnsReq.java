@@ -15,18 +15,17 @@ public class HidraAnsReq extends HidraACSSubjectMessage {
 		super();
 		System.out.println("Expected length 15 == "+message.length);
 		System.out.println("Received HidraAnsReq message: "+ HidraUtility.bytesToHex(message));
-		// Some shortcuts because some bytes are not used. They are included to copy the Hidra protocol as good as possible. 
 		for (int i = 0; i < idS.length ; i++) {
 			idS[i] = message[i];
 		}
 		for (int i = 0; i < idCm.length ; i++) {
-			idCm[i] = message[i+2];
+			idCm[i] = message[idS.length+i];
 		}		
 		for (int i = 0; i < lifetimeTGT.length ; i++) {
-			lifetimeTGT[i] = message[i+4];
+			lifetimeTGT[i] = message[idS.length + idCm.length + i];
 		}
 		for (int i = 0; i < nonce1.length ; i++) {
-			nonce1[i] = message[i+7];
+			nonce1[i] = message[idS.length + idCm.length + lifetimeTGT.length + i];
 		}
 	}
 	

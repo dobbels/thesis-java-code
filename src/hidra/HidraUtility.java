@@ -373,6 +373,10 @@ public class HidraUtility {
 		return byteArrayToBooleanList(str.getBytes());
 	}
 	
+	/*
+	 * Uses Alice to encrypt and decrypt with AES in CTR mode and 
+	 * returns the result, leaving out the generated initial vector. 
+	 */
 	public static byte[] xcrypt(byte[] plain_text, char[] key) {		
 		byte[] encrypted_text = null; 
 		Alice encryptor = new Alice(HidraACS.ctx);
