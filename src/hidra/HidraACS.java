@@ -26,6 +26,7 @@ import message.HidraBlacklistMessage;
 import message.HidraCmIndRepMessage;
 import message.HidraACSResourceMessage;
 import message.HidraCmInd;
+import message.HidraCmIndReq;
 import message.HidraCmReq;
 
 
@@ -303,28 +304,38 @@ public class HidraACS {
 	public static void main(String[] args){
 		new HidraACS();
 		
-		byte[] test_vector = { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 
-							0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x51, 
-							0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f };
-		
-		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
-		
-		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
-		
-		
-//		try {
-//			// Set up connection with RPL border router
-//			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
-//
-//			// Wait to be sure the connection is set up and the WSN RPL has converged. 
-//			TimeUnit.SECONDS.sleep(3);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+//		byte[] test_vector = { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 
+//							0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x51, 
+//							0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f };
 //		
-//		while (true) {
-//			runHidraProtocolDemo();
-//		}
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
+//		
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
+		
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(test_vector)));
+		
+
+		//De theorie was dat getallen boven 7f misschien niet werkten, maar het was gewoon omdat het zo kort was?
+//        byte[] testbytes = {(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, 
+//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5,
+//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5,
+//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5};
+//        System.out.println("testbytes: " + HidraUtility.byteArrayToHexString(testbytes));
+//        System.out.println("testhash: " + HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(testbytes)));
+		
+		try {
+			// Set up connection with RPL border router
+			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
+
+			// Wait to be sure the connection is set up and the WSN RPL has converged. 
+			TimeUnit.SECONDS.sleep(3);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		while (true) {
+			runHidraProtocolDemo();
+		}
 		
 	}
 	
@@ -364,20 +375,40 @@ public class HidraACS {
 					
 					//Process message, include policy based on subject id and send to resource
 					HidraPolicy hp = getPolicy(subjectId);
-//					hp.prettyPrint();
-					sendDataToResource(HidraUtility.booleanArrayToByteArray(hcr.processAndConstructReply(hp)));
+					hp.prettyPrint();
+					byte[] cmInd = hcr.processAndConstructReply(hp);
+					System.out.println("Length of CM_IND: " + cmInd.length);
+					sendDataToResource(cmInd);
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Content of datagram: " + new String(actualMessage));
-						if((new String(actualMessage)).equals("HID_CM_IND_REQ")) {
-							HidraCmIndRepMessage hm = new HidraCmIndRepMessage(subjectId);
+						if(actualMessage[1] == 2) {
+							
+							HidraCmIndReq hcir = new HidraCmIndReq(actualMessage);
+							
+							HidraCmIndRepMessage hm = hcir.constructResponse();
+							
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
-							// To be sure the subject doesn't send the access request too early
-							try {TimeUnit.MILLISECONDS.sleep(500);} catch (InterruptedException e) {e.printStackTrace();}
-							sendDataToSubject("HID_CM_REP".getBytes(), subjectId);
-							System.out.println("End of hidra protocol with subject " + subjectId);
+							
+							receivedDatagram = receiveDataPacket(socketForResource);
+							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+								if(actualMessage[0] == 1) {
+									
+									//TODO HID_CM_REP (zie allerlei info die je eerder had opgeslagen
+									// Wat zijn attrs en attrc? Letterlijk gekopieerd van ladon, dus verwijderen? Ah zijn dat ABAC attributen?
+									// -> laat dit mss zelf weg en steek er in de plaats direct je access request in! 
+									
+									sendDataToSubject("HID_CM_REP".getBytes(), subjectId);
+									System.out.println("End of hidra protocol with subject " + subjectId);
+								} else {
+									System.out.println("Error: Association denied by resource");
+								}
+							} else {
+								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+							}	
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());

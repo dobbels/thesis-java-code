@@ -53,6 +53,7 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 //		System.out.println("authN after decryption: " + HidraUtility.bytesToHex(this.authN));
 		
 		for (int i = 0; i < idS.length ; i++) {
+//			System.out.println("authN[" + i +"] = "+authN[i]);
 			idS[i] = authN[i];
 		}
 		System.out.println("subjectId: " + subjectId + " == " + idS[1]);
@@ -63,6 +64,7 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 		}
 		byte[] noncescm_i = new byte[8];
 		for (int i = 0; i < noncescm_i.length ; i++) {
+//			System.out.println("authN[" + (2 + i) +"] = "+authN[2+i]);
 			noncescm_i[i] = authN[2 + i];
 		}
 		i = calculateI(noncescm, noncescm_i);
@@ -86,11 +88,11 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 		return true;
 	}
 	
-	public ArrayList<Boolean> processAndConstructReply(HidraPolicy hp){
+	public byte[] processAndConstructReply(HidraPolicy hp){
 		if (!properlyAuthenticated() || !preliminaryAuthorized()) {
-			return (HidraUtility.byteToBoolList((byte)0));
+			return null;//TODO handle this: no message to resource, maybe a nack (= null-byte) to the subject
 		} else {
-			return (new HidraCmInd(idR, idS, lifetimeTR, i, hp.codify())).constructBoolMessage();
+			return (new HidraCmInd(idR, idS, lifetimeTR, i, hp.codify())).constructCmInd();
 		}
 	}
 }

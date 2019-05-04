@@ -112,7 +112,8 @@ public class Murmur3 implements MurmurConstants {
 
 		hash ^= length;
 		hash = fmix32(hash);
-
+		System.out.println("hash long: " + hash);
+		System.out.println("testbytes: " + HidraUtility.byteArrayToHexString(HidraUtility.longToByteArray(hash)));
 		return hash;
 	}
 	

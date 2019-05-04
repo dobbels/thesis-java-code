@@ -437,6 +437,7 @@ public class HidraUtility {
 		for (int i = 0 ; i < N ; i++) {
 			try {
 				next_key = getMD5Hash(next_key);
+				System.out.println("Next key: " + HidraUtility.byteArrayToHexString(next_key));
 			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -466,6 +467,7 @@ public class HidraUtility {
 	}
 	
 	public static byte[] hashTo4Bytes(byte[] bytes) {
+		System.out.println("bytes: " + byteArrayToHexString(bytes));
 		byte[] result = longToByteArray(Murmur3.hash_x86_32(bytes, bytes.length, 17));
 		return  Arrays.copyOfRange(result, 4, 8);
 	}
