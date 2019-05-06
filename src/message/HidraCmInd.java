@@ -39,6 +39,9 @@ public class HidraCmInd extends HidraProtocolMessage {
 		
 		// Noncesr generation
         new Random().nextBytes(this.nonceSR);
+        
+        //Store for later use
+        HidraACS.nonceSR = this.nonceSR;
 		
 //		To assure the freshness of this message, it embeds a new key value K i S,CM from a previously 
 //		generated oneway key chain [K 1 S,CM ...K N S,CM ]. The purpose of these oneway functions on the enclosed key, 

@@ -28,6 +28,12 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 		for (int i = 0; i < nonce2.length ; i++) {
 			nonce2[i] = message[idR.length + lifetimeTR.length + i];
 		}		
+
+		System.out.println("Nonce2: " + HidraUtility.byteArrayToHexString(nonce2));
+		
+		System.out.println("Getting properties of subject " + subjectId);
+		HidraACS.securityProperties.get(subjectId).setNonce2(nonce2);
+		
 		for (int i = 0; i < ticket.length ; i++) {
 			ticket[i] = message[idR.length + lifetimeTR.length + nonce2.length + i];
 		}

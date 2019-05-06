@@ -27,6 +27,7 @@ import message.HidraCmIndRepMessage;
 import message.HidraACSResourceMessage;
 import message.HidraCmInd;
 import message.HidraCmIndReq;
+import message.HidraCmRep;
 import message.HidraCmReq;
 
 
@@ -54,8 +55,8 @@ public class HidraACS {
 			AliceContext.Pbkdf.NONE, AliceContext.MacAlgorithm.NONE, 
 			16, AliceContext.GcmTagLength.BITS_128, 10000);
 	
-	public static HashMap<Integer, HidraSubjectsSecurityProperties> properties = new HashMap<>();
-	
+	public static HashMap<Byte, HidraSubjectsSecurityProperties> securityProperties = new HashMap<>();
+	public static byte[] nonceSR;
 	
 	
 	public HidraACS(){
@@ -383,7 +384,7 @@ public class HidraACS {
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-						System.out.println("Content of datagram: " + new String(actualMessage));
+						System.out.println("Received HID_CM_IND_REQ");
 						if(actualMessage[1] == 2) {
 							
 							HidraCmIndReq hcir = new HidraCmIndReq(actualMessage);
@@ -392,23 +393,22 @@ public class HidraACS {
 							
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							
-							receivedDatagram = receiveDataPacket(socketForResource);
-							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-								if(actualMessage[0] == 1) {
-									
-									//TODO HID_CM_REP (zie allerlei info die je eerder had opgeslagen
-									// Wat zijn attrs en attrc? Letterlijk gekopieerd van ladon, dus verwijderen? Ah zijn dat ABAC attributen?
-									// -> laat dit mss zelf weg en steek er in de plaats direct je access request in! 
-									
-									sendDataToSubject("HID_CM_REP".getBytes(), subjectId);
+//							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog. Dat moet wel echt werken
+//							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+//								System.out.println(actualMessage[0]);
+//								if(actualMessage[0] == 1) {
+//									System.out.println("Received ACK");
+									HidraCmRep hcm = new HidraCmRep(subjectId);
+
+									sendDataToSubject(HidraUtility.booleanArrayToByteArray(hcm.constructBoolMessage()), subjectId);
 									System.out.println("End of hidra protocol with subject " + subjectId);
-								} else {
-									System.out.println("Error: Association denied by resource");
-								}
-							} else {
-								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-							}	
+//								} else {
+//									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
+//								}
+//							} else {
+//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+//							}	
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());

@@ -32,7 +32,7 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
         System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
         
         // Store information for this subject 
-        HidraACS.properties.put((int) idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
+        HidraACS.securityProperties.put(idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
 		
 		//TGT generation ciphered with Kcm
         ticketCm = constructUnEncryptedTicket(Kscm, idS, nonceSCm);
