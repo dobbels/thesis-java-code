@@ -437,7 +437,7 @@ public class HidraUtility {
 		for (int i = 0 ; i < N ; i++) {
 			try {
 				next_key = getMD5Hash(next_key);
-				System.out.println("Next key: " + HidraUtility.byteArrayToHexString(next_key));
+//				System.out.println("Next key: " + HidraUtility.byteArrayToHexString(next_key));
 			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}

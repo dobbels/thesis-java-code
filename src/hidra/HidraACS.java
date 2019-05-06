@@ -305,31 +305,24 @@ public class HidraACS {
 	public static void main(String[] args){
 		new HidraACS();
 		
-//		byte[] test_vector = { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 
-//							0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x51, 
-//							0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f };
-//		
+//		byte[] test_vector = 
+//			{ 
+//				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd, (byte) 0xfe, (byte) 0xff,
+//				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 
+//				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd
+//		};
+		
+//		byte[] test_vector = {0x5f, (byte) 0xf5, 0x5f, (byte) 0xf5, 0x5f};
+		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
 //		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
 		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(test_vector)));
 		
-
-		//De theorie was dat getallen boven 7f misschien niet werkten, maar het was gewoon omdat het zo kort was?
-//        byte[] testbytes = {(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, 
-//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5,
-//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5,
-//        		(byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5, (byte) 0xf1, (byte) 0xf2, (byte) 0xf1, (byte) 0xf2, 0x5};
-//        System.out.println("testbytes: " + HidraUtility.byteArrayToHexString(testbytes));
-//        System.out.println("testhash: " + HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(testbytes)));
-		
 		try {
 			// Set up connection with RPL border router
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");
-
-			// Wait to be sure the connection is set up and the WSN RPL has converged. 
-			TimeUnit.SECONDS.sleep(3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -337,7 +330,6 @@ public class HidraACS {
 		while (true) {
 			runHidraProtocolDemo();
 		}
-		
 	}
 	
 	private static HidraPolicy getPolicy(byte subjectId) {
@@ -393,14 +385,14 @@ public class HidraACS {
 							
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							
-//							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog. Dat moet wel echt werken
+//							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog als je wil. Vreemd dat dat ene bericht gewoon niet verstuurd wordt
 //							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
 //								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 //								System.out.println(actualMessage[0]);
 //								if(actualMessage[0] == 1) {
 //									System.out.println("Received ACK");
 									HidraCmRep hcm = new HidraCmRep(subjectId);
-
+									try {TimeUnit.MILLISECONDS.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
 									sendDataToSubject(HidraUtility.booleanArrayToByteArray(hcm.constructBoolMessage()), subjectId);
 									System.out.println("End of hidra protocol with subject " + subjectId);
 //								} else {

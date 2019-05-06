@@ -67,6 +67,7 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 			message[16+i] = nonceSR[i];
 		}
 		byte[] nonce2 = HidraACS.securityProperties.get(idS[1]).getNonce2();
+		System.out.println("Nonce2 before encryption: " +HidraUtility.byteArrayToHexString(nonce2));
 		for(int i = 0 ; i < nonce2.length; i++) {
 			message[24+i] = nonce2[i];
 		}
