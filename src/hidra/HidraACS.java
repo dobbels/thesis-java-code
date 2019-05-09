@@ -312,14 +312,27 @@ public class HidraACS {
 //				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd
 //		};
 		
+//		byte[] test_vector = 
+//			{ 
+//				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 
+//				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 
+//				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c
+//		};
+		
+//		byte[] test_vector = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x68, 0x65, 0x6c, 0x6c, 0x6f};
+		
 //		byte[] test_vector = {0x5f, (byte) 0xf5, 0x5f, (byte) 0xf5, 0x5f};
+		
+//		System.out.println(HidraUtility.byteArrayToHexString(test_vector) + " with length " + test_vector.length);
+		
+//		System.out.println("with key: " + HidraUtility.byteArrayToHexString());
 		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
 //		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
 		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(test_vector)));
-		
+//		
 		try {
 			// Set up connection with RPL border router
 			Terminal.execute("make --directory /home/user/thesis-code/contiki/examples/ipv6/rpl-border-router/ TARGET=cooja connect-router-cooja");

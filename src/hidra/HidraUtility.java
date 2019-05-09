@@ -459,7 +459,7 @@ public class HidraUtility {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try {
         	//TODO HMAC=hash(k2|hash(k1|m)) -> wat is k1 hier? 
-			output.write(Alice.getMac(AliceContext.MacAlgorithm.HMAC_SHA_1, HidraACS.Kr).doFinal(bytes));
+			output.write(Alice.getMac(AliceContext.MacAlgorithm.HMAC_SHA_256, HidraACS.Kr).doFinal(bytes));
 		} catch (IllegalStateException | IOException | GeneralSecurityException e) {
 			e.printStackTrace();
 		}
@@ -467,7 +467,6 @@ public class HidraUtility {
 	}
 	
 	public static byte[] hashTo4Bytes(byte[] bytes) {
-		System.out.println("bytes: " + byteArrayToHexString(bytes));
 		byte[] result = longToByteArray(Murmur3.hash_x86_32(bytes, bytes.length, 17));
 		return  Arrays.copyOfRange(result, 4, 8);
 	}
