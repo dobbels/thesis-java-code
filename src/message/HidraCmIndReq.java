@@ -3,6 +3,8 @@ package message;
 import hidra.HidraTrustedServer;
 import hidra.HidraUtility;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class HidraCmIndReq extends HidraProtocolMessage {
@@ -13,17 +15,15 @@ public class HidraCmIndReq extends HidraProtocolMessage {
 	public HidraCmIndReq(byte[] message) {
 		idR = Arrays.copyOfRange(message, 0, 2);
 		nonce3 = Arrays.copyOfRange(message, 2, 10);
-		mac = Arrays.copyOfRange(message, 10, 14);
+		mac = HidraUtility.xcrypt(Arrays.copyOfRange(message, 10, 14), HidraTrustedServer.Kr);
 		
-		byte[] key_and_message = new byte[20];
-		for (int i = 0; i < HidraTrustedServer.Kr.length ; i++ ) {
-			key_and_message[i] = (byte) HidraTrustedServer.Kr[i];
+		byte[] hash = new byte[4];
+		try {
+			hash = HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(Arrays.copyOfRange(message, 0, 10)));
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		byte[] m = Arrays.copyOfRange(message, 0, 4);
-		for (int i = 0; i < m.length ; i++ ) {
-			key_and_message[i+16] = m[i];
-		}
-		byte[] hash = HidraUtility.hashTo4Bytes(key_and_message);
 		for (int i = 0; i < mac.length; i ++) {
 			if (hash[i] != mac[i]) {
 				System.out.println("Error: violated integrity");

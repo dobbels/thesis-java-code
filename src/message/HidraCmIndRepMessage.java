@@ -3,6 +3,8 @@ package message;
 import hidra.HidraTrustedServer;
 import hidra.HidraUtility;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -22,24 +24,23 @@ public class HidraCmIndRepMessage extends HidraProtocolMessage {
 //		System.out.println("nonce3 in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(nonce3));
 //		System.out.println("Kircm in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(Kircm));
 
-		byte[] key_and_message = new byte[20];
-		for (int i = 0; i < HidraTrustedServer.Kr.length ; i++ ) {
-			key_and_message[i] = (byte) HidraTrustedServer.Kr[i];
-		}
+		byte[] messageToMac = new byte[26];
 		for (int i = 0; i < this.idR.length ; i++ ) {
-			key_and_message[i+16] = this.idR[i];
+			messageToMac[i] = this.idR[i];
 		}
-		for (int i = 0; i < 2 ; i++ ) {
-			key_and_message[i+18] = this.nonce3[i];
+		for (int i = 0; i < nonce3.length ; i++ ) {
+			messageToMac[i+2] = this.nonce3[i];
 		}
 
-//		for (int i = 0; i < nonce3.length ; i++ ) {
-//			key_and_message[i+18] = nonce3[i];
-//		}
-//		for (int i = 0; i < Kircm.length ; i++ ) {
-//			key_and_message[i+26] = Kircm[i];
-//		}
-		this.mac = HidraUtility.hashTo4Bytes(key_and_message);
+		for (int i = 0; i < Kircm.length ; i++ ) {
+			messageToMac[i+10] = this.Kircm[i];
+		}
+		try {
+			this.mac = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageToMac)), HidraTrustedServer.Kr);
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		System.out.println("MAC in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(mac));
 	}
 	

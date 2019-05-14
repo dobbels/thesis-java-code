@@ -3,6 +3,8 @@ package message;
 import hidra.HidraTrustedServer;
 import hidra.HidraUtility;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -51,10 +53,16 @@ public class HidraCmInd extends HidraProtocolMessage {
         this.Kircm = HidraUtility.computeAndStoreOneWayHashChain();
         
         //Quickfix, because hmac doesn't work in Contiki at the moment
-        byte[] messageForMAC = constructQuickMessageForIntegrity();
+        byte[] messageForMAC = constructMessageForIntegrity();
 //        System.out.println("messageForMAC: " + HidraUtility.byteArrayToHexString(messageForMAC) + " with length " + messageForMAC.length);
         //Differences between murmur3 implementations => always take the first 20 bytes as a comparison for now.
-        this.MAC = HidraUtility.hashTo4Bytes(Arrays.copyOfRange(messageForMAC, 0, 20));
+        try {
+        	//TODO encrypt
+			this.MAC = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageForMAC)), HidraTrustedServer.Kr);
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //        this.MAC = HidraUtility.hashTo4Bytes(messageForMAC);
         
       //Construct array to compute mac
@@ -62,26 +70,12 @@ public class HidraCmInd extends HidraProtocolMessage {
 //        this.MAC = HidraUtility.hashTo4Bytes(HidraUtility.computeMac(messageForMAC));
 	}
 	
-	public byte[] constructQuickMessageForIntegrity() {
-		byte[] kr = new byte[16];
-		for (int i = 0; i < HidraTrustedServer.Kr.length ; i++ ) {
-			kr[i] = (byte) HidraTrustedServer.Kr[i];
-		}
-		ArrayList<Boolean> codification = HidraUtility.byteArrayToBooleanList(kr); 
-		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(nonceSR));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(lifeTimeTR));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(Kircm));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(encrypted_byte_policy));
-		return HidraUtility.booleanArrayToByteArray(codification);
-	}
-	
 	public byte[] constructMessageForIntegrity() {
 		ArrayList<Boolean> codification = HidraUtility.byteArrayToBooleanList(idS);
 		codification.addAll(HidraUtility.byteArrayToBooleanList(nonceSR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(lifeTimeTR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(Kircm));
-		codification.addAll(policy);
+		codification.addAll(HidraUtility.byteArrayToBooleanList(encrypted_byte_policy));
 		return HidraUtility.booleanArrayToByteArray(codification);
 	}
 	
