@@ -1,6 +1,6 @@
 package message;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 import hidra.HidraSubjectsSecurityProperties;
 import hidra.HidraUtility;
 
@@ -29,10 +29,10 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 
 		//Kscm generation
         new Random().nextBytes(this.Kscm);
-        System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
+//        System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
         
         // Store information for this subject 
-        HidraACS.securityProperties.put(idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
+        HidraTrustedServer.securityProperties.put(idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
 		
 		//TGT generation ciphered with Kcm
         ticketCm = constructUnEncryptedTicket(Kscm, idS, nonceSCm);
@@ -48,9 +48,9 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 		
 		ArrayList<Boolean> codification = super.constructBoolMessage();
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(this.ticketCm, HidraACS.Kcm)));
+		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(this.ticketCm, HidraTrustedServer.Kcm)));
 //		System.out.println("restOfMessage before encryption: "+HidraUtility.bytesToHex(restOfMessage));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(restOfMessage, HidraACS.Ks)));
+		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(restOfMessage, HidraUtility.getSubjectKey((char)idS[1]))));
 //		System.out.println(HidraUtility.bytesToHex(HidraUtility.booleanArrayToByteArray(codification)));
 		return codification;
 	}

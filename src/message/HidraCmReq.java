@@ -2,7 +2,7 @@ package message;
 
 import java.util.ArrayList;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 import hidra.HidraPolicy;
 import hidra.HidraUtility;
 
@@ -19,7 +19,7 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 	//Assuming the right structure is given by the subject
 	public HidraCmReq(byte subjectId, byte[] message) {
 		super();
-		System.out.println("Expected length 47 == "+message.length);
+//		System.out.println("Expected length 47 == "+message.length);
 		System.out.println("Received HidraCmReq message: "+ HidraUtility.byteArrayToHexString(message));
 		for (int i = 0; i < idR.length ; i++) {
 			idR[i] = message[i];
@@ -29,15 +29,15 @@ public class HidraCmReq extends HidraACSSubjectMessage {
 			nonce2[i] = message[idR.length + lifetimeTR.length + i];
 		}		
 
-		System.out.println("Nonce2: " + HidraUtility.byteArrayToHexString(nonce2));
+//		System.out.println("Nonce2: " + HidraUtility.byteArrayToHexString(nonce2));
 		
-		System.out.println("Getting properties of subject " + subjectId);
-		HidraACS.securityProperties.get(subjectId).setNonce2(nonce2);
+//		System.out.println("Getting properties of subject " + subjectId);
+		HidraTrustedServer.securityProperties.get(subjectId).setNonce2(nonce2);
 		
 		for (int i = 0; i < ticket.length ; i++) {
 			ticket[i] = message[idR.length + lifetimeTR.length + nonce2.length + i];
 		}
-		this.ticket = HidraUtility.xcrypt(this.ticket, HidraACS.Kcm);
+		this.ticket = HidraUtility.xcrypt(this.ticket, HidraTrustedServer.Kcm);
 		// Through the ticket, the credential manager acquires Kscm 
 		//Keys all have values below 0x7f now. Normally other values will work when casted to char, but this remains untested.
 		for (int i = 0; i < Kscm.length ; i++) {

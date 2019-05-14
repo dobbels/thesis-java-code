@@ -25,6 +25,38 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HidraUtility {
 	
+	private static final int ACS_RESOURCE_PORT = 1234;
+	private static final int ACS_SUBJECT_PORT = 4321;
+//	private static String resourceIP = "fd00::212:7402:2:202"; // If the mote is a sky mote (and the 2nd that was added to the simulation)
+	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
+//	private static String[] subjectIPs = {"fd00::c30c:0:0:3", "fd00::c30c:0:0:4", "fd00::c30c:0:0:5"};
+	
+	public static int getAcsResourcePort() {
+		return ACS_RESOURCE_PORT;
+	}
+
+	public static String getResourceIP() {
+		return resourceIP;
+	}
+
+	public static void setResourceIP(String resourceIP) {
+		HidraUtility.resourceIP = resourceIP;
+	}
+
+	public static int getAcsSubjectPort() {
+		return ACS_SUBJECT_PORT;
+	}
+
+	// Very hardcoded, but should work for a demo on Z1 devices
+	public static String getSubjectIP(int id) {
+		return ("fd00::c30c:0:0:" + id);
+	}
+	
+	public static char[] getSubjectKey(char id) {
+		char[] Ks = { 0x7e, 0x2b,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  id };
+		return Ks;
+	}
+	
 	private static byte zeroByte = 0;
 	
 	enum Effect { 
@@ -395,7 +427,7 @@ public class HidraUtility {
 	 */
 	public static byte[] xcrypt(byte[] plain_text, char[] key) {		
 		byte[] encrypted_text = null; 
-		Alice encryptor = new Alice(HidraACS.ctx);
+		Alice encryptor = new Alice(HidraTrustedServer.ctx);
 		try {
 			//Ignore the generated initial vector of size 16
 			byte [] result = encryptor.encrypt(plain_text, key);
@@ -444,8 +476,8 @@ public class HidraUtility {
 //			System.out.println("Next key: " + bytesToHex(next_key));
 			keyChain.add(next_key);
 		}
-		HidraACS.setKeyChain(keyChain);
-		return HidraACS.getNextKeyChainValue();
+		HidraTrustedServer.setKeyChain(keyChain);
+		return HidraTrustedServer.getNextKeyChainValue();
 	}
 	
 	public static byte[] getMD5Hash(byte[] passwordBytes) throws NoSuchAlgorithmException, UnsupportedEncodingException
@@ -459,7 +491,7 @@ public class HidraUtility {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try {
         	//TODO HMAC=hash(k2|hash(k1|m)) -> wat is k1 hier? 
-			output.write(Alice.getMac(AliceContext.MacAlgorithm.HMAC_SHA_256, HidraACS.Kr).doFinal(bytes));
+			output.write(Alice.getMac(AliceContext.MacAlgorithm.HMAC_SHA_256, HidraTrustedServer.Kr).doFinal(bytes));
 		} catch (IllegalStateException | IOException | GeneralSecurityException e) {
 			e.printStackTrace();
 		}

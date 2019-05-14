@@ -4,7 +4,7 @@
 
 package encryption;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
@@ -656,7 +656,7 @@ public class Alice {
     	if (context.getIvLength() != 16) {
     		System.out.println("Error! IV length is " + context.getIvLength());
     	}
-    	return HidraACS.Initial_Vector;
+    	return HidraTrustedServer.Initial_Vector;
     	
 //        byte[] initializationVector = new byte[context.getIvLength()];
 //

@@ -1,6 +1,6 @@
 package message;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 import hidra.HidraUtility;
 
 import java.util.ArrayList;
@@ -35,13 +35,14 @@ public class HidraCmInd extends HidraProtocolMessage {
 			policy.add(false);  
 		}
 		
-		encrypted_byte_policy = HidraUtility.xcrypt(HidraUtility.booleanArrayToByteArray(policy), HidraACS.Kr);
+		encrypted_byte_policy = HidraUtility.xcrypt(HidraUtility.booleanArrayToByteArray(policy), HidraTrustedServer.Kr);
 		
 		// Noncesr generation
         new Random().nextBytes(this.nonceSR);
+//        System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
         
         //Store for later use
-        HidraACS.nonceSR = this.nonceSR;
+        HidraTrustedServer.securityProperties.get(idS[1]).setNonceSR(this.nonceSR);
 		
 //		To assure the freshness of this message, it embeds a new key value K i S,CM from a previously 
 //		generated oneway key chain [K 1 S,CM ...K N S,CM ]. The purpose of these oneway functions on the enclosed key, 
@@ -51,7 +52,7 @@ public class HidraCmInd extends HidraProtocolMessage {
         
         //Quickfix, because hmac doesn't work in Contiki at the moment
         byte[] messageForMAC = constructQuickMessageForIntegrity();
-        System.out.println("messageForMAC: " + HidraUtility.byteArrayToHexString(messageForMAC) + " with length " + messageForMAC.length);
+//        System.out.println("messageForMAC: " + HidraUtility.byteArrayToHexString(messageForMAC) + " with length " + messageForMAC.length);
         //Differences between murmur3 implementations => always take the first 20 bytes as a comparison for now.
         this.MAC = HidraUtility.hashTo4Bytes(Arrays.copyOfRange(messageForMAC, 0, 20));
 //        this.MAC = HidraUtility.hashTo4Bytes(messageForMAC);
@@ -63,8 +64,8 @@ public class HidraCmInd extends HidraProtocolMessage {
 	
 	public byte[] constructQuickMessageForIntegrity() {
 		byte[] kr = new byte[16];
-		for (int i = 0; i < HidraACS.Kr.length ; i++ ) {
-			kr[i] = (byte) HidraACS.Kr[i];
+		for (int i = 0; i < HidraTrustedServer.Kr.length ; i++ ) {
+			kr[i] = (byte) HidraTrustedServer.Kr[i];
 		}
 		ArrayList<Boolean> codification = HidraUtility.byteArrayToBooleanList(kr); 
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
@@ -88,17 +89,17 @@ public class HidraCmInd extends HidraProtocolMessage {
 	public byte[] constructCmInd() {
 		ArrayList<Boolean> codification = super.constructBoolMessage();
 
-		System.out.println(HidraUtility.byteArrayToHexString(idR));
-		System.out.println(HidraUtility.byteArrayToHexString(idS));
-		System.out.println(HidraUtility.byteArrayToHexString(nonceSR));
-		System.out.println(HidraUtility.byteArrayToHexString(lifeTimeTR));
-		
-		System.out.println(HidraUtility.byteArrayToHexString(Kircm));
-
-		System.out.println("Unencrypted policy: " + HidraUtility.byteArrayToHexString(HidraUtility.booleanArrayToByteArray(policy)));
-		System.out.println("Encrypted policy: " + HidraUtility.byteArrayToHexString(encrypted_byte_policy));
-
-		System.out.println(HidraUtility.byteArrayToHexString(MAC));
+//		System.out.println(HidraUtility.byteArrayToHexString(idR));
+//		System.out.println(HidraUtility.byteArrayToHexString(idS));
+//		System.out.println(HidraUtility.byteArrayToHexString(nonceSR));
+//		System.out.println(HidraUtility.byteArrayToHexString(lifeTimeTR));
+//		
+//		System.out.println(HidraUtility.byteArrayToHexString(Kircm));
+//
+//		System.out.println("Unencrypted policy: " + HidraUtility.byteArrayToHexString(HidraUtility.booleanArrayToByteArray(policy)));
+//		System.out.println("Encrypted policy: " + HidraUtility.byteArrayToHexString(encrypted_byte_policy));
+//
+//		System.out.println(HidraUtility.byteArrayToHexString(MAC));
 		
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));

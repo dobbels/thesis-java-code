@@ -1,6 +1,6 @@
 package message;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 import hidra.HidraSubjectsSecurityProperties;
 import hidra.HidraUtility;
 
@@ -25,11 +25,15 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		this.idS[0] = 0;
 		this.idS[1] = subjectId;
 		
-		new Random().nextBytes(this.nonceSR);
+		this.nonceSR = HidraTrustedServer.securityProperties.get(subjectId).getNonceSR();
+//		System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
 		
 		new Random().nextBytes(this.Ksr);
+//		System.out.println("Ksr: " + HidraUtility.byteArrayToHexString(this.Ksr));
 
         ticketR = constructEncryptedTicket();
+//        System.out.println("Encrypted ticketR: " + HidraUtility.byteArrayToHexString(this.ticketR));
+//        System.out.println("Encrypted ticketR, bit 8: " + HidraUtility.byteArrayToHexString(Arrays.copyOfRange(this.ticketR, 8, 9)));
         
         restOfMessage = constructEncryptedRestOfMessage();
 	}
@@ -54,8 +58,9 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			ticket[18+i] = nonceSR[i];
 		}
+//		System.out.println("Unencrypted ticketR: " + HidraUtility.byteArrayToHexString(ticket));
 		//No attributes in this implementation
-		return HidraUtility.xcrypt(ticket, HidraACS.Kr);
+		return HidraUtility.xcrypt(ticket, HidraTrustedServer.Kr);
 	}
 	
 	private byte[] constructEncryptedRestOfMessage() {
@@ -66,8 +71,8 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			message[16+i] = nonceSR[i];
 		}
-		byte[] nonce2 = HidraACS.securityProperties.get(idS[1]).getNonce2();
-		System.out.println("Nonce2 before encryption: " +HidraUtility.byteArrayToHexString(nonce2));
+		byte[] nonce2 = HidraTrustedServer.securityProperties.get(idS[1]).getNonce2();
+//		System.out.println("Nonce2 before encryption: " +HidraUtility.byteArrayToHexString(nonce2));
 		for(int i = 0 ; i < nonce2.length; i++) {
 			message[24+i] = nonce2[i];
 		}
@@ -76,7 +81,7 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		}
 		
 		char[] Kscm = new char[16];
-		byte [] byteKscm = HidraACS.securityProperties.get(idS[1]).getKSCM();
+		byte [] byteKscm = HidraTrustedServer.securityProperties.get(idS[1]).getKSCM();
 		for (int i = 0 ; i < 16 ; i++) {
 			Kscm[i] = (char) byteKscm[i];
 		}

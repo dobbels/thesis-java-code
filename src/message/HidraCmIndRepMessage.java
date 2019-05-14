@@ -1,6 +1,6 @@
 package message;
 
-import hidra.HidraACS;
+import hidra.HidraTrustedServer;
 import hidra.HidraUtility;
 
 import java.util.ArrayList;
@@ -17,14 +17,14 @@ public class HidraCmIndRepMessage extends HidraProtocolMessage {
 		super();
 		this.idR = idR;
 		this.nonce3 = nonce3;
-		this.Kircm = HidraACS.getNextKeyChainValue();
-		System.out.println("idR in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(idR));
-		System.out.println("nonce3 in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(nonce3));
-		System.out.println("Kircm in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(Kircm));
+		this.Kircm = HidraTrustedServer.getNextKeyChainValue();
+//		System.out.println("idR in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(idR));
+//		System.out.println("nonce3 in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(nonce3));
+//		System.out.println("Kircm in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(Kircm));
 
 		byte[] key_and_message = new byte[20];
-		for (int i = 0; i < HidraACS.Kr.length ; i++ ) {
-			key_and_message[i] = (byte) HidraACS.Kr[i];
+		for (int i = 0; i < HidraTrustedServer.Kr.length ; i++ ) {
+			key_and_message[i] = (byte) HidraTrustedServer.Kr[i];
 		}
 		for (int i = 0; i < this.idR.length ; i++ ) {
 			key_and_message[i+16] = this.idR[i];
@@ -40,7 +40,7 @@ public class HidraCmIndRepMessage extends HidraProtocolMessage {
 //			key_and_message[i+26] = Kircm[i];
 //		}
 		this.mac = HidraUtility.hashTo4Bytes(key_and_message);
-		System.out.println("MAC in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(mac));
+//		System.out.println("MAC in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(mac));
 	}
 	
 	@Override

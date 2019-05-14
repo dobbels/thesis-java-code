@@ -14,7 +14,7 @@ public class HidraAnsReq extends HidraACSSubjectMessage {
 	public HidraAnsReq(byte[] message) {
 		super();
 		System.out.println("Expected length 15 == "+message.length);
-		System.out.println("Received HidraAnsReq message: "+ HidraUtility.byteArrayToHexString(message));
+		System.out.println("HID_ANS_REQ content: "+ HidraUtility.byteArrayToHexString(message));
 		for (int i = 0; i < idS.length ; i++) {
 			idS[i] = message[i];
 		}

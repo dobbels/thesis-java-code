@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import encryption.HMAC;
 import encryption.Alice;
 import encryption.AliceContext;
 
@@ -34,11 +35,11 @@ import message.HidraCmReq;
 /**
  * Class representing a Access Control Server, executing the Hidra protocol.
  */
-public class HidraACS {
-	public static final int ACS_RESOURCE_PORT = HidraConfig.getAcsResourcePort();
-	public static final int ACS_SUBJECT_PORT = HidraConfig.getAcsSubjectPort();
+public class HidraTrustedServer {
+	public static final int SERVER_RESOURCE_PORT = HidraUtility.getAcsResourcePort();
+	public static final int SERVER_SUBJECT_PORT = HidraUtility.getAcsSubjectPort();
 	
-	private static String resourceIP = HidraConfig.getResourceIP();
+	private static String resourceIP = HidraUtility.getResourceIP();
 	
 	private static DatagramSocket socketForResource = null;
 	private static DatagramSocket socketForSubject = null;
@@ -47,7 +48,6 @@ public class HidraACS {
 	public static final byte[] testPacket = "Test message".getBytes(); 	
 	
 	public static final char[] Kcm = { 0x15, 0x15,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
-	public static final char[] Ks = { 0x7e, 0x2b,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
 	public static final char[] Kr =  { 0x2b,  0x7e,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
 	public static final byte[] Initial_Vector = { 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f };
 	public static AliceContext ctx = new AliceContext(AliceContext.Algorithm.AES, AliceContext.Mode.CTR, 
@@ -55,18 +55,16 @@ public class HidraACS {
 			AliceContext.Pbkdf.NONE, AliceContext.MacAlgorithm.NONE, 
 			16, AliceContext.GcmTagLength.BITS_128, 10000);
 	
-	public static HashMap<Byte, HidraSubjectsSecurityProperties> securityProperties = new HashMap<>();
-	public static byte[] nonceSR;
+	public static HashMap<Byte, HidraSubjectsSecurityProperties> securityProperties = new HashMap<>();	
 	
-	
-	public HidraACS(){
+	public HidraTrustedServer(){
 		System.out.println("Server opens socket, both for resource and subject");
 		try{
-			socketForResource = new DatagramSocket(ACS_RESOURCE_PORT);
-			System.out.println("Opened socket on port "+ ACS_RESOURCE_PORT);
+			socketForResource = new DatagramSocket(SERVER_RESOURCE_PORT);
+			System.out.println("Opened socket on port "+ SERVER_RESOURCE_PORT);
 			
-			socketForSubject = new DatagramSocket(ACS_SUBJECT_PORT);
-			System.out.println("Opened socket on port "+ ACS_SUBJECT_PORT);
+			socketForSubject = new DatagramSocket(SERVER_SUBJECT_PORT);
+			System.out.println("Opened socket on port "+ SERVER_SUBJECT_PORT);
 		}
 		catch(SocketException e){
 			e.getMessage();
@@ -99,7 +97,7 @@ public class HidraACS {
 		try{
 			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
 			socket.send(dataPack);
-			System.out.println("ACS sent datagram with UDP payload " + (new String(data)) + " of length " + dataPack.getLength());
+			System.out.println("ACS sent datagram with UDP payload of length " + dataPack.getLength());
 		}
 		catch(Exception e){
 			System.out.println("HidraACS.sendDataPacket() Exception ");
@@ -116,11 +114,11 @@ public class HidraACS {
 			System.out.println("Length of data packet is: " + packet.length + ".");
 			System.out.println("This will probably be too much too handle in one datagram for the 802.15.4 network.");
 		}
-		sendDataPacket(packet,resourceIP, socketForResource, ACS_RESOURCE_PORT);
+		sendDataPacket(packet,resourceIP, socketForResource, SERVER_RESOURCE_PORT);
 	}
 	
 	public static void sendDataToSubject(byte[] packet, int subjectId){
-		sendDataPacket(packet,HidraConfig.getSubjectIP(subjectId), socketForSubject, ACS_SUBJECT_PORT);
+		sendDataPacket(packet,HidraUtility.getSubjectIP(subjectId), socketForSubject, SERVER_SUBJECT_PORT);
 	}	
 
 	/**TODO
@@ -303,7 +301,7 @@ public class HidraACS {
 	 * When accountability messages are included, an extra thread will be introduced to listen for exchanged initiated by the resource.  
 	 */
 	public static void main(String[] args){
-		new HidraACS();
+		new HidraTrustedServer();
 		
 //		byte[] test_vector = 
 //			{ 
@@ -312,6 +310,10 @@ public class HidraACS {
 //				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd
 //		};
 		
+//		byte[] test_vector = 
+//			{ 
+//				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd, (byte) 0xfe, (byte) 0xff
+//		};
 //		byte[] test_vector = 
 //			{ 
 //				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 
@@ -362,16 +364,15 @@ public class HidraACS {
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
 		byte[] actualMessage = null; 
 		
-		if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) {
+		if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			byte subjectId = actualMessage[1];
 			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
 			HidraAnsReq har = new HidraAnsReq(actualMessage);
 			sendDataToSubject(HidraUtility.booleanArrayToByteArray(har.processAndConstructReply()), subjectId);
 			receivedDatagram = receiveDataPacket(socketForSubject); 
-			if (receivedDatagram.getPort() == ACS_SUBJECT_PORT) { 
+			if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) { 
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-				////////////////////IMPLEMENTED SECURITY UNTIL HERE
 				// Resource id is hardcoded to 2
 				if (actualMessage[1] == 2) {
 					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
@@ -387,7 +388,7 @@ public class HidraACS {
 					sendDataToResource(cmInd);
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
-					if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+					if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Received HID_CM_IND_REQ");
 						if(actualMessage[1] == 2) {
@@ -398,34 +399,36 @@ public class HidraACS {
 							
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							
-//							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog als je wil. Vreemd dat dat ene bericht gewoon niet verstuurd wordt
-//							if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
-//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-//								System.out.println(actualMessage[0]);
-//								if(actualMessage[0] == 1) {
-//									System.out.println("Received ACK");
+							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog als je wil/zou weten hoe dit komt. Vreemd dat dat ene bericht gewoon niet verstuurd wordt
+																					// Inspecteer eens de packets die worden verstuurd. De payload lijkt bvb raar te doen + 
+																					// + wat is een packet dat puur IPv6 is?? 614	01:26.950	2	1	 73: 15.4 D 81:E6:A1:D8:C8:FB:D3:E7 C1:0C:00:00:00:00:00:01|IPv6|04D204D2 00093827 01
+							if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
+								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+								System.out.println(actualMessage[0]);
+								if(actualMessage[0] == 1) {
+									System.out.println("Received ACK");
 									HidraCmRep hcm = new HidraCmRep(subjectId);
-									try {TimeUnit.MILLISECONDS.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
+//									try {TimeUnit.MILLISECONDS.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
 									sendDataToSubject(HidraUtility.booleanArrayToByteArray(hcm.constructBoolMessage()), subjectId);
 									System.out.println("End of hidra protocol with subject " + subjectId);
-//								} else {
-//									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
-//								}
-//							} else {
-//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-//							}	
+								} else {
+									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
+								}
+							} else {
+								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+							}	
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
 					}
 				} else {
-					System.out.println("Instead of message from same subject, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+					System.out.println("Error: Instead of message from same subject, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 				}
 			} else {
 				System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
 			}
 		} else {
-			System.out.println("Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+			System.out.println("Error: Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 		}
 	}
 	
@@ -436,7 +439,7 @@ public class HidraACS {
 		sendDataToResource(HidraUtility.booleanArrayToByteArray(hbm.constructBoolMessage()));
 		
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForResource);
-		if (receivedDatagram.getPort() == ACS_RESOURCE_PORT) {
+		if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
 			byte[] actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			if (actualMessage[0] == 0) {
 				System.out.println("Request denied");
@@ -477,8 +480,8 @@ public class HidraACS {
 	}
 	
 	public static void setKeyChain(ArrayList<byte[]> keyChain) {
-		HidraACS.currentKeyIndex = keyChain.size() - 1;
-		HidraACS.keyChain = keyChain;
+		HidraTrustedServer.currentKeyIndex = keyChain.size() - 1;
+		HidraTrustedServer.keyChain = keyChain;
 	}
 }
 
