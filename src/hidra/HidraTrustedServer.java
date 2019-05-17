@@ -57,6 +57,15 @@ public class HidraTrustedServer {
 	
 	public static HashMap<Byte, HidraSubjectsSecurityProperties> securityProperties = new HashMap<>();	
 	
+	public static boolean isUniquePseudonym(byte[] pseudonym) {
+		for (HidraSubjectsSecurityProperties hsp : securityProperties.values()) {
+			if (hsp.getPseudonym()[1] == pseudonym[1]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public HidraTrustedServer(){
 		System.out.println("Server opens socket, both for resource and subject");
 		try{
@@ -341,6 +350,8 @@ public class HidraTrustedServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		constructDemoPolicy().prettyPrint();
 		
 		while (true) {
 			runHidraProtocolDemo();

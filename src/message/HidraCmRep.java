@@ -11,8 +11,9 @@ import java.util.Random;
 
 public class HidraCmRep extends HidraACSSubjectMessage {
 	//Totaal bytes van bericht: 62 bytes. Crypto door subject op 34
-	private byte[] idS = new byte[2];
 	byte[] idR = {0,2};
+	byte[] pseudonym = new byte[2];
+	byte subjectId;
 	//ksr + ids + noncesr ( + attributes)
 	private byte[] ticketR = new byte[26]; 
 	private byte[] Ksr = new byte[16];
@@ -22,8 +23,9 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 
 	public HidraCmRep(byte subjectId) {
 		super();
-		this.idS[0] = 0;
-		this.idS[1] = subjectId;
+		this.subjectId = subjectId;
+		//Get generated pseudonym for this subject
+		pseudonym = HidraTrustedServer.securityProperties.get(subjectId).getPseudonym();
 		
 		this.nonceSR = HidraTrustedServer.securityProperties.get(subjectId).getNonceSR();
 //		System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
@@ -41,7 +43,8 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 	@Override
 	public ArrayList<Boolean> constructBoolMessage() {
 		ArrayList<Boolean> codification = super.constructBoolMessage();
-		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
+		System.out.println("Pseudonym for subject " + subjectId + " is: " + HidraUtility.byteArrayToHexString(this.pseudonym));
+		codification.addAll(HidraUtility.byteArrayToBooleanList(pseudonym));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(ticketR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(restOfMessage));
 		return codification;
@@ -52,8 +55,8 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < Ksr.length; i++) {
 			ticket[i] = Ksr [i];
 		}
-		for(int i = 0 ; i < idS.length; i++) {
-			ticket[16+i] = idS [i];
+		for(int i = 0 ; i < pseudonym.length; i++) {
+			ticket[16+i] = pseudonym [i];
 		}
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			ticket[18+i] = nonceSR[i];
@@ -71,7 +74,7 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			message[16+i] = nonceSR[i];
 		}
-		byte[] nonce2 = HidraTrustedServer.securityProperties.get(idS[1]).getNonce2();
+		byte[] nonce2 = HidraTrustedServer.securityProperties.get(subjectId).getNonce2();
 //		System.out.println("Nonce2 before encryption: " +HidraUtility.byteArrayToHexString(nonce2));
 		for(int i = 0 ; i < nonce2.length; i++) {
 			message[24+i] = nonce2[i];
@@ -81,7 +84,7 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		}
 		
 		char[] Kscm = new char[16];
-		byte [] byteKscm = HidraTrustedServer.securityProperties.get(idS[1]).getKSCM();
+		byte [] byteKscm = HidraTrustedServer.securityProperties.get(subjectId).getKSCM();
 		for (int i = 0 ; i < 16 ; i++) {
 			Kscm[i] = (char) byteKscm[i];
 		}

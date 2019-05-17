@@ -8,6 +8,7 @@ public class HidraSubjectsSecurityProperties {
 	private byte[] NonceSCM;
 	private byte[] nonce2; 
 	private byte[] nonceSR;
+	private byte[] pseudonym = new byte[2];
 	
 	public HidraSubjectsSecurityProperties(byte[] KSCM,  byte[] NonceSCM) {
 		this.setKSCM(KSCM);
@@ -31,5 +32,11 @@ public class HidraSubjectsSecurityProperties {
 	}
 	public void setNonceSR(byte[] nonceSR) {
 		this.nonceSR = nonceSR;
+	}
+	public byte[] getPseudonym() {
+		return pseudonym;
+	}
+	public void setPseudonym(byte[] pseudonym) {
+		this.pseudonym = pseudonym;
 	}
 }

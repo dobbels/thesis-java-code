@@ -20,6 +20,7 @@ public class HidraCmInd extends HidraProtocolMessage {
 	private ArrayList<Boolean> policy;
 	private byte[] encrypted_byte_policy;
 	byte[] MAC;
+	byte[] pseudonym = new byte[2];
 	
 	public HidraCmInd(byte[] idR, byte[] idS, byte[] lifeTimeTR, int i, ArrayList<Boolean> policy) {
 		super();
@@ -41,10 +42,19 @@ public class HidraCmInd extends HidraProtocolMessage {
 		
 		// Noncesr generation
         new Random().nextBytes(this.nonceSR);
-//        System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
+        System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
         
         //Store for later use
         HidraTrustedServer.securityProperties.get(idS[1]).setNonceSR(this.nonceSR);
+        
+        //Generate and store unique pseudonym
+        do {
+        	new Random().nextBytes(this.pseudonym);
+        	}
+        while (!HidraTrustedServer.isUniquePseudonym(this.pseudonym));
+        System.out.println("Pseudonym for subject " + idS[1] + " is: " + HidraUtility.byteArrayToHexString(this.pseudonym));
+        HidraTrustedServer.securityProperties.get(idS[1]).setPseudonym(this.pseudonym);
+      
 		
 //		To assure the freshness of this message, it embeds a new key value K i S,CM from a previously 
 //		generated oneway key chain [K 1 S,CM ...K N S,CM ]. The purpose of these oneway functions on the enclosed key, 
@@ -71,7 +81,7 @@ public class HidraCmInd extends HidraProtocolMessage {
 	}
 	
 	public byte[] constructMessageForIntegrity() {
-		ArrayList<Boolean> codification = HidraUtility.byteArrayToBooleanList(idS);
+		ArrayList<Boolean> codification = HidraUtility.byteArrayToBooleanList(pseudonym);
 		codification.addAll(HidraUtility.byteArrayToBooleanList(nonceSR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(lifeTimeTR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(Kircm));
@@ -96,7 +106,7 @@ public class HidraCmInd extends HidraProtocolMessage {
 //		System.out.println(HidraUtility.byteArrayToHexString(MAC));
 		
 		codification.addAll(HidraUtility.byteArrayToBooleanList(idR));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
+		codification.addAll(HidraUtility.byteArrayToBooleanList(pseudonym));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(nonceSR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(lifeTimeTR));
 		codification.addAll(HidraUtility.byteArrayToBooleanList(Kircm));
