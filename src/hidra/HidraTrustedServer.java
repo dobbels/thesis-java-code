@@ -24,7 +24,7 @@ import encryption.AliceContext;
 
 import message.HidraAnsReq;
 import message.HidraBlacklistMessage;
-import message.HidraCmIndRepMessage;
+import message.HidraCmIndRep;
 import message.HidraACSResourceMessage;
 import message.HidraCmInd;
 import message.HidraCmIndReq;
@@ -323,6 +323,7 @@ public class HidraTrustedServer {
 //			{ 
 //				(byte) 0xf0, (byte) 0xf1, (byte) 0xf2, (byte) 0xf3, (byte) 0xf4, (byte) 0xf5, (byte) 0xf6, (byte) 0xf7, (byte) 0xf8, (byte) 0xf9, (byte) 0xfa, (byte) 0xfb, (byte) 0xfc, (byte) 0xfd, (byte) 0xfe, (byte) 0xff
 //		};
+		
 //		byte[] test_vector = 
 //			{ 
 //				0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 
@@ -339,6 +340,8 @@ public class HidraTrustedServer {
 //		System.out.println("with key: " + HidraUtility.byteArrayToHexString());
 		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.computeMac(test_vector)));
+		
+//		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.compute4ByteMac(test_vector)));
 //		
 //		System.out.println(HidraUtility.byteArrayToHexString(HidraUtility.hashTo4Bytes(HidraUtility.computeMac(test_vector))));
 		
@@ -350,9 +353,7 @@ public class HidraTrustedServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		constructDemoPolicy().prettyPrint();
-		
+				
 		while (true) {
 			runHidraProtocolDemo();
 		}
@@ -406,7 +407,7 @@ public class HidraTrustedServer {
 							
 							HidraCmIndReq hcir = new HidraCmIndReq(actualMessage);
 							
-							HidraCmIndRepMessage hm = hcir.constructResponse();
+							HidraCmIndRep hm = hcir.constructResponse();
 							
 							sendDataToResource(HidraUtility.booleanArrayToByteArray(hm.constructBoolMessage()));
 							

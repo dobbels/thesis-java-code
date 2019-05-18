@@ -15,15 +15,9 @@ public class HidraCmIndReq extends HidraProtocolMessage {
 	public HidraCmIndReq(byte[] message) {
 		idR = Arrays.copyOfRange(message, 0, 2);
 		nonce3 = Arrays.copyOfRange(message, 2, 10);
-		mac = HidraUtility.xcrypt(Arrays.copyOfRange(message, 10, 14), HidraTrustedServer.Kr);
+		mac = Arrays.copyOfRange(message, 10, 14);
 		
-		byte[] hash = new byte[4];
-		try {
-			hash = HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(Arrays.copyOfRange(message, 0, 10)));
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] hash = HidraUtility.compute4ByteMac(Arrays.copyOfRange(message, 0, 10));
 		for (int i = 0; i < mac.length; i ++) {
 			if (hash[i] != mac[i]) {
 				System.out.println("Error: violated integrity");
@@ -31,7 +25,7 @@ public class HidraCmIndReq extends HidraProtocolMessage {
 		}
 	}
 	
-	public HidraCmIndRepMessage constructResponse() {
-		return new HidraCmIndRepMessage(idR, nonce3);
+	public HidraCmIndRep constructResponse() {
+		return new HidraCmIndRep(idR, nonce3);
 	}
 }

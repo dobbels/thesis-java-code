@@ -486,11 +486,14 @@ public class HidraUtility {
         return md.digest(passwordBytes);
     }
 	
+	public static byte[] compute4ByteMac(byte[] bytes) {
+		return HidraUtility.hashTo4Bytes(computeMac(bytes));
+	}
+	
 	//Compute MAC of the given byte array based on the secret resource key.  
 	public static byte[] computeMac(byte[] bytes) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try {
-        	//TODO HMAC=hash(k2|hash(k1|m)) -> wat is k1 hier? 
 			output.write(Alice.getMac(AliceContext.MacAlgorithm.HMAC_SHA_256, HidraTrustedServer.Kr).doFinal(bytes));
 		} catch (IllegalStateException | IOException | GeneralSecurityException e) {
 			e.printStackTrace();

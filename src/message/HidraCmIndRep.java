@@ -8,14 +8,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class HidraCmIndRepMessage extends HidraProtocolMessage {
+public class HidraCmIndRep extends HidraProtocolMessage {
 
 	private byte[] idR = new byte[2];
 	private byte[] Kircm = new byte[16];
 	private byte[] nonce3 = new byte[8];
 	private byte[] mac = new byte[4];
 	
-	public HidraCmIndRepMessage(byte[] idR, byte[] nonce3) {
+	public HidraCmIndRep(byte[] idR, byte[] nonce3) {
 		super();
 		this.idR = idR;
 		this.nonce3 = nonce3;
@@ -35,12 +35,7 @@ public class HidraCmIndRepMessage extends HidraProtocolMessage {
 		for (int i = 0; i < Kircm.length ; i++ ) {
 			messageToMac[i+10] = this.Kircm[i];
 		}
-		try {
-			this.mac = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageToMac)), HidraTrustedServer.Kr);
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.mac = HidraUtility.compute4ByteMac(messageToMac);
 //		System.out.println("MAC in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(mac));
 	}
 	

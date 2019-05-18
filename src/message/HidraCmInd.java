@@ -66,13 +66,13 @@ public class HidraCmInd extends HidraProtocolMessage {
         byte[] messageForMAC = constructMessageForIntegrity();
 //        System.out.println("messageForMAC: " + HidraUtility.byteArrayToHexString(messageForMAC) + " with length " + messageForMAC.length);
         //Differences between murmur3 implementations => always take the first 20 bytes as a comparison for now.
-        try {
-        	//TODO encrypt
-			this.MAC = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageForMAC)), HidraTrustedServer.Kr);
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        try {
+//			this.MAC = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageForMAC)), HidraTrustedServer.Kr);
+        	this.MAC = HidraUtility.compute4ByteMac(messageForMAC);
+//		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //        this.MAC = HidraUtility.hashTo4Bytes(messageForMAC);
         
       //Construct array to compute mac
