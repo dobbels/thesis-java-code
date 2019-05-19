@@ -8,7 +8,7 @@ import java.io.OutputStream;
 
 /**
  * Helper class to execute terminal commands.
- * Source: https://crunchify.com/how-to-run-windowsmac-commands-in-java-and-return-the-text-result/
+ * Adapted code from: https://crunchify.com/how-to-run-windowsmac-commands-in-java-and-return-the-text-result/
  */
 public class Terminal {
 	public static void main(String[] args) {

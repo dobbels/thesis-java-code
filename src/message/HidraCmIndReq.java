@@ -1,7 +1,7 @@
 package message;
 
-import hidra.HidraTrustedServer;
-import hidra.HidraUtility;
+import hidra.TrustedServer;
+import hidra.Utility;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +17,7 @@ public class HidraCmIndReq extends HidraProtocolMessage {
 		nonce3 = Arrays.copyOfRange(message, 2, 10);
 		mac = Arrays.copyOfRange(message, 10, 14);
 		
-		byte[] hash = HidraUtility.compute4ByteMac(Arrays.copyOfRange(message, 0, 10));
+		byte[] hash = Utility.compute4ByteMac(Arrays.copyOfRange(message, 0, 10));
 		for (int i = 0; i < mac.length; i ++) {
 			if (hash[i] != mac[i]) {
 				System.out.println("Error: violated integrity");
@@ -25,7 +25,7 @@ public class HidraCmIndReq extends HidraProtocolMessage {
 		}
 	}
 	
-	public HidraCmIndRep constructResponse() {
+	public HidraCmIndRep processAndConstructReply() {
 		return new HidraCmIndRep(idR, nonce3);
 	}
 }

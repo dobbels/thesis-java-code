@@ -1,10 +1,10 @@
 package message;
 
-import hidra.HidraUtility;
+import hidra.Utility;
 
 import java.util.ArrayList;
 
-public class HidraAnsReq extends HidraACSSubjectMessage {
+public class HidraAnsReq extends TrustedServerSubjectMessage {
 	private byte[] idS = new byte[2];
 	private byte[] idCm = new byte[2];
 	private byte[] lifetimeTGT = new byte[3];
@@ -14,7 +14,7 @@ public class HidraAnsReq extends HidraACSSubjectMessage {
 	public HidraAnsReq(byte[] message) {
 		super();
 		System.out.println("Expected length 15 == "+message.length);
-		System.out.println("HID_ANS_REQ content: "+ HidraUtility.byteArrayToHexString(message));
+		System.out.println("HID_ANS_REQ content: "+ Utility.byteArrayToHexString(message));
 		for (int i = 0; i < idS.length ; i++) {
 			idS[i] = message[i];
 		}
@@ -29,7 +29,7 @@ public class HidraAnsReq extends HidraACSSubjectMessage {
 		}
 	}
 	
-	public ArrayList<Boolean> processAndConstructReply(){
-		return (new HidraAnsRep(idS, idCm, nonce1)).constructBoolMessage();
+	public HidraAnsRep processAndConstructReply(){
+		return (new HidraAnsRep(idS, idCm, nonce1));
 	}
 }

@@ -1,13 +1,13 @@
 package message;
 
-import hidra.HidraUtility;
+import hidra.Utility;
 
 import java.util.ArrayList;
 
-import message.HidraPolicyAdaptMessage.UpdateType;
+import message.PolicyUpdateMessage.UpdateType;
 
 
-public class HidraBlacklistMessage extends HidraPolicyAdaptMessage{
+public class HidraBlacklistMessage extends PolicyUpdateMessage{
 	
 	public HidraBlacklistMessage(byte id) {
 		super(id, UpdateType.BLACKLIST);

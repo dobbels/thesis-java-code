@@ -1,7 +1,7 @@
 package message;
 
-import hidra.HidraTrustedServer;
-import hidra.HidraUtility;
+import hidra.TrustedServer;
+import hidra.Utility;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -19,10 +19,7 @@ public class HidraCmIndRep extends HidraProtocolMessage {
 		super();
 		this.idR = idR;
 		this.nonce3 = nonce3;
-		this.Kircm = HidraTrustedServer.getNextKeyChainValue();
-//		System.out.println("idR in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(idR));
-//		System.out.println("nonce3 in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(nonce3));
-//		System.out.println("Kircm in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(Kircm));
+		this.Kircm = TrustedServer.getNextKeyChainValue();
 
 		byte[] messageToMac = new byte[26];
 		for (int i = 0; i < this.idR.length ; i++ ) {
@@ -35,16 +32,15 @@ public class HidraCmIndRep extends HidraProtocolMessage {
 		for (int i = 0; i < Kircm.length ; i++ ) {
 			messageToMac[i+10] = this.Kircm[i];
 		}
-		this.mac = HidraUtility.compute4ByteMac(messageToMac);
-//		System.out.println("MAC in HID_CM_IND_REP: "+ HidraUtility.byteArrayToHexString(mac));
+		this.mac = Utility.compute4ByteMac(messageToMac);
 	}
 	
 	@Override
 	public ArrayList<Boolean> constructBoolMessage() {
 		ArrayList<Boolean> codification = super.constructBoolMessage();
-		codification.addAll(HidraUtility.byteArrayToBooleanList(idR));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(Kircm));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(mac));
+		codification.addAll(Utility.byteArrayToBooleanList(idR));
+		codification.addAll(Utility.byteArrayToBooleanList(Kircm));
+		codification.addAll(Utility.byteArrayToBooleanList(mac));
 		return codification;
 	}
 }

@@ -1,15 +1,15 @@
 package message;
 
-import hidra.HidraTrustedServer;
-import hidra.HidraSubjectsSecurityProperties;
-import hidra.HidraUtility;
+import hidra.TrustedServer;
+import hidra.SubjectSecurityProperties;
+import hidra.Utility;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class HidraCmRep extends HidraACSSubjectMessage {
+public class HidraCmRep extends TrustedServerSubjectMessage {
 	//Totaal bytes van bericht: 62 bytes. Crypto door subject op 34
 	byte[] idR = {0,2};
 	byte[] pseudonym = new byte[2];
@@ -25,17 +25,13 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		super();
 		this.subjectId = subjectId;
 		//Get generated pseudonym for this subject
-		pseudonym = HidraTrustedServer.securityProperties.get(subjectId).getPseudonym();
+		pseudonym = TrustedServer.securityProperties.get(subjectId).getPseudonym();
 		
-		this.nonceSR = HidraTrustedServer.securityProperties.get(subjectId).getNonceSR();
-//		System.out.println("NonceSR: " + HidraUtility.byteArrayToHexString(this.nonceSR));
+		this.nonceSR = TrustedServer.securityProperties.get(subjectId).getNonceSR();
 		
 		new Random().nextBytes(this.Ksr);
-//		System.out.println("Ksr: " + HidraUtility.byteArrayToHexString(this.Ksr));
 
         ticketR = constructEncryptedTicket();
-//        System.out.println("Encrypted ticketR: " + HidraUtility.byteArrayToHexString(this.ticketR));
-//        System.out.println("Encrypted ticketR, bit 8: " + HidraUtility.byteArrayToHexString(Arrays.copyOfRange(this.ticketR, 8, 9)));
         
         restOfMessage = constructEncryptedRestOfMessage();
 	}
@@ -43,10 +39,10 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 	@Override
 	public ArrayList<Boolean> constructBoolMessage() {
 		ArrayList<Boolean> codification = super.constructBoolMessage();
-		System.out.println("Pseudonym for subject " + subjectId + " is: " + HidraUtility.byteArrayToHexString(this.pseudonym));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(pseudonym));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(ticketR));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(restOfMessage));
+		System.out.println("Pseudonym for subject " + subjectId + " is: " + Utility.byteArrayToHexString(this.pseudonym));
+		codification.addAll(Utility.byteArrayToBooleanList(pseudonym));
+		codification.addAll(Utility.byteArrayToBooleanList(ticketR));
+		codification.addAll(Utility.byteArrayToBooleanList(restOfMessage));
 		return codification;
 	}
 	
@@ -61,9 +57,8 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			ticket[18+i] = nonceSR[i];
 		}
-//		System.out.println("Unencrypted ticketR: " + HidraUtility.byteArrayToHexString(ticket));
 		//No attributes in this implementation
-		return HidraUtility.xcrypt(ticket, HidraTrustedServer.Kr);
+		return Utility.xcrypt(ticket, TrustedServer.Kr);
 	}
 	
 	private byte[] constructEncryptedRestOfMessage() {
@@ -74,7 +69,7 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		for(int i = 0 ; i < nonceSR.length; i++) {
 			message[16+i] = nonceSR[i];
 		}
-		byte[] nonce2 = HidraTrustedServer.securityProperties.get(subjectId).getNonce2();
+		byte[] nonce2 = TrustedServer.securityProperties.get(subjectId).getNonce2();
 //		System.out.println("Nonce2 before encryption: " +HidraUtility.byteArrayToHexString(nonce2));
 		for(int i = 0 ; i < nonce2.length; i++) {
 			message[24+i] = nonce2[i];
@@ -84,10 +79,10 @@ public class HidraCmRep extends HidraACSSubjectMessage {
 		}
 		
 		char[] Kscm = new char[16];
-		byte [] byteKscm = HidraTrustedServer.securityProperties.get(subjectId).getKSCM();
+		byte [] byteKscm = TrustedServer.securityProperties.get(subjectId).getKSCM();
 		for (int i = 0 ; i < 16 ; i++) {
 			Kscm[i] = (char) byteKscm[i];
 		}
-		return HidraUtility.xcrypt(message, Kscm);
+		return Utility.xcrypt(message, Kscm);
 	}
 }

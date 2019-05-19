@@ -1,14 +1,14 @@
 package message;
 
-import hidra.HidraTrustedServer;
-import hidra.HidraSubjectsSecurityProperties;
-import hidra.HidraUtility;
+import hidra.TrustedServer;
+import hidra.SubjectSecurityProperties;
+import hidra.Utility;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class HidraAnsRep extends HidraACSSubjectMessage {
+public class HidraAnsRep extends TrustedServerSubjectMessage {
 	private byte[] idS;
 	private byte[] idCm;
 	private byte[] nonce1;
@@ -32,7 +32,7 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 //        System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
         
         // Store information for this subject 
-        HidraTrustedServer.securityProperties.put(idS[1], new HidraSubjectsSecurityProperties(this.Kscm, this.nonceSCm));
+        TrustedServer.securityProperties.put(idS[1], new SubjectSecurityProperties(this.Kscm, this.nonceSCm));
 		
 		//TGT generation ciphered with Kcm
         ticketCm = constructUnEncryptedTicket(Kscm, idS, nonceSCm);
@@ -47,11 +47,9 @@ public class HidraAnsRep extends HidraACSSubjectMessage {
 		byte[] restOfMessage = constructUnencryptedRestOfMessage(this.Kscm, this.nonceSCm, this.nonce1, this.idCm);
 		
 		ArrayList<Boolean> codification = super.constructBoolMessage();
-		codification.addAll(HidraUtility.byteArrayToBooleanList(idS));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(this.ticketCm, HidraTrustedServer.Kcm)));
-//		System.out.println("restOfMessage before encryption: "+HidraUtility.bytesToHex(restOfMessage));
-		codification.addAll(HidraUtility.byteArrayToBooleanList(HidraUtility.xcrypt(restOfMessage, HidraUtility.getSubjectKey((char)idS[1]))));
-//		System.out.println(HidraUtility.bytesToHex(HidraUtility.booleanArrayToByteArray(codification)));
+		codification.addAll(Utility.byteArrayToBooleanList(idS));
+		codification.addAll(Utility.byteArrayToBooleanList(Utility.xcrypt(this.ticketCm, TrustedServer.Kcm)));
+		codification.addAll(Utility.byteArrayToBooleanList(Utility.xcrypt(restOfMessage, Utility.getSubjectKey((char)idS[1]))));
 		return codification;
 	}
 	

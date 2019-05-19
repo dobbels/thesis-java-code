@@ -5,7 +5,7 @@
 package encryption;
 
 /**
- * Context passed into {@link com.rockaport.alice.Alice}. You should use {@link com.rockaport.alice.AliceContextBuilder}
+ * Context passed into {@link com.AliceEncryption.alice.Alice}. You should use {@link com.rockaport.alice.AliceContextBuilder}
  * to create this class as it contains many defaults.
  */
 public class AliceContext {
@@ -20,7 +20,7 @@ public class AliceContext {
     private int iterations;
 
     /**
-     * Initializes a new {@code AliceContext} for use with {@link com.rockaport.alice.Alice}. Most of the inputs are
+     * Initializes a new {@code AliceContext} for use with {@link com.AliceEncryption.alice.Alice}. Most of the inputs are
      * described in the <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html">
      * Java Cryptography Architecture Standard Algorithm Name Documentation for JDK 8</a>.
      *
