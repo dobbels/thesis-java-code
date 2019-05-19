@@ -86,7 +86,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 		if (!properlyAuthenticated() || !preliminaryAuthorized()) {
 			return null;//TODO handle this: no message to resource, maybe a nack (= null-byte) to the subject
 		} else {
-			return (new HidraCmInd(idR, idS, lifetimeTR, i, hp.codify()));
+			return (new HidraCmInd(idR, idS, lifetimeTR, i, hp.codifyUsingAPBR()));
 		}
 	}
 }

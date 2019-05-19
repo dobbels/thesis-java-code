@@ -6,6 +6,17 @@ import hidra.Utility.*;
 
 public class PolicyAttribute {
 	
+	enum AttributeType {
+		BOOLEAN,
+		BYTE,
+		INTEGER,
+		FLOAT,
+		STRING,
+		REQUEST_REFERENCE,
+		SYSTEM_REFERENCE,
+		LOCAL_REFERENCE
+	}
+	
 	private AttributeType type; //TODO gebruik polymorfisme. Dit lijkt handig om handlen van attribute doenbaar te houden.
 	private boolean boolValue;
 	private String stringValue;

@@ -1,5 +1,6 @@
 package hidra;
 
+import hidra.Policy.Effect;
 import hidra.Utility.*;
 
 import java.util.ArrayList;
@@ -7,6 +8,14 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class PolicyRule {
+
+	public enum Action {
+		GET,
+		POST,
+		PUT,
+		DELETE,
+		ANY
+	}
 	
 	private byte id;
 	private Effect effect;

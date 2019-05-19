@@ -2,6 +2,7 @@ package hidra;
 
 import java.util.ArrayList;
 
+import hidra.Policy.Effect;
 import hidra.Utility.*;
 
 public class PolicyObligation {

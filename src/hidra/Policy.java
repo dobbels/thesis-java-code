@@ -18,6 +18,11 @@ import java.util.BitSet;
  */
 public class Policy {
 	
+	enum Effect { 
+		  DENY,
+		  PERMIT
+		}
+	
 	private byte id; // Use of ints is avoided, as on the hidra resource, an integer consists of 2 bytes, while in java that is 4 bytes. 
 	private Effect effect;
 	private ArrayList<PolicyRule> ruleset; 
@@ -28,11 +33,7 @@ public class Policy {
 		this.ruleset = ruleset;
 	}
 	
-	public ArrayList<Boolean> codify() {
-		return codifyUsingAPBR();
-	}
-	
-	private ArrayList<Boolean> codifyUsingAPBR() { 
+	public ArrayList<Boolean> codifyUsingAPBR() { 
 		//Policy id
 		ArrayList<Boolean> codification  = Utility.byteToBoolList(id);
 		

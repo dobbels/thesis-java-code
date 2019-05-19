@@ -1,6 +1,9 @@
 package hidra;
 
 import hidra.Utility.*;
+import hidra.Policy.Effect;
+import hidra.PolicyAttribute.AttributeType;
+import hidra.PolicyRule.Action;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -250,7 +253,7 @@ public class TrustedServer {
 		r1expressions.add(r1e1);
 		ArrayList<PolicyObligation> r1obligations = new ArrayList<>();
 		r1obligations.add(r1o1);
-		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, zeroByte, zeroByte, zeroByte, Utility.Action.PUT, r1expressions, r1obligations);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, zeroByte, zeroByte, zeroByte, Action.PUT, r1expressions, r1obligations);
 		
 		// policy
 		ArrayList<PolicyRule> rules = new ArrayList<>();

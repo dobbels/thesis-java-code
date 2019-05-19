@@ -1,5 +1,7 @@
 package hidra;
 
+import hidra.PolicyRule.Action;
+
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -27,9 +29,7 @@ public class Utility {
 	
 	private static final int ACS_RESOURCE_PORT = 1234;
 	private static final int ACS_SUBJECT_PORT = 4321;
-//	private static String resourceIP = "fd00::212:7402:2:202"; // If the mote is a sky mote (and the 2nd that was added to the simulation)
 	private static String resourceIP = "fd00::c30c:0:0:2"; // If the mote is a z1 mote (and the 2nd that was added to the simulation)
-//	private static String[] subjectIPs = {"fd00::c30c:0:0:3", "fd00::c30c:0:0:4", "fd00::c30c:0:0:5"};
 	
 	public static int getServerResourcePort() {
 		return ACS_RESOURCE_PORT;
@@ -59,29 +59,6 @@ public class Utility {
 	
 	private static byte zeroByte = 0;
 	
-	enum Effect { 
-		  DENY,
-		  PERMIT
-		}
-	
-	public enum Action {
-		GET,
-		POST,
-		PUT,
-		DELETE,
-		ANY
-	}
-	
-	enum AttributeType {
-		BOOLEAN,
-		BYTE,
-		INTEGER,
-		FLOAT,
-		STRING,
-		REQUEST_REFERENCE,
-		SYSTEM_REFERENCE,
-		LOCAL_REFERENCE
-	}
 	
 	// All reference tables originate from the resource and are shared with the ACS.
 	public static HashMap<Byte, String> expressionRereferences = new HashMap<Byte, String>() {{
@@ -150,8 +127,6 @@ public class Utility {
 			}
 			bytes[currentByte] = booleanArrayToByte(nextPart);
 		}
-		
-		//TODO check that the last byte is handled well, i.e. is padded up  
 		return bytes;
 	}
 	
@@ -176,31 +151,6 @@ public class Utility {
 			result = (byte) (result - 128);
 		}
 		
-		return result;
-	}
-	
-	public static ArrayList<Boolean> actionToBoolList(Action action) {
-		ArrayList<Boolean> result = new ArrayList<>();
-		byte actionId = 8; 
-		if (action == Action.GET) {
-			actionId = 0;
-		} else if (action == Action.POST) {
-			actionId = 1;
-		} else if (action == Action.PUT) {
-			actionId = 2;
-		} else if (action == Action.DELETE) {
-			actionId = 3;
-		} else if (action == Action.ANY) {
-			actionId = 4;
-		} else {
-			System.out.println("Error: did not find action type.");
-		}
-		
-		// Should be a number between 0 and 7 => only add last 3 booleans
-		ArrayList<Boolean> actionIdList = byteToBoolList(actionId);
-		for (int i = 5 ; i < 8 ; i++) {
-			result.add(actionIdList.get(i));
-		}
 		return result;
 	}
 	
@@ -280,11 +230,6 @@ public class Utility {
 		return boolList;
 	}
 	
-//	public static byte[] intToByteArray( final short value ) {
-//		return new byte[] {
-//			      (byte) (value >> 8), (byte) (value) };
-//	}
-	
 	/**
 	 * From https://www.baeldung.com/java-convert-float-to-byte-array
 	 */
@@ -317,67 +262,6 @@ public class Utility {
 	    return buffer.array();
 	}
 	
-	/**
-	 * Method copied from source: http://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java
-	 * @param b	byte array
-	 * @return	integer corresponding to the given byte array
-	 */
-	public static int byteArrayToInt(byte[] b) 
-	{
-	    return   b[3] & 0xFF |
-	            (b[2] & 0xFF) << 8 |
-	            (b[1] & 0xFF) << 16 |
-	            (b[0] & 0xFF) << 24;
-	}
-	
-	/**
-	 * Analog to byteArrayToInt()
-	 * @param b	byte array
-	 * @return	short corresponding to the given byte array
-	 */
-	public static short byteArrayToShort(byte[] b) 
-	{
-	    return   (short) (b[1] & 0xFF |
-	            (b[0] & 0xFF) << 8); // the cast should keep the least significant 16 bits
-	}
-	
-	/**
-	 * Converts the first 4 byte values of a byte array to an ip string.
-	 * @param ba - a byte array of 4 bytes
-	 * @return - IP String representation
-	 */
-	public static String printIP(byte[] ba) {
-		assert(ba.length >= 4);
-		return printIP(ba[0], ba[1], ba[2], ba[3]);
-	}
-
-	/** TODO dit voor IPv6 ipv IPv4 !
-	 * Converts 4 byte values to an ip string
-	 * @param a - 1st byte value
-	 * @param b - 2nd byte value
-	 * @param c - 3rd byte value
-	 * @param d - 4th byte value
-	 * @return - IP String representation
-	 */
-	public static String printIP(byte a, byte b, byte c, byte d) {
-		String str = "";
-		str += (a & 0xff) + "." + (b & 0xff) + "." + (c & 0xff) + "." + (d & 0xff);
-		return str;
-	}
-
-	//http://stackoverflow.com/questions/16253077/string-to-hexadecimal
-	public static byte[] strIPtoByteArray(String stringIP){
-		InetAddress ip = null;
-		try {
-			ip = InetAddress.getByName(stringIP);
-		} catch (Exception e) {
-			System.out.println("Couldn't convert stringIP into byteArray");
-		}
-		byte[] bytes = ip.getAddress();
-		return bytes;
-		
-	}
-	
 	public static String byteArrayToHexString(byte[] bytes) {
 		final char[] hexArray = "0123456789ABCDEF".toCharArray();
 	    char[] hexChars = new char[bytes.length * 2];
@@ -392,21 +276,6 @@ public class Utility {
 	public static String byteToHexString(byte b) {
 		String str = new String(Integer.toHexString(new Integer(b & 0xff)));
 		return str;
-	}
-	
-	/**
-	 * Checks if two byte arrays are the same.
-	 * If the arrays have different lenghts, only the a subarray of
-	 * the bigger array will be checked for equality. 
-	 */
-	public static boolean areEqual(byte[] a, byte[] b) {
-		boolean areEqual = true;
-		for (int i=0; i < Math.min(a.length, b.length); i++) {
-			if (a[i] != b[i]) {
-				areEqual = false;
-			}
-		}
-		return areEqual;
 	}
 
 	public static ArrayList<Boolean> intToBoolList(short intValue) {
@@ -433,47 +302,23 @@ public class Utility {
 			byte [] result = encryptor.encrypt(plain_text, key);
 			encrypted_text = Arrays.copyOfRange(result, 16, result.length);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return encrypted_text;
 	}
 	
-	//	One remaining issue at this point is how remote devices can check the freshness 
-	//	of received LND_AP_IND messages. For this purpose, a mechanism based on a one-way 
-	//	key function is implemented. Remind that for a one-way key function F, it is 
-	//	relatively easy to compute forward (that is, to obtain KL21 given KL ), but it 
-	//	is computationally unfeasible to compute backward (that is, to obtain KL+1 given KL ). 
-	//	Thus, before transmitting the first LND_AP_IND message to a given service principal (S), 
-	//	the TGS generates a L-length one-way key chain. Afterwards, each time the TGS sends 
-	//	a LND_AP_IND message to S, it embeds the next value of the key chain, following the 
-	//	order: K0 S,TGS, K1 S,TGS, ... , Ki S,TGS, ... , KL S,TGS. Therefore once the service 
-	//	principal owns a value Ki−1 S,TGS it is enough to check that F(Ki S,TGS) = Ki−1 S,TGS 
-	//	to assert the freshness of the message. 
-	//	However, the first time a given service principal 
-	//	receives a LND_AP_IND message, it does not own a Ki−1 S,TGS value to validate this message, 
-	//	so it responds with a LND_AP_IND_REQ. Note that in this message all the fields are sent in 
-	//	clear text, as neither of them is a secret value. Nevertheless, the message must be 
-	//	authenticated, for which the corresponding MAC is calculated. The TGS responds to this 
-	//	challenge by sending a LND_AP_IND_REP including the next value of the key chain (Ki+1 S,TGS), 
-	//	which due to the characteristics of one-way key functions, can only be generated by the 
-	//	legitimate TGS. The service principal cannot compute Ki+1 S,TGS, but it can verify 
-	//	its validity by checking that F(Ki+1 S,TGS) = Ki S,TGS.
 	public static byte[] computeAndStoreOneWayHashChain() {		
 		byte[] base_key = new byte[16];
         new Random().nextBytes(base_key);
-//		byte[] base_key = { 0x2b,  0x7e,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
 		byte[] next_key = base_key;
 		int N = 10;
 		ArrayList<byte[]> keyChain = new ArrayList<byte[]>(); 
 		for (int i = 0 ; i < N ; i++) {
 			try {
 				next_key = getMD5Hash(next_key);
-//				System.out.println("Next key: " + HidraUtility.byteArrayToHexString(next_key));
 			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-//			System.out.println("Next key: " + bytesToHex(next_key));
 			keyChain.add(next_key);
 		}
 		TrustedServer.setKeyChain(keyChain);
