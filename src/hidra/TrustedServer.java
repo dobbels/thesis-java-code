@@ -332,7 +332,7 @@ public class TrustedServer {
 					//Process message, include policy based on subject id and send to resource
 					Policy hp = getPolicy(subjectId);
 					hp.prettyPrint();
-					hcr.processAndConstructReply(hp).send();
+					hcr.processAndConstructReply(hp, subjectId).send();
 					
 					receivedDatagram = receiveDataPacket(socketForResource);
 					if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {

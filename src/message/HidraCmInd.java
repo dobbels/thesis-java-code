@@ -15,19 +15,17 @@ import java.util.Random;
 public class HidraCmInd extends HidraProtocolMessage {
 	
 	byte[] idR = new byte[2];
-	byte[] idS = new byte[2];
+	byte[] pseudonym = new byte[2];
 	byte[] nonceSR = new byte[8];
 	byte[] lifeTimeTR = new byte[1];
 	byte[] Kircm = new byte[16];
 	private ArrayList<Boolean> policy;
 	private byte[] encrypted_byte_policy;
 	byte[] MAC;
-	byte[] pseudonym = new byte[2];
 	
-	public HidraCmInd(byte[] idR, byte[] idS, byte[] lifeTimeTR, int i, ArrayList<Boolean> policy) {
+	public HidraCmInd(byte subjectId, byte[] idR, byte[] lifeTimeTR, int i, ArrayList<Boolean> policy) {
 		super();
 		this.idR = idR;
-		this.idS = idS;
 		this.lifeTimeTR = lifeTimeTR;
 		this.policy = policy;
 		
@@ -47,18 +45,10 @@ public class HidraCmInd extends HidraProtocolMessage {
         System.out.println("NonceSR: " + Utility.byteArrayToHexString(this.nonceSR));
         
         //Store for later use
-        System.out.println("subject id: " + idS[1]);
-        HashMap<Byte, SubjectSecurityProperties> hts =  TrustedServer.securityProperties;
-        TrustedServer.securityProperties.get(idS[1]);
-        TrustedServer.securityProperties.get(idS[1]).setNonceSR(this.nonceSR);
+        TrustedServer.securityProperties.get(subjectId).setNonceSR(this.nonceSR);
         
-        //Generate and store unique pseudonym
-        do {
-        	new Random().nextBytes(this.pseudonym);
-        	}
-        while (!TrustedServer.isUniquePseudonym(this.pseudonym));
-        System.out.println("Pseudonym for subject " + idS[1] + " is: " + Utility.byteArrayToHexString(this.pseudonym));
-        TrustedServer.securityProperties.get(idS[1]).setPseudonym(this.pseudonym);
+        //Get generated pseudonym for this subject
+  		pseudonym = TrustedServer.securityProperties.get(subjectId).getPseudonym();
       
 		
 //		To assure the freshness of this message, it embeds a new key value K i S,CM from a previously 
@@ -67,22 +57,8 @@ public class HidraCmInd extends HidraProtocolMessage {
 //		transmitted and potentially sniffed key.
         this.Kircm = Utility.computeAndStoreOneWayHashChain();
         
-        //Quickfix, because hmac doesn't work in Contiki at the moment
         byte[] messageForMAC = constructMessageForIntegrity();
-//        System.out.println("messageForMAC: " + HidraUtility.byteArrayToHexString(messageForMAC) + " with length " + messageForMAC.length);
-        //Differences between murmur3 implementations => always take the first 20 bytes as a comparison for now.
-//        try {
-//			this.MAC = HidraUtility.xcrypt(HidraUtility.hashTo4Bytes(HidraUtility.getMD5Hash(messageForMAC)), HidraTrustedServer.Kr);
-        	this.MAC = Utility.compute4ByteMac(messageForMAC);
-//		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        this.MAC = HidraUtility.hashTo4Bytes(messageForMAC);
-        
-      //Construct array to compute mac
-//        byte[] messageForMAC = constructMessageForIntegrity();
-//        this.MAC = HidraUtility.hashTo4Bytes(HidraUtility.computeMac(messageForMAC));
+    	this.MAC = Utility.compute4ByteMac(messageForMAC);
 	}
 	
 	private byte[] constructMessageForIntegrity() {

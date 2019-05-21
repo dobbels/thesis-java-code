@@ -1,12 +1,14 @@
 package message;
 
+import java.util.Arrays;
+
 import hidra.TrustedServer;
 import hidra.Policy;
 import hidra.Utility;
 
 public class HidraCmReq extends TrustedServerSubjectMessage {
 	private byte[] idR = new byte[2];
-	private byte[] idS = new byte[2];
+	private byte[] pseudonym = new byte[2];
 	private byte[] lifetimeTR = new byte[1];
 	private byte[] nonce2 = new byte[8];
 	private byte[] ticket = new byte[26];
@@ -32,6 +34,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 			ticket[i] = message[idR.length + lifetimeTR.length + nonce2.length + i];
 		}
 		this.ticket = Utility.xcrypt(this.ticket, TrustedServer.Kcm);
+		
 		// Through the ticket, the credential manager acquires Kscm 
 		//Keys all have values below 0x7f now. Normally other values will work when casted to char, but this remains untested.
 		for (int i = 0; i < Kscm.length ; i++) {
@@ -48,10 +51,10 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 		
 		this.authN = Utility.xcrypt(this.authN, Kscm);  
 
-		for (int i = 0; i < idS.length ; i++) {
-			idS[i] = authN[i];
+		for (int i = 0; i < pseudonym.length ; i++) {
+			pseudonym[i] = authN[i];
 		}
-		System.out.println("subjectId: " + subjectId + " == " + idS[1]);
+		System.out.println("subjectPseudonym: " + Utility.byteArrayToHexString(Arrays.copyOfRange(ticket, 16, 18)) + " == " + Utility.byteArrayToHexString(pseudonym));
 		
 		byte[] noncescm = new byte[8];
 		for (int i = 0; i < noncescm.length ; i++) {
@@ -82,11 +85,11 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 		return true;
 	}
 	
-	public HidraCmInd processAndConstructReply(Policy hp){
+	public HidraCmInd processAndConstructReply(Policy hp, byte subjectId){
 		if (!properlyAuthenticated() || !preliminaryAuthorized()) {
 			return null;//TODO handle this: no message to resource, maybe a nack (= null-byte) to the subject
 		} else {
-			return (new HidraCmInd(idR, idS, lifetimeTR, i, hp.codifyUsingAPBR()));
+			return (new HidraCmInd(subjectId, idR, lifetimeTR, i, hp.codifyUsingAPBR()));
 		}
 	}
 }

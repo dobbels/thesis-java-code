@@ -15,7 +15,7 @@ public class HidraAnsRep extends TrustedServerSubjectMessage {
 	private byte[] ticketCm = new byte[26]; 
 	private byte[] nonceSCm = new byte[8];
 	private byte[] Kscm = new byte[16];
-//	private byte[] Kscm = { 0x15, 0x15,  0x15,  0x16,  0x28,  0x2b,  0x2b,  0x2b,  0x2b,  0x2b,  0x15,  0x2b,  0x09,  0x2b,  0x4f,  0x3c };
+	private byte[] pseudonym = new byte[2];
 	
 	public HidraAnsRep(byte[] idS, byte[] idCm, byte[] nonce1) {
 		super();
@@ -25,26 +25,27 @@ public class HidraAnsRep extends TrustedServerSubjectMessage {
 		
 		// Noncescm generation
         new Random().nextBytes(this.nonceSCm);
-//        System.out.println("nonceSCm: "+HidraUtility.bytesToHex(nonceSCm));
 
 		//Kscm generation
         new Random().nextBytes(this.Kscm);
-//        System.out.println("Kscm: "+HidraUtility.byteArrayToHexString(Kscm));
         
         // Store information for this subject 
         TrustedServer.securityProperties.put(idS[1], new SubjectSecurityProperties(this.Kscm, this.nonceSCm));
-		
-		//TGT generation ciphered with Kcm
-        ticketCm = constructUnEncryptedTicket(Kscm, idS, nonceSCm);
         
-//		System.out.println("Initial text: " + HidraUtility.bytesToHex(ticketCm));
-//		byte[] encrypted_text = HidraUtility.xcrypt(ticketCm, HidraACS.Ks);
-//		System.out.println("(En/De)crypted text: " + HidraUtility.bytesToHex(encrypted_text));
+        //Generate and store unique pseudonym
+        do {
+        	new Random().nextBytes(this.pseudonym);
+        } while (!TrustedServer.isUniquePseudonym(this.pseudonym));
+        System.out.println("Pseudonym for subject " + idS[1] + " is: " + Utility.byteArrayToHexString(this.pseudonym));
+        TrustedServer.securityProperties.get(idS[1]).setPseudonym(this.pseudonym);
+        
+		//TGT generation ciphered with Kcm
+        ticketCm = constructUnEncryptedTicket();
 	}
 	
 	@Override
 	public ArrayList<Boolean> constructBoolMessage() {
-		byte[] restOfMessage = constructUnencryptedRestOfMessage(this.Kscm, this.nonceSCm, this.nonce1, this.idCm);
+		byte[] restOfMessage = constructUnencryptedRestOfMessage();
 		
 		ArrayList<Boolean> codification = super.constructBoolMessage();
 		codification.addAll(Utility.byteArrayToBooleanList(idS));
@@ -53,33 +54,36 @@ public class HidraAnsRep extends TrustedServerSubjectMessage {
 		return codification;
 	}
 	
-	private byte[] constructUnEncryptedTicket(byte[] kscm, byte[] ids, byte[] noncescm) {
+	private byte[] constructUnEncryptedTicket() {
 		byte[] ticket = new byte [26];
-		for(int i = 0 ; i < kscm.length; i++) {
-			ticket[i] = kscm [i];
+		for(int i = 0 ; i < Kscm.length; i++) {
+			ticket[i] = Kscm[i];
 		}
-		for(int i = 0 ; i < ids.length; i++) {
-			ticket[16+i] = ids [i];
+		for(int i = 0 ; i < pseudonym.length; i++) {
+			ticket[16+i] = pseudonym[i];
 		}
-		for(int i = 0 ; i < noncescm.length; i++) {
-			ticket[18+i] = noncescm [i];
+		for(int i = 0 ; i < nonceSCm.length; i++) {
+			ticket[18+i] = nonceSCm[i];
 		}
 		return ticket;
 	}
 	
-	private byte[] constructUnencryptedRestOfMessage(byte[] kscm, byte[] noncescm, byte[] nonce1, byte[] idcm) {
-		byte[] ticket = new byte [34];
-		for(int i = 0 ; i < kscm.length; i++) {
-			ticket[i] = kscm [i];
+	private byte[] constructUnencryptedRestOfMessage() {
+		byte[] ticket = new byte [36];
+		for(int i = 0 ; i < Kscm.length; i++) {
+			ticket[i] = Kscm[i];
 		}
-		for(int i = 0 ; i < noncescm.length; i++) {
-			ticket[16+i] = noncescm [i];
+		for(int i = 0 ; i < nonceSCm.length; i++) {
+			ticket[16+i] = nonceSCm[i];
 		}
 		for(int i = 0 ; i < nonce1.length; i++) {
-			ticket[24+i] = nonce1 [i];
+			ticket[24+i] = nonce1[i];
 		}
-		for(int i = 0 ; i < idcm.length; i++) {
-			ticket[32+i] = idcm [i];
+		for(int i = 0 ; i < idCm.length; i++) {
+			ticket[32+i] = idCm[i];
+		}
+		for(int i = 0 ; i < pseudonym.length; i++) {
+			ticket[34+i] = pseudonym[i];
 		}
 		return ticket;
 	}
