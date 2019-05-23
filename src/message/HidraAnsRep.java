@@ -36,7 +36,7 @@ public class HidraAnsRep extends TrustedServerSubjectMessage {
         do {
         	new Random().nextBytes(this.pseudonym);
         } while (!TrustedServer.isUniquePseudonym(this.pseudonym));
-        System.out.println("Pseudonym for subject " + idS[1] + " is: " + Utility.byteArrayToHexString(this.pseudonym));
+//        System.out.println("Pseudonym for subject " + idS[1] + " is: " + Utility.byteArrayToHexString(this.pseudonym));
         TrustedServer.securityProperties.get(idS[1]).setPseudonym(this.pseudonym);
         
 		//TGT generation ciphered with Kcm

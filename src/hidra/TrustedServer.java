@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import encryption.AliceContext;
 
@@ -311,16 +312,19 @@ public class TrustedServer {
 		//Server starts listening for messages from a Subject
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
 		byte[] actualMessage = null; 
-		
+		long timestamp  = System.currentTimeMillis();
 		if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			byte subjectId = actualMessage[1];
 			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
 			HidraAnsReq har = new HidraAnsReq(actualMessage);
 			har.processAndConstructReply().send(subjectId);
-//			sendDataToSubject(HidraUtility.booleanArrayToByteArray(har.processAndConstructReply()), subjectId);
+			System.out.println("Time ANS_REQ -> ANS_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+			timestamp  = System.currentTimeMillis();			
 			receivedDatagram = receiveDataPacket(socketForSubject); 
-			if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) { 
+			System.out.println("Time CM_REQ reception: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+			timestamp  = System.currentTimeMillis();
+			if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 				// Resource id is hardcoded to 2
 				if (actualMessage[1] == 2) {
@@ -331,10 +335,13 @@ public class TrustedServer {
 					
 					//Process message, include policy based on subject id and send to resource
 					Policy hp = getPolicy(subjectId);
-					hp.prettyPrint();
+//					hp.prettyPrint();
 					hcr.processAndConstructReply(hp, subjectId).send();
-					
+					System.out.println("Time CM_REQ -> CM_IND: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+					timestamp  = System.currentTimeMillis();
 					receivedDatagram = receiveDataPacket(socketForResource);
+					System.out.println("Time CM_IND_REQ reception: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+					timestamp  = System.currentTimeMillis();
 					if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 						System.out.println("Received HID_CM_IND_REQ");
@@ -343,25 +350,33 @@ public class TrustedServer {
 							HidraCmIndReq hcir = new HidraCmIndReq(actualMessage);
 							
 							hcir.processAndConstructReply().send();
-							
-							receivedDatagram = receiveDataPacket(socketForResource);//TODO fix die send_ack nog als je wil/zou weten hoe dit komt. Vreemd dat dat ene bericht gewoon niet verstuurd wordt
-																					// Inspecteer eens de packets die worden verstuurd. De payload lijkt bvb raar te doen + 
-																					// + wat is een packet dat puur IPv6 is?? 614	01:26.950	2	1	 73: 15.4 D 81:E6:A1:D8:C8:FB:D3:E7 C1:0C:00:00:00:00:00:01|IPv6|04D204D2 00093827 01
-							if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
-								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-								System.out.println(actualMessage[0]);
-								if(actualMessage[0] == 1) {
+							System.out.println("Time CM_IND_REQ -> CM_IND_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+							timestamp  = System.currentTimeMillis();
+//							receivedDatagram = receiveDataPacket(socketForResource);
+//							System.out.println("Time CM_IND_REP ACK: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//							timestamp  = System.currentTimeMillis();
+//							if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
+//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+//								System.out.println(actualMessage[0]);
+//								if(actualMessage[0] == 1) {
+//									
+//									System.out.println("Received ACK");
 									
-									System.out.println("Received ACK");
+									try {TimeUnit.MILLISECONDS.sleep(0);} catch (InterruptedException e) {e.printStackTrace();}
+									System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+									timestamp  = System.currentTimeMillis();
+									
 									(new HidraCmRep(subjectId)).send(subjectId);
+									System.out.println("Time to send CM_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+									timestamp  = System.currentTimeMillis();
 
 									System.out.println("End of hidra protocol with subject " + subjectId);
-								} else {
-									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
-								}
-							} else {
-								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-							}	
+//								} else {
+//									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
+//								}
+//							} else {
+//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+//							}	
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());

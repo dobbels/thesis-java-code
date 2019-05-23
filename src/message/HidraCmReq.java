@@ -19,7 +19,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 	//Assuming the right structure is given by the subject
 	public HidraCmReq(byte subjectId, byte[] message) {
 		super();
-		System.out.println("Received HidraCmReq message: "+ Utility.byteArrayToHexString(message));
+//		System.out.println("Received HidraCmReq message: "+ Utility.byteArrayToHexString(message));
 		for (int i = 0; i < idR.length ; i++) {
 			idR[i] = message[i];
 		}
@@ -54,7 +54,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 		for (int i = 0; i < pseudonym.length ; i++) {
 			pseudonym[i] = authN[i];
 		}
-		System.out.println("subjectPseudonym: " + Utility.byteArrayToHexString(Arrays.copyOfRange(ticket, 16, 18)) + " == " + Utility.byteArrayToHexString(pseudonym));
+//		System.out.println("subjectPseudonym: " + Utility.byteArrayToHexString(Arrays.copyOfRange(ticket, 16, 18)) + " == " + Utility.byteArrayToHexString(pseudonym));
 		
 		byte[] noncescm = new byte[8];
 		for (int i = 0; i < noncescm.length ; i++) {
@@ -65,7 +65,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 			noncescm_i[i] = authN[2 + i];
 		}
 		i = calculateI(noncescm, noncescm_i);
-		System.out.println("i: 1 == " + i);
+//		System.out.println("i: 1 == " + i);
 	}
 	
 	//PoC value of i: max 255 in subject, where it is generated.

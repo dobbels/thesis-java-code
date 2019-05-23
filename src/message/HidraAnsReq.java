@@ -13,8 +13,8 @@ public class HidraAnsReq extends TrustedServerSubjectMessage {
 	//Assuming the right structure is given by the subject
 	public HidraAnsReq(byte[] message) {
 		super();
-		System.out.println("Expected length 15 == "+message.length);
-		System.out.println("HID_ANS_REQ content: "+ Utility.byteArrayToHexString(message));
+//		System.out.println("Expected length 15 == "+message.length);
+//		System.out.println("HID_ANS_REQ content: "+ Utility.byteArrayToHexString(message));
 		for (int i = 0; i < idS.length ; i++) {
 			idS[i] = message[i];
 		}
