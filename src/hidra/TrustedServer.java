@@ -290,6 +290,11 @@ public class TrustedServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
+//		sendPolicy(constructDemoPolicy2());
+//		sendPolicy(constructDemoPolicy());
+		sendPolicy(constructInstanceSample4());
 				
 		while (true) {
 			runHidraProtocolDemo();
@@ -306,6 +311,10 @@ public class TrustedServer {
 			hp = constructDemoPolicy();
 		}
 		return hp;
+	}
+	
+	private static void sendPolicy(Policy policy) {
+		sendDataPacket(Utility.booleanArrayToByteArray(policy.codifyUsingAPBR()), Utility.getResourceIP(), socketForResource, Utility.getServerResourcePort());
 	}
 	
 	private static void runHidraProtocolDemo() {
@@ -362,7 +371,7 @@ public class TrustedServer {
 //									
 //									System.out.println("Received ACK");
 									
-									try {TimeUnit.MILLISECONDS.sleep(0);} catch (InterruptedException e) {e.printStackTrace();}
+									try {TimeUnit.MILLISECONDS.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
 									System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 									timestamp  = System.currentTimeMillis();
 									
