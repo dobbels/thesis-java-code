@@ -43,8 +43,7 @@ public class PolicyObligation {
 	}
 	
 	public ArrayList<Boolean> codifyUsingAPBR() {
-		//Function id
-		ArrayList<Boolean> codification  = task.codifyUsingAPBR();
+		ArrayList<Boolean> codification = new ArrayList<>();
 		
 		//FulfillOnExistenceMask (ALWAYS by default)
 		if (alwaysExecuteTask) {
@@ -59,6 +58,8 @@ public class PolicyObligation {
 				codification.add(false);
 			}
 		}
+		
+		codification.addAll(task.codifyUsingAPBR());
 		return codification;
 	}
 }

@@ -72,7 +72,7 @@ public class HidraCmReq extends TrustedServerSubjectMessage {
 	private int calculateI(byte[] n, byte[] ni) {
 		int a = (((ni[6] & 0xFF) << 8) |(ni[7] & 0xFF));
 		int b = (((n[6] & 0xFF) << 8)|(n[7] & 0xFF));
-		System.out.println(a + " and " + b);
+//		System.out.println(a + " and " + b);
 		return (a - b);
 	}
 	

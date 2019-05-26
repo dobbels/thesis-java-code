@@ -61,8 +61,8 @@ public class Policy {
 			}
 		}		
 		// For debugging
-		System.out.println("Policy after codification (with length " + codification.size() +"):");
-		Utility.printBoolList(codification);
+//		System.out.println("Policy after codification (with length " + codification.size() +"):");
+//		Utility.printBoolList(codification);
 		return codification;
 	}
 	

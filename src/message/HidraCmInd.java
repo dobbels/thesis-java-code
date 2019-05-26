@@ -42,7 +42,7 @@ public class HidraCmInd extends HidraProtocolMessage {
 		
 		// Noncesr generation
         new Random().nextBytes(this.nonceSR);
-        System.out.println("NonceSR: " + Utility.byteArrayToHexString(this.nonceSR));
+//        System.out.println("NonceSR: " + Utility.byteArrayToHexString(this.nonceSR));
         
         //Store for later use
         TrustedServer.securityProperties.get(subjectId).setNonceSR(this.nonceSR);
@@ -50,12 +50,7 @@ public class HidraCmInd extends HidraProtocolMessage {
         //Get generated pseudonym for this subject
   		pseudonym = TrustedServer.securityProperties.get(subjectId).getPseudonym();
       
-		
-//		To assure the freshness of this message, it embeds a new key value K i S,CM from a previously 
-//		generated oneway key chain [K 1 S,CM ...K N S,CM ]. The purpose of these oneway functions on the enclosed key, 
-//		F(K i S,CM ) = K i+1 S,CM , is to make it computationally unfeasible to calculate the inverse function using a 
-//		transmitted and potentially sniffed key.
-        this.Kircm = Utility.computeAndStoreOneWayHashChain();
+		this.Kircm = TrustedServer.getNextKeyChainValue();
         
         byte[] messageForMAC = constructMessageForIntegrity();
     	this.MAC = Utility.compute4ByteMac(messageForMAC);

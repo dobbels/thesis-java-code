@@ -84,7 +84,7 @@ public class TrustedServer {
 		try{
 			DatagramPacket dataPack = new DatagramPacket(data, data.length, InetAddress.getByName(receiverIP), port);
 			socket.send(dataPack);
-			System.out.println("Server sent datagram with UDP payload of length " + dataPack.getLength());
+//			System.out.println("Server sent datagram with UDP payload of length " + dataPack.getLength());
 		}
 		catch(Exception e){
 			System.out.println("HidraServer.sendDataPacket() Exception ");
@@ -291,11 +291,15 @@ public class TrustedServer {
 			e.printStackTrace();
 		}
 		
-		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
+//		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
 //		sendPolicy(constructDemoPolicy2());
+//		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 //		sendPolicy(constructDemoPolicy());
-		sendPolicy(constructInstanceSample4());
+//		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		sendPolicy(constructInstanceSample4());
 				
+        Utility.computeAndStoreOneWayHashChain();
+		runFirstHidraProtocolDemo();
 		while (true) {
 			runHidraProtocolDemo();
 		}
@@ -317,7 +321,7 @@ public class TrustedServer {
 		sendDataPacket(Utility.booleanArrayToByteArray(policy.codifyUsingAPBR()), Utility.getResourceIP(), socketForResource, Utility.getServerResourcePort());
 	}
 	
-	private static void runHidraProtocolDemo() {
+	private static void runFirstHidraProtocolDemo() {
 		//Server starts listening for messages from a Subject
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
 		byte[] actualMessage = null; 
@@ -325,10 +329,10 @@ public class TrustedServer {
 		if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
 			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 			byte subjectId = actualMessage[1];
-			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
+//			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
 			HidraAnsReq har = new HidraAnsReq(actualMessage);
 			har.processAndConstructReply().send(subjectId);
-			System.out.println("Time ANS_REQ -> ANS_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+			System.out.println("Computation time ANS_REQ -> ANS_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 			timestamp  = System.currentTimeMillis();			
 			receivedDatagram = receiveDataPacket(socketForSubject); 
 			System.out.println("Time CM_REQ reception: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
@@ -337,7 +341,7 @@ public class TrustedServer {
 				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
 				// Resource id is hardcoded to 2
 				if (actualMessage[1] == 2) {
-					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
+//					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
 
 					//Unpack incoming message
 					HidraCmReq hcr = new HidraCmReq(subjectId, actualMessage);
@@ -346,46 +350,32 @@ public class TrustedServer {
 					Policy hp = getPolicy(subjectId);
 //					hp.prettyPrint();
 					hcr.processAndConstructReply(hp, subjectId).send();
-					System.out.println("Time CM_REQ -> CM_IND: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+					System.out.println("Computation time CM_REQ -> CM_IND: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 					timestamp  = System.currentTimeMillis();
 					receivedDatagram = receiveDataPacket(socketForResource);
 					System.out.println("Time CM_IND_REQ reception: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 					timestamp  = System.currentTimeMillis();
 					if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
 						actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-						System.out.println("Received HID_CM_IND_REQ");
+//						System.out.println("Received HID_CM_IND_REQ");
 						if(actualMessage[1] == 2) {
 							
 							HidraCmIndReq hcir = new HidraCmIndReq(actualMessage);
 							
 							hcir.processAndConstructReply().send();
-							System.out.println("Time CM_IND_REQ -> CM_IND_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+							System.out.println("Computation time CM_IND_REQ -> CM_IND_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 							timestamp  = System.currentTimeMillis();
-//							receivedDatagram = receiveDataPacket(socketForResource);
-//							System.out.println("Time CM_IND_REP ACK: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+							
+							//If the simulation runs at 1000%, 100ms should result in a 1000ms from its perspective
+//							try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+//							System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 //							timestamp  = System.currentTimeMillis();
-//							if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {
-//								actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
-//								System.out.println(actualMessage[0]);
-//								if(actualMessage[0] == 1) {
-//									
-//									System.out.println("Received ACK");
-									
-									try {TimeUnit.MILLISECONDS.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
-									System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
-									timestamp  = System.currentTimeMillis();
-									
-									(new HidraCmRep(subjectId)).send(subjectId);
-									System.out.println("Time to send CM_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
-									timestamp  = System.currentTimeMillis();
+							
+							(new HidraCmRep(subjectId)).send(subjectId);
+							System.out.println("Computation time to send CM_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+							timestamp  = System.currentTimeMillis();
 
-									System.out.println("End of hidra protocol with subject " + subjectId);
-//								} else {
-//									System.out.println("Error: Association denied by resource after HID_CM_IND_REP");
-//								}
-//							} else {
-//								System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
-//							}	
+							System.out.println("End of hidra protocol with subject " + subjectId);
 						}
 					} else {
 						System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
@@ -400,6 +390,60 @@ public class TrustedServer {
 			System.out.println("Error: Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
 		}
 	}
+	
+	private static void runHidraProtocolDemo() {
+		//Server starts listening for messages from a Subject
+		DatagramPacket receivedDatagram = receiveDataPacket(socketForSubject);
+		byte[] actualMessage = null; 
+		long timestamp  = System.currentTimeMillis();
+		if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
+			actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+			byte subjectId = actualMessage[1];
+//			System.out.println("Received HID_ANS_REQ from subject id: " + subjectId);
+			HidraAnsReq har = new HidraAnsReq(actualMessage);
+			har.processAndConstructReply().send(subjectId);
+			System.out.println("Computation time ANS_REQ -> ANS_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+			timestamp  = System.currentTimeMillis();			
+			receivedDatagram = receiveDataPacket(socketForSubject); 
+			System.out.println("Time CM_REQ reception: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+			timestamp  = System.currentTimeMillis();
+			if (receivedDatagram.getPort() == SERVER_SUBJECT_PORT) {
+				actualMessage = Arrays.copyOfRange(receivedDatagram.getData(), 0, receivedDatagram.getLength());
+				// Resource id is hardcoded to 2
+				if (actualMessage[1] == 2) {
+//					System.out.println("Received HID_CM_REQ from subject id " + subjectId + " for resource id 2.");
+
+					//Unpack incoming message
+					HidraCmReq hcr = new HidraCmReq(subjectId, actualMessage);
+					
+					//Process message, include policy based on subject id and send to resource
+					Policy hp = getPolicy(subjectId);
+//					hp.prettyPrint();
+					hcr.processAndConstructReply(hp, subjectId).send();
+					System.out.println("Computation time CM_REQ -> CM_IND: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+					timestamp  = System.currentTimeMillis();
+					
+					//If the simulation runs at 1000%, 100ms should result in a 1s wait from its perspective
+//					try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+//					System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//					timestamp  = System.currentTimeMillis();
+					
+					(new HidraCmRep(subjectId)).send(subjectId);
+					System.out.println("Computation time to send CM_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+					timestamp  = System.currentTimeMillis();
+
+					System.out.println("End of hidra protocol with subject " + subjectId);
+				} else {
+					System.out.println("Error: Instead of message from same subject, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+				}
+			} else {
+				System.out.println("Error: Received datagram on the wrong port: " + receivedDatagram.getPort());
+			}
+		} else {
+			System.out.println("Error: Instead of HID_ANS_REQ, received: " + new String(actualMessage) + " with length " + actualMessage.length);
+		}
+	}
+	
 	
 	public static void blackListSubject(byte subjectId) {
 		//Update policy for subject | Handle one test at a time, because resource handles only 1 subject

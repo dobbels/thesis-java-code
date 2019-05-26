@@ -21,6 +21,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.swing.text.Utilities;
  
 /**
  * Shared utilities to be use by different classes
@@ -73,6 +75,7 @@ public class Utility {
 		byte a = 8;
 		put(a, "activate");
 		put(++a, "log_request");
+		put(++a,"++");
 	}};
 	
 	public static HashMap<Byte, String> systemRereferences = new HashMap<Byte, String>() {{
@@ -101,6 +104,7 @@ public class Utility {
 				return temp.getKey();
 			}
 		}
+		System.out.println(name);
 		System.out.println("Error: no match for given expression name");
 		return zeroByte;
 	}
@@ -316,6 +320,7 @@ public class Utility {
 		for (int i = 0 ; i < N ; i++) {
 			try {
 				next_key = getMD5Hash(next_key);
+//				System.out.println(byteArrayToHexString(next_key));
 			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
