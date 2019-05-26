@@ -32,7 +32,6 @@ public class HidraCmInd extends HidraProtocolMessage {
 		// Pad policy bitset so its length l mod 8 = 0. 
 		// 	Extra bits come at the end, so that they can be easily ignored by the receiver.
 		int nbOfBytes = (policy.size() + 7) / 8;
-		byte[] bytes = new byte[nbOfBytes]; 
 		int emptyRemainder = nbOfBytes*8 - policy.size();
 		for (int r = 0 ; r < emptyRemainder ; r ++) {
 			policy.add(false);  

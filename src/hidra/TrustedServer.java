@@ -231,10 +231,10 @@ public class TrustedServer {
 	}
 	
 
-	private static Policy constructDemoPolicy3() {
+	private static Policy constructPermitPolicy() {
 		return (new Policy((byte) 106, Effect.PERMIT, null));
 	}
-	private static Policy constructDemoPolicy2() {
+	public static Policy constructDenyPolicy() {
 		return (new Policy((byte) 105, Effect.DENY, null));
 	}
 	
@@ -300,17 +300,24 @@ public class TrustedServer {
 				
         Utility.computeAndStoreOneWayHashChain();
 		runFirstHidraProtocolDemo();
-		while (true) {
+		
+		int i = 2;
+		while (i > 0) {
 			runHidraProtocolDemo();
+			i--;
 		}
+		
+		//Warning: If the simulation runs at 1000%, 100ms result in a 1s wait from the simulation's perspective
+//		try {TimeUnit.SECONDS.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		(new HidraBlacklistMessage((byte) (getUserInput("Which subject should be revoked: 3, 4 or 5?")))).send();
 	}
 	
 	private static Policy getPolicy(byte subjectId) {
 		Policy hp;
 		if (subjectId == 5) {
-			hp = constructDemoPolicy3();
+			hp = constructPermitPolicy();
 		} else if (subjectId == 4) {
-			hp = constructDemoPolicy2();
+			hp = constructDenyPolicy();
 		} else {
 			hp = constructDemoPolicy();
 		}
@@ -469,10 +476,10 @@ public class TrustedServer {
 	 * Method to ask user for answer to a question or simply to make the user control when something happens, by asking to 'Enter to continue'. 
 	 * In the latter case, the user input is not used.  
 	 */
-	public static String getUserInput(String question){
+	public static int getUserInput(String question){
 		Scanner scan = new Scanner(System.in);
 		System.out.println(question);
-		return scan.nextLine();
+		return Integer.parseInt(scan.nextLine());
 	}	
 	
 	//Assumption: only one resource
