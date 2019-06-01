@@ -1,0 +1,87 @@
+00:26.202	ID:3	Starting Hidra Protocol
+00:26.417	ID:3	First two exchanges: 7005 rtimer ticks
+00:26.441	ID:1	`?&waBG`7?7=
+00:27.163	ID:3	Rest of the protocol: 24312 rtimer ticks
+00:28.859	ID:4	Starting Hidra Protocol
+00:28.991	ID:4	First two exchanges: 4312 rtimer ticks
+00:29.486	ID:4	Rest of the protocol: 16103 rtimer ticks
+
+Afwisselend subject 3 eerst en subject 4 eerst om mogelijke configuratie 
+00:21.344	ID:4	Starting Hidra Protocol
+00:21.492	ID:4	First two exchanges: 4831 rtimer ticks
+00:21.743	ID:1	`?}mYy`7?7*lo= *y;(olzZM{`?%u
+00:22.237	ID:4	Rest of the protocol: 24315 rtimer ticks
+00:23.543	ID:3	Starting Hidra Protocol
+00:23.664	ID:3	First two exchanges: 3964 rtimer ticks
+00:23.688	ID:1	{;1U`?&waBG`7?7S
+00:24.162	ID:3	Rest of the protocol: 16192 rtimer ticks
+
+00:21.541	ID:3	First two exchanges: 7352 rtimer ticks
+00:21.566	ID:1	`?RBO`7?7jkaICAs_
+00:21.567	ID:1	']Q
+00:22.411	ID:3	Rest of the protocol: 28393 rtimer ticks
+00:23.769	ID:4	Starting Hidra Protocol
+00:23.989	ID:4	First two exchanges: 7255 rtimer ticks
+00:24.014	ID:1	b?;zg`?;#WL`?LmYy`7?7"N*`SqXJmuMn~
+00:24.484	ID:4	Rest of the protocol: 16106 rtimer ticks
+
+00:45.288	ID:3	Starting Hidra Protocol
+00:45.309	ID:1	`?vBG
+00:45.543	ID:3	First two exchanges: 8380 rtimer ticks
+00:46.286	ID:3	Rest of the protocol: 24222 rtimer ticks
+00:47.844	ID:4	Starting Hidra Protocol
+00:47.992	ID:4	First two exchanges: 4846 rtimer ticks
+00:48.018	ID:1	t(`7?7fY^JqJHaqn@o\A`?i	O8msL`?qdb`7?7^{DFD>+hj{FRyI
+00:48.486	ID:4	Rest of the protocol: 16063 rtimer ticks
+
+00:37.858	ID:3	Starting Hidra Protocol
+00:38.042	ID:3	First two exchanges: 6081 rtimer ticks
+00:38.065	ID:1	`?&waBG`7?7
+00:38.788	ID:3	Rest of the protocol: 24338 rtimer ticks
+00:39.690	ID:4	Starting Hidra Protocol
+00:39.867	ID:4	First two exchanges: 5842 rtimer ticks
+00:40.360	ID:4	Rest of the protocol: 16028 rtimer ticks
+
+00:19.461	ID:3	Starting Hidra Protocol
+00:20.042	ID:3	First two exchanges: 18920 rtimer ticks
+00:20.065	ID:1	`?RBO`7?7BG
+00:20.366	ID:1	t(|x=6n9:WEG-`zC*0^`?%u
+00:20.788	ID:3	Rest of the protocol: 24340 rtimer ticks
+00:22.823	ID:4	Starting Hidra Protocol
+00:22.990	ID:4	First two exchanges: 5380 rtimer ticks
+00:23.487	ID:4	Rest of the protocol: 16164 rtimer ticks
+
+00:19.413	ID:3	Starting Hidra Protocol
+00:19.540	ID:3	First two exchanges: 4253 rtimer ticks
+00:19.866	ID:1	`?RBO`7?7,jkaN8SNdY)	,D=]rahR`?L=u
+00:20.286	ID:3	Rest of the protocol: 24323 rtimer ticks
+00:21.862	ID:4	Starting Hidra Protocol
+00:22.115	ID:4	First two exchanges: 8375 rtimer ticks
+00:22.611	ID:4	Rest of the protocol: 16143 rtimer ticks
+
+00:19.241	ID:3	Starting Hidra Protocol
+00:19.414	ID:3	First two exchanges: 5745 rtimer ticks
+00:19.993	ID:1	`?RBO`7?7jka"]YY&;j_mRlT`?v=u
+00:20.411	ID:3	Rest of the protocol: 32550 rtimer ticks
+00:21.667	ID:4	Starting Hidra Protocol
+00:21.867	ID:4	First two exchanges: 6445 rtimer ticks
+00:21.892	ID:1	{hk`?4y`7?7Fy*`nl9z 6}]	5S
+00:22.358	ID:4	Rest of the protocol: 15982 rtimer ticks
+
+00:14.429	ID:3	Starting Hidra Protocol
+00:14.666	ID:3	First two exchanges: 7767 rtimer ticks
+00:14.991	ID:1	`?RBO`7?7jka~@rp-:	v`?K+_L=u
+00:15.413	ID:3	Rest of the protocol: 24381 rtimer ticks
+00:16.753	ID:4	Starting Hidra Protocol
+00:16.867	ID:4	First two exchanges: 3713 rtimer ticks
+00:17.486	ID:4	Rest of the protocol: 20158 rtimer ticks
+
+00:16.234	ID:3	Starting Hidra Protocol
+00:16.414	ID:3	First two exchanges: 5998 rtimer ticks
+00:16.439	ID:1	`?RBO`7?7 jkacj
+00:16.993	ID:1	'	O5]LRNKO &U%F`?v=u
+00:17.410	ID:3	Rest of the protocol: 32518 rtimer ticks
+00:18.909	ID:4	Starting Hidra Protocol
+00:19.117	ID:4	First two exchanges: 6830 rtimer ticks
+00:19.734	ID:4	Rest of the protocol: 20093 rtimer ticks
+

@@ -1,0 +1,234 @@
+Stramien: Bereken alleen energie voor het eigenlijke protocol, dus neem altijd die van de 2e associatie. 
+
+10:00.880	ID:4	Starting Hidra Protocol
+10:00.987	ID:4	Right before CM_REQ: In 
+10:00.987	ID:4	
+10:00.988	ID:4	Energest subject:
+10:00.996	ID:4	 CPU          132424 ticks LPM      19520394 ticks Total ticks 19652818 
+10:01.004	ID:4	 Radio LISTEN 122891 ticks TRANSMIT 28459 ticks OFF      19501738 ticks
+10:01.482	ID:4	
+10:01.484	ID:4	Energest subject:
+10:01.492	ID:4	 CPU          135231 ticks LPM      19533818 ticks Total ticks 19669048 
+10:01.500	ID:4	 Radio LISTEN 123911 ticks TRANSMIT 28680 ticks OFF      19516728 ticks
+10:01.501	ID:4	Right after S_R_REP: In 
+
+10:01.115	ID:2	Right before first CM_IND processing: In 
+10:01.115	ID:2	
+10:01.117	ID:2	Energest resource:
+10:01.125	ID:2	 CPU          150783 ticks LPM      19509906 ticks Total ticks 19660688 
+10:01.133	ID:2	 Radio LISTEN 125157 ticks TRANSMIT 30145 ticks OFF      19505657 ticks
+10:01.380	ID:2	
+10:01.381	ID:2	Energest resource:
+10:01.389	ID:2	 CPU          153759 ticks LPM      19515595 ticks Total ticks 19669353 
+10:01.397	ID:2	 Radio LISTEN 125430 ticks TRANSMIT 30145 ticks OFF      19514049 ticks
+10:01.399	ID:2	Right after S_R_REP is sent: In 
+
+00:20.089	ID:4	Starting Hidra Protocol
+00:20.239	ID:4	Right before CM_REQ: 
+00:20.239	ID:4	
+00:20.240	ID:4	Energest subject:
+00:20.247	ID:4	 CPU          15615 ticks LPM      607241 ticks Total ticks 622855 
+00:20.254	ID:4	 Radio LISTEN 6155 ticks TRANSMIT 6483 ticks OFF      610452 ticks
+00:20.732	ID:4	
+00:20.733	ID:4	Energest subject:
+00:20.740	ID:4	 CPU          18233 ticks LPM      620781 ticks Total ticks 639013 
+00:20.747	ID:4	 Radio LISTEN 7125 ticks TRANSMIT 6704 ticks OFF      625419 ticks
+00:20.748	ID:4	Right after S_R_REP: 
+
+00:20.368	ID:2	Right before first CM_IND processing: 
+00:20.368	ID:2	
+00:20.369	ID:2	Energest resource:
+00:20.376	ID:2	 CPU          28974 ticks LPM      601774 ticks Total ticks 630747 
+00:20.383	ID:2	 Radio LISTEN 6819 ticks TRANSMIT 9252 ticks OFF      614911 ticks
+00:20.628	ID:2	
+00:20.629	ID:2	Energest resource:
+00:20.636	ID:2	 CPU          31869 ticks LPM      607410 ticks Total ticks 639279 
+00:20.643	ID:2	 Radio LISTEN 7034 ticks TRANSMIT 9252 ticks OFF      623228 ticks
+00:20.645	ID:2	Right after S_R_REP is sent: 
+
+00:17.330	ID:4	Starting Hidra Protocol
+00:17.612	ID:4	Right before CM_REQ: 
+00:17.612	ID:4	
+00:17.613	ID:4	Energest subject:
+00:17.620	ID:4	 CPU          14862 ticks LPM      521916 ticks Total ticks 536777 
+00:17.627	ID:4	 Radio LISTEN 5498 ticks TRANSMIT 6401 ticks OFF      525113 ticks
+00:18.108	ID:4	
+00:18.109	ID:4	Energest subject:
+00:18.116	ID:4	 CPU          17478 ticks LPM      535555 ticks Total ticks 553032 
+00:18.123	ID:4	 Radio LISTEN 6522 ticks TRANSMIT 6621 ticks OFF      540125 ticks
+00:18.125	ID:4	Right after S_R_REP: 
+
+00:17.744	ID:2	Right before first CM_IND processing: 
+00:17.744	ID:2	
+00:17.745	ID:2	Energest resource:
+00:17.752	ID:2	 CPU          28002 ticks LPM      516762 ticks Total ticks 544763 
+00:17.759	ID:2	 Radio LISTEN 6264 ticks TRANSMIT 9143 ticks OFF      529591 ticks
+00:18.004	ID:2	
+00:18.005	ID:2	Energest resource:
+00:18.012	ID:2	 CPU          30899 ticks LPM      522396 ticks Total ticks 553295 
+00:18.019	ID:2	 Radio LISTEN 6511 ticks TRANSMIT 9143 ticks OFF      537877 ticks
+00:18.021	ID:2	Right after S_R_REP is sent: 
+
+00:19.870	ID:4	Starting Hidra Protocol
+00:19.986	ID:4	Right before CM_REQ: 
+00:19.986	ID:4	
+00:19.987	ID:4	Energest subject:
+00:19.995	ID:4	 CPU          14537 ticks LPM      600049 ticks Total ticks 614585 
+00:20.001	ID:4	 Radio LISTEN 6019 ticks TRANSMIT 6320 ticks OFF      602480 ticks
+00:20.482	ID:4	
+00:20.483	ID:4	Energest subject:
+00:20.491	ID:4	 CPU          17849 ticks LPM      612987 ticks Total ticks 630835 
+00:20.497	ID:4	 Radio LISTEN 7489 ticks TRANSMIT 6541 ticks OFF      617041 ticks
+00:20.499	ID:4	Right after S_R_REP: 
+
+00:20.121	ID:2	Right before first CM_IND processing: 
+00:20.121	ID:2	
+00:20.122	ID:2	Energest resource:
+00:20.130	ID:2	 CPU          27674 ticks LPM      594993 ticks Total ticks 622667 
+00:20.136	ID:2	 Radio LISTEN 7048 ticks TRANSMIT 9062 ticks OFF      606793 ticks
+00:20.382	ID:2	
+00:20.383	ID:2	Energest resource:
+00:20.390	ID:2	 CPU          30577 ticks LPM      600635 ticks Total ticks 631211 
+00:20.397	ID:2	 Radio LISTEN 7369 ticks TRANSMIT 9062 ticks OFF      615015 ticks
+00:20.399	ID:2	Right after S_R_REP is sent: 
+
+00:19.297	ID:4	Starting Hidra Protocol
+00:19.490	ID:4	Right before CM_REQ: 
+00:19.490	ID:4	
+00:19.492	ID:4	Energest subject:
+00:19.499	ID:4	 CPU          15221 ticks LPM      583113 ticks Total ticks 598333 
+00:19.505	ID:4	 Radio LISTEN 6072 ticks TRANSMIT 6402 ticks OFF      586096 ticks
+00:20.106	ID:4	
+00:20.107	ID:4	Energest subject:
+00:20.114	ID:4	 CPU          17852 ticks LPM      600651 ticks Total ticks 618503 
+00:20.121	ID:4	 Radio LISTEN 6951 ticks TRANSMIT 6624 ticks OFF      605162 ticks
+00:20.122	ID:4	Right after S_R_REP: 
+
+00:19.616	ID:2	Right before first CM_IND processing: 
+00:19.616	ID:2	
+00:19.617	ID:2	Energest resource:
+00:19.624	ID:2	 CPU          28151 ticks LPM      577964 ticks Total ticks 606115 
+00:19.631	ID:2	 Radio LISTEN 6782 ticks TRANSMIT 9143 ticks OFF      590425 ticks
+00:20.005	ID:2	
+00:20.007	ID:2	Energest resource:
+00:20.014	ID:2	 CPU          31058 ticks LPM      587821 ticks Total ticks 618879 
+00:20.021	ID:2	 Radio LISTEN 7101 ticks TRANSMIT 9143 ticks OFF      602871 ticks
+00:20.023	ID:2	Right after S_R_REP is sent: 
+
+00:24.800	ID:4	Starting Hidra Protocol
+00:24.989	ID:4	Right before CM_REQ: 
+00:24.989	ID:4	
+00:24.990	ID:4	Energest subject:
+00:24.997	ID:4	 CPU          15078 ticks LPM      763433 ticks Total ticks 778510 
+00:25.004	ID:4	 Radio LISTEN 7253 ticks TRANSMIT 6322 ticks OFF      765170 ticks
+00:25.482	ID:4	
+00:25.483	ID:4	Energest subject:
+00:25.491	ID:4	 CPU          18376 ticks LPM      776300 ticks Total ticks 794675 
+00:25.497	ID:4	 Radio LISTEN 8525 ticks TRANSMIT 6543 ticks OFF      779843 ticks
+00:25.499	ID:4	Right after S_R_REP: 
+
+00:25.029	ID:1	/%`?b}mY`7?7y*(
+00:25.121	ID:2	Right before first CM_IND processing: 
+00:25.121	ID:2	
+00:25.122	ID:2	Energest resource:
+00:25.130	ID:2	 CPU          28195 ticks LPM      758311 ticks Total ticks 786506 
+00:25.136	ID:2	 Radio LISTEN 7707 ticks TRANSMIT 9064 ticks OFF      769971 ticks
+00:25.382	ID:2	
+00:25.383	ID:2	Energest resource:
+00:25.390	ID:2	 CPU          31088 ticks LPM      763964 ticks Total ticks 795052 
+00:25.397	ID:2	 Radio LISTEN 8028 ticks TRANSMIT 9064 ticks OFF      778196 ticks
+00:25.399	ID:2	Right after S_R_REP is sent: 
+
+00:25.000	ID:4	Starting Hidra Protocol
+00:25.115	ID:4	Right before CM_REQ: 
+00:25.115	ID:4	
+00:25.116	ID:4	Energest subject:
+00:25.123	ID:4	 CPU          15851 ticks LPM      766786 ticks Total ticks 782636 
+00:25.130	ID:4	 Radio LISTEN 7253 ticks TRANSMIT 6402 ticks OFF      769216 ticks
+00:25.607	ID:4	
+00:25.608	ID:4	Energest subject:
+00:25.615	ID:4	 CPU          18595 ticks LPM      780162 ticks Total ticks 798756 
+00:25.622	ID:4	 Radio LISTEN 8410 ticks TRANSMIT 6623 ticks OFF      783959 ticks
+00:25.623	ID:4	Right after S_R_REP: 
+
+00:25.368	ID:2	Right before first CM_IND processing: 
+00:25.368	ID:2	
+00:25.369	ID:2	Energest resource:
+00:25.376	ID:2	 CPU          29210 ticks LPM      765385 ticks Total ticks 794594 
+00:25.383	ID:2	 Radio LISTEN 7759 ticks TRANSMIT 9250 ticks OFF      777822 ticks
+00:25.506	ID:2	
+00:25.508	ID:2	Energest resource:
+00:25.515	ID:2	 CPU          32101 ticks LPM      767034 ticks Total ticks 799135 
+00:25.522	ID:2	 Radio LISTEN 8062 ticks TRANSMIT 9250 ticks OFF      782058 ticks
+00:25.524	ID:2	Right after S_R_REP is sent: 
+
+00:19.378	ID:4	Starting Hidra Protocol
+00:19.488	ID:4	Right before CM_REQ: 
+00:19.488	ID:4	
+00:19.489	ID:4	Energest subject:
+00:19.497	ID:4	 CPU          15240 ticks LPM      583021 ticks Total ticks 598261 
+00:19.503	ID:4	 Radio LISTEN 5932 ticks TRANSMIT 6401 ticks OFF      586164 ticks
+00:19.982	ID:4	
+00:19.983	ID:4	Energest subject:
+00:19.990	ID:4	 CPU          17865 ticks LPM      596577 ticks Total ticks 614441 
+00:19.997	ID:4	 Radio LISTEN 6907 ticks TRANSMIT 6622 ticks OFF      601147 ticks
+00:19.999	ID:4	Right after S_R_REP: 
+
+00:19.617	ID:2	Right before first CM_IND processing: 
+00:19.617	ID:2	
+00:19.619	ID:2	Energest resource:
+00:19.626	ID:2	 CPU          28089 ticks LPM      578079 ticks Total ticks 606167 
+00:19.633	ID:2	 Radio LISTEN 6546 ticks TRANSMIT 9145 ticks OFF      590711 ticks
+00:19.878	ID:2	
+00:19.879	ID:2	Energest resource:
+00:19.887	ID:2	 CPU          30985 ticks LPM      583719 ticks Total ticks 614703 
+00:19.893	ID:2	 Radio LISTEN 6761 ticks TRANSMIT 9145 ticks OFF      599033 ticks
+00:19.895	ID:2	Right after S_R_REP is sent: 
+
+00:20.288	ID:4	Starting Hidra Protocol
+00:20.486	ID:4	Right before CM_REQ: 
+00:20.487	ID:4	
+00:20.488	ID:4	Energest subject:
+00:20.495	ID:4	 CPU          15621 ticks LPM      615360 ticks Total ticks 630980 
+00:20.502	ID:4	 Radio LISTEN 6132 ticks TRANSMIT 6402 ticks OFF      618681 ticks
+00:21.108	ID:4	
+00:21.109	ID:4	Energest subject:
+00:21.116	ID:4	 CPU          18254 ticks LPM      633075 ticks Total ticks 651328 
+00:21.123	ID:4	 Radio LISTEN 7362 ticks TRANSMIT 6623 ticks OFF      637579 ticks
+00:21.124	ID:4	Right after S_R_REP: 
+
+00:20.743	ID:2	Right before first CM_IND processing: 
+00:20.743	ID:2	
+00:20.745	ID:2	Energest resource:
+00:20.752	ID:2	 CPU          28168 ticks LPM      614886 ticks Total ticks 643054 
+00:20.758	ID:2	 Radio LISTEN 6804 ticks TRANSMIT 9144 ticks OFF      627341 ticks
+00:21.004	ID:2	
+00:21.005	ID:2	Energest resource:
+00:21.012	ID:2	 CPU          31068 ticks LPM      620523 ticks Total ticks 651590 
+00:21.019	ID:2	 Radio LISTEN 7041 ticks TRANSMIT 9144 ticks OFF      635642 ticks
+00:21.021	ID:2	Right after S_R_REP is sent: 
+
+00:21.329	ID:4	Starting Hidra Protocol
+00:21.487	ID:4	Right before CM_REQ: 
+00:21.487	ID:4	
+00:21.489	ID:4	Energest subject:
+00:21.496	ID:4	 CPU          15515 ticks LPM      648261 ticks Total ticks 663776 
+00:21.503	ID:4	 Radio LISTEN 6267 ticks TRANSMIT 6402 ticks OFF      651342 ticks
+00:22.233	ID:4	
+00:22.235	ID:4	Energest subject:
+00:22.242	ID:4	 CPU          18271 ticks LPM      669949 ticks Total ticks 688219 
+00:22.249	ID:4	 Radio LISTEN 7507 ticks TRANSMIT 6623 ticks OFF      674324 ticks
+00:22.250	ID:4	Right after S_R_REP: 
+
+00:21.617	ID:2	Right before first CM_IND processing: 
+00:21.617	ID:2	
+00:21.619	ID:2	Energest resource:
+00:21.626	ID:2	 CPU          28393 ticks LPM      643308 ticks Total ticks 671700 
+00:21.633	ID:2	 Radio LISTEN 7036 ticks TRANSMIT 9144 ticks OFF      655755 ticks
+00:21.882	ID:2	
+00:21.884	ID:2	Energest resource:
+00:21.891	ID:2	 CPU          31478 ticks LPM      648899 ticks Total ticks 680376 
+00:21.897	ID:2	 Radio LISTEN 7399 ticks TRANSMIT 9144 ticks OFF      664068 ticks
+00:21.899	ID:2	Right after S_R_REP is sent: 
+
+

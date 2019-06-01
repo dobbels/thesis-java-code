@@ -3,6 +3,7 @@ package message;
 import hidra.Utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HidraAnsReq extends TrustedServerSubjectMessage {
 	private byte[] idS = new byte[2];
@@ -20,7 +21,7 @@ public class HidraAnsReq extends TrustedServerSubjectMessage {
 		}
 		for (int i = 0; i < idCm.length ; i++) {
 			idCm[i] = message[idS.length+i];
-		}		
+		}
 		for (int i = 0; i < lifetimeTGT.length ; i++) {
 			lifetimeTGT[i] = message[idS.length + idCm.length + i];
 		}
@@ -30,6 +31,11 @@ public class HidraAnsReq extends TrustedServerSubjectMessage {
 	}
 	
 	public HidraAnsRep processAndConstructReply(){
-		return (new HidraAnsRep(idS, idCm, nonce1));
+		byte[] supposedIdCm = {1,1}; //idCM == 257
+		if (Arrays.equals(idCm, supposedIdCm)) {
+			return (new HidraAnsRep(idS, idCm, nonce1));
+		} else {
+			return null;
+		}
 	}
 }
