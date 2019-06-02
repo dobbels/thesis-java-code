@@ -91,6 +91,380 @@ public class TrustedServer {
 			e.printStackTrace();
 		}
 	}
+	
+	private static Policy constructSuperSet4() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		// r2e2
+		ArrayList<PolicyAttribute> e2inputset = new ArrayList<>();
+		e2inputset.add(new PolicyAttribute(
+				AttributeType.REQUEST_REFERENCE, 
+				Utility.getId(Utility.requestRereferences, "roles")));
+		e2inputset.add(new PolicyAttribute("admin"));
+		
+		PolicyExpression r2e2 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e2);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, null);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r1);
+		rules.add(r1);
+		rules.add(r2);
+		rules.add(r2);
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+	private static Policy constructSuperSet3() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		// r2e2
+		ArrayList<PolicyAttribute> e2inputset = new ArrayList<>();
+		e2inputset.add(new PolicyAttribute(
+				AttributeType.REQUEST_REFERENCE, 
+				Utility.getId(Utility.requestRereferences, "roles")));
+		e2inputset.add(new PolicyAttribute("admin"));
+		
+		PolicyExpression r2e2 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e2);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<PolicyObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r1);
+		rules.add(r1);
+		rules.add(r2);
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+
+	
+	private static Policy constructSuperSet2() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		// r2e2
+		ArrayList<PolicyAttribute> e2inputset = new ArrayList<>();
+		e2inputset.add(new PolicyAttribute(
+				AttributeType.REQUEST_REFERENCE, 
+				Utility.getId(Utility.requestRereferences, "roles")));
+		e2inputset.add(new PolicyAttribute("admin"));
+		
+		PolicyExpression r2e2 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e2);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<PolicyObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		r1obligations.add(r1o1);
+		r1obligations.add(r1o1);
+		r1obligations.add(r1o1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r1);
+		rules.add(r1);
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+	private static Policy constructSuperSet1() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		// r2e2
+		ArrayList<PolicyAttribute> e2inputset = new ArrayList<>();
+		e2inputset.add(new PolicyAttribute(
+				AttributeType.REQUEST_REFERENCE, 
+				Utility.getId(Utility.requestRereferences, "roles")));
+		e2inputset.add(new PolicyAttribute("admin"));
+		
+		PolicyExpression r2e2 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e2);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<PolicyObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r1);
+		rules.add(r1);
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
 
 	/**TODO
 	 * Over het algemeen te doen bij elke protocolstap:
@@ -197,7 +571,176 @@ public class TrustedServer {
 		return (new Policy((byte) 104, Effect.PERMIT, rules));
 	}
 	
-	private static Policy constructPartOfInstanceSample4() {
+	private static Policy constructSubset3() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, null);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r1);
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+	private static Policy constructSubset2() {
+		// r2e1
+		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades")));
+		e1inputset.add(new PolicyAttribute(
+				AttributeType.BYTE, 
+				(byte) 3));
+		
+		PolicyExpression r2e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "<"), e1inputset); 
+		
+		// r2e2
+		ArrayList<PolicyAttribute> e2inputset = new ArrayList<>();
+		e2inputset.add(new PolicyAttribute(
+				AttributeType.REQUEST_REFERENCE, 
+				Utility.getId(Utility.requestRereferences, "roles")));
+		e2inputset.add(new PolicyAttribute("admin"));
+		
+		PolicyExpression r2e2 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
+		
+		// r2e3
+		ArrayList<PolicyAttribute> e3inputset = new ArrayList<>();
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance")));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 0));
+		e3inputset.add(new PolicyAttribute(
+				AttributeType.LOCAL_REFERENCE, 
+				(byte) 1));
+		
+		PolicyExpression r2e3 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "isTrue"), e3inputset); 
+		
+		// rule 2 obligation
+		PolicyAttribute r2o1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "bios_upgrades"));
+		ArrayList<PolicyAttribute> o2inputset = new ArrayList<>();
+		o2inputset.add(r2o1att);
+				
+		Effect r2fulfillOn = Effect.DENY;
+		PolicyObligation r2o1 = new PolicyObligation(
+				new PolicyExpression(Utility.getId(Utility.taskRereferences, "++"), o2inputset), 
+				r2fulfillOn);
+		
+		// rule 2
+		ArrayList<PolicyExpression> r2expressions = new ArrayList<>();
+		r2expressions.add(r2e1);
+		r2expressions.add(r2e2);
+		r2expressions.add(r2e3);
+		ArrayList<PolicyObligation> r2obligations = new ArrayList<>();
+		r2obligations.add(r2o1);
+		PolicyRule r2 = new PolicyRule((byte) 1, Effect.PERMIT, zeroByte, zeroByte, zeroByte, null, r2expressions, r2obligations);
+		
+		// rule 1 task
+		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
+				Utility.getId(Utility.systemRereferences, "onMaintenance"));
+		ArrayList<PolicyAttribute> o1inputset = new ArrayList<>();
+		o1inputset.add(r1att);
+		
+		// rule 1 obligations
+		PolicyExpression r1o1e1 = new PolicyExpression(
+				Utility.getId(Utility.taskRereferences, "activate"), o1inputset);		
+		Effect r1fulfillOn = Effect.DENY;
+		PolicyObligation r1o1 = new PolicyObligation(r1o1e1, r1fulfillOn);
+//		HidraObligation r1o1 = new HidraObligation(r1o1e1, null);
+		
+		// rule 1 expressions
+		PolicyExpression r1e1 = new PolicyExpression(
+				Utility.getId(Utility.expressionRereferences, "low_battery"), null); 
+		
+		// rule 1
+		ArrayList<PolicyExpression> r1expressions = new ArrayList<>();
+		r1expressions.add(r1e1);
+		ArrayList<PolicyObligation> r1obligations = new ArrayList<>();
+		r1obligations.add(r1o1);
+		PolicyRule r1 = new PolicyRule((byte) 0, Effect.DENY, (byte) 4, zeroByte, zeroByte, null, r1expressions, r1obligations);
+//		HidraRule r1 = new HidraRule((byte) 0, Effect.DENY, (byte) 4, (byte) 5, (byte) 6, HidraUtility.Action.DELETE, r1expressions, r1obligations);
+		
+		// policy
+		ArrayList<PolicyRule> rules = new ArrayList<>();
+		rules.add(r2);
+		
+		return (new Policy((byte) 104, Effect.PERMIT, rules));
+	}
+	
+	private static Policy constructSubset1() {
 		// rule 1 task
 		PolicyAttribute r1att = new PolicyAttribute(AttributeType.SYSTEM_REFERENCE, 
 				Utility.getId(Utility.systemRereferences, "onMaintenance"));
@@ -291,13 +834,27 @@ public class TrustedServer {
 			e.printStackTrace();
 		}
 		
-//		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
-//		sendPolicy(constructDemoPolicy2());
-//		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-//		sendPolicy(constructDemoPolicy());
-//		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-//		sendPolicy(constructInstanceSample4());
-				
+		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructPermitPolicy());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSubset1());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSubset2());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSubset3());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructDemoPolicy());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructInstanceSample4());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSuperSet1());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSuperSet2());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSuperSet3());
+		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		sendPolicy(constructSuperSet4());
+		
         Utility.computeAndStoreOneWayHashChain();
 		runFirstHidraProtocolDemo();
 		
@@ -376,7 +933,7 @@ public class TrustedServer {
 								timestamp  = System.currentTimeMillis();
 								
 								//If the simulation runs at 1000%, 100ms should result in a 1000ms from its perspective
-//								try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+								try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
 //								System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 //								timestamp  = System.currentTimeMillis();
 								
@@ -439,9 +996,9 @@ public class TrustedServer {
 						timestamp  = System.currentTimeMillis();
 						
 						//If the simulation runs at 1000%, 100ms should result in a 1s wait from its perspective
-	//					try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-	//					System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
-	//					timestamp  = System.currentTimeMillis();
+						try {TimeUnit.MILLISECONDS.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+//						System.out.println("Delay of : " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//						timestamp  = System.currentTimeMillis();
 						
 						(new HidraCmRep(subjectId)).send(subjectId);
 						System.out.println("Computation time to send CM_REP: " + (System.currentTimeMillis() - timestamp) + " milliseconds");
