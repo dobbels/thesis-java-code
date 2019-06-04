@@ -87,13 +87,42 @@ Berekentijden op de sensornode:
 Policy van 21 bytes, aangezien dat tussenin blacklist en 40 bytes ligt. Demo policy is minder relevant?
 
 Berekentijden op server (ms):
-
+228
+250
+283
+219
+286
+232
+258
+231
+246
+259
 
 Roundtrip times (ms):
-
-
+2
+2
+2
+3
+1
+0
+1
+2
+2
+1
 
 Berekentijden op de sensornode: 
+1944
+1944
+1945
+1944
+1944
+1945
+1944
+1944
+1944
+1945
+
+TODO test nog 1 keer met grotere policy. Echt groot verschil in ticks eigenlijk voor 20 bytes extra? 
 
 ---------------------------
 Voor het grootste beleid ook ff roundtrip time + berekentijden op sensornode. Kijk gewoon eens wat het resultaat is. 
@@ -151,16 +180,270 @@ Berekentijden op de sensornode:
 Energiegebruik op sensornode, steeds van ontvangst tot ontvangst (dus je kan het vanaf de tweede berekenen en dan is er overlap tussen):
 (-> data rond energieverbruik op sensor door protocol is niet juist. Eerste ontvangst wordt niet meegerekend hierin + laatste verzending ook niet)
 
+Ticks van policy_update entry tot policy_update entry:
+00:19.238	ID:2	
+00:19.239	ID:2	Energest resource:
+00:19.247	ID:2	 CPU          26904 ticks LPM      566827 ticks Total ticks 593730 
+00:19.253	ID:2	 Radio LISTEN 6323 ticks TRANSMIT 9144 ticks OFF      578499 ticks
+00:19.489	ID:2	
+00:19.490	ID:2	Energest resource:
+00:19.498	ID:2	 CPU          29767 ticks LPM      572191 ticks Total ticks 601958 
+00:19.504	ID:2	 Radio LISTEN 6678 ticks TRANSMIT 9230 ticks OFF      586285 ticks
+00:19.739	ID:2	
+00:19.740	ID:2	Energest resource:
+00:19.748	ID:2	 CPU          32621 ticks LPM      577525 ticks Total ticks 610145 
+00:19.754	ID:2	 Radio LISTEN 7026 ticks TRANSMIT 9316 ticks OFF      594038 ticks
+00:19.990	ID:2	
+00:19.991	ID:2	Energest resource:
+00:19.999	ID:2	 CPU          35951 ticks LPM      582421 ticks Total ticks 618371 
+00:20.005	ID:2	 Radio LISTEN 7544 ticks TRANSMIT 9510 ticks OFF      601553 ticks
+00:20.238	ID:2	
+00:20.239	ID:2	Energest resource:
+00:20.247	ID:2	 CPU          38965 ticks LPM      587533 ticks Total ticks 626497 
+00:20.253	ID:2	 Radio LISTEN 7860 ticks TRANSMIT 9596 ticks OFF      609277 ticks
+00:20.488	ID:2	
+00:20.489	ID:2	Energest resource:
+00:20.496	ID:2	 CPU          41819 ticks LPM      592865 ticks Total ticks 634684 
+00:20.503	ID:2	 Radio LISTEN 8173 ticks TRANSMIT 9682 ticks OFF      617065 ticks
+00:20.739	ID:2	
+00:20.740	ID:2	Energest resource:
+00:20.748	ID:2	 CPU          44679 ticks LPM      598237 ticks Total ticks 642916 
+00:20.754	ID:2	 Radio LISTEN 8524 ticks TRANSMIT 9768 ticks OFF      624859 ticks
+00:20.990	ID:2	
+00:20.992	ID:2	Energest resource:
+00:20.999	ID:2	 CPU          47541 ticks LPM      603603 ticks Total ticks 651143 
+00:21.005	ID:2	 Radio LISTEN 8909 ticks TRANSMIT 9854 ticks OFF      632616 ticks
+00:21.238	ID:2	
+00:21.239	ID:2	Energest resource:
+00:21.247	ID:2	 CPU          50543 ticks LPM      608725 ticks Total ticks 659267 
+00:21.253	ID:2	 Radio LISTEN 9229 ticks TRANSMIT 9940 ticks OFF      640334 ticks
+00:21.491	ID:2	
+00:21.492	ID:2	Energest resource:
+00:21.499	ID:2	 CPU          53402 ticks LPM      614148 ticks Total ticks 667549 
+00:21.506	ID:2	 Radio LISTEN 9623 ticks TRANSMIT 10026 ticks OFF      648135 ticks
+
+
 Stom dat die send_ack ook in de energieberekening komt. Doe nog 1 test zonder die ack en met 60 ms tussen de updates, we zullen zien wat dat geeft
 
+Ticks zonder ACK, maar met 200 ms extra wachttijd:
 
+00:20.240	ID:2	
+00:20.242	ID:2	Energest resource:
+00:20.249	ID:2	 CPU          26978 ticks LPM      599599 ticks Total ticks 626576 
+00:20.256	ID:2	 Radio LISTEN 6533 ticks TRANSMIT 9141 ticks OFF      611138 ticks
+00:20.489	ID:2	
+00:20.490	ID:2	Energest resource:
+00:20.498	ID:2	 CPU          29399 ticks LPM      605327 ticks Total ticks 634726 
+00:20.504	ID:2	 Radio LISTEN 6751 ticks TRANSMIT 9141 ticks OFF      619069 ticks
+00:20.616	ID:2	
+00:20.617	ID:2	Energest resource:
+00:20.624	ID:2	 CPU          31819 ticks LPM      607062 ticks Total ticks 638880 
+00:20.631	ID:2	 Radio LISTEN 6987 ticks TRANSMIT 9141 ticks OFF      622987 ticks
+00:20.865	ID:2	
+00:20.866	ID:2	Energest resource:
+00:20.873	ID:2	 CPU          34420 ticks LPM      612616 ticks Total ticks 647035 
+00:20.880	ID:2	 Radio LISTEN 7252 ticks TRANSMIT 9141 ticks OFF      630878 ticks
+00:21.114	ID:2	
+00:21.115	ID:2	Energest resource:
+00:21.122	ID:2	 CPU          36939 ticks LPM      618261 ticks Total ticks 655200 
+00:21.129	ID:2	 Radio LISTEN 7476 ticks TRANSMIT 9141 ticks OFF      638817 ticks
+00:21.239	ID:2	
+00:21.240	ID:2	Energest resource:
+00:21.247	ID:2	 CPU          39437 ticks LPM      619846 ticks Total ticks 659282 
+00:21.254	ID:2	 Radio LISTEN 7674 ticks TRANSMIT 9141 ticks OFF      642703 ticks
+00:21.363	ID:2	
+00:21.364	ID:2	Energest resource:
+00:21.372	ID:2	 CPU          41862 ticks LPM      621499 ticks Total ticks 663360 
+00:21.378	ID:2	 Radio LISTEN 7830 ticks TRANSMIT 9141 ticks OFF      646625 ticks
+00:21.488	ID:2	
+00:21.489	ID:2	Energest resource:
+00:21.497	ID:2	 CPU          44284 ticks LPM      623174 ticks Total ticks 667457 
+00:21.503	ID:2	 Radio LISTEN 8299 ticks TRANSMIT 9141 ticks OFF      650254 ticks
+00:21.561	ID:2	
+00:21.563	ID:2	Energest resource:
+00:21.570	ID:2	 CPU          46689 ticks LPM      623174 ticks Total ticks 669862 
+00:21.577	ID:2	 Radio LISTEN 10366 ticks TRANSMIT 9141 ticks OFF      650590 ticks
+00:21.636	ID:2	
+00:21.637	ID:2	Energest resource:
+00:21.645	ID:2	 CPU          49133 ticks LPM      623174 ticks Total ticks 672307 
+00:21.651	ID:2	 Radio LISTEN 11279 ticks TRANSMIT 9141 ticks OFF      652123 ticks
+
+--------------------------
+Energie bij medium policy:
+Ticks met ACK:
+00:25.491	ID:2	
+00:25.492	ID:2	Energest resource:
+00:25.500	ID:2	 CPU          28103 ticks LPM      770527 ticks Total ticks 798629 
+00:25.506	ID:2	 Radio LISTEN 8028 ticks TRANSMIT 9252 ticks OFF      781585 ticks
+00:25.740	ID:2	
+00:25.742	ID:2	Energest resource:
+00:25.749	ID:2	 CPU          31027 ticks LPM      775769 ticks Total ticks 806795 
+00:25.756	ID:2	 Radio LISTEN 8416 ticks TRANSMIT 9338 ticks OFF      789277 ticks
+00:25.989	ID:2	
+00:25.991	ID:2	Energest resource:
+00:25.998	ID:2	 CPU          33958 ticks LPM      780999 ticks Total ticks 814956 
+00:26.005	ID:2	 Radio LISTEN 8775 ticks TRANSMIT 9424 ticks OFF      796993 ticks
+00:26.242	ID:2	
+00:26.243	ID:2	Energest resource:
+00:26.251	ID:2	 CPU          37040 ticks LPM      786199 ticks Total ticks 823239 
+00:26.257	ID:2	 Radio LISTEN 9205 ticks TRANSMIT 9510 ticks OFF      804758 ticks
+00:26.490	ID:2	
+00:26.491	ID:2	Energest resource:
+00:26.499	ID:2	 CPU          39963 ticks LPM      791401 ticks Total ticks 831364 
+00:26.505	ID:2	 Radio LISTEN 9587 ticks TRANSMIT 9596 ticks OFF      812417 ticks
+00:26.742	ID:2	
+00:26.743	ID:2	Energest resource:
+00:26.751	ID:2	 CPU          42892 ticks LPM      796732 ticks Total ticks 839623 
+00:26.758	ID:2	 Radio LISTEN 10019 ticks TRANSMIT 9682 ticks OFF      820157 ticks
+00:26.991	ID:2	
+00:26.993	ID:2	Energest resource:
+00:27.000	ID:2	 CPU          45833 ticks LPM      801956 ticks Total ticks 847789 
+00:27.007	ID:2	 Radio LISTEN 10442 ticks TRANSMIT 9768 ticks OFF      827814 ticks
+00:27.242	ID:2	
+00:27.243	ID:2	Energest resource:
+00:27.251	ID:2	 CPU          48911 ticks LPM      807094 ticks Total ticks 856004 
+00:27.257	ID:2	 Radio LISTEN 10872 ticks TRANSMIT 9854 ticks OFF      835513 ticks
+00:27.492	ID:2	
+00:27.493	ID:2	Energest resource:
+00:27.501	ID:2	 CPU          51850 ticks LPM      812349 ticks Total ticks 864199 
+00:27.508	ID:2	 Radio LISTEN 11302 ticks TRANSMIT 9940 ticks OFF      843191 ticks
+00:27.742	ID:2	
+00:27.743	ID:2	Energest resource:
+00:27.751	ID:2	 CPU          54790 ticks LPM      817602 ticks Total ticks 872391 
+00:27.758	ID:2	 Radio LISTEN 11734 ticks TRANSMIT 10026 ticks OFF      850866 ticks
+
+
+Ticks met 200 ms wachttijd:
+00:20.741	ID:2	
+00:20.742	ID:2	Energest resource:
+00:20.749	ID:2	 CPU          26725 ticks LPM      616249 ticks Total ticks 642974 
+00:20.756	ID:2	 Radio LISTEN 6542 ticks TRANSMIT 9144 ticks OFF      627522 ticks
+00:20.989	ID:2	
+00:20.990	ID:2	Energest resource:
+00:20.998	ID:2	 CPU          29700 ticks LPM      621405 ticks Total ticks 651105 
+00:21.004	ID:2	 Radio LISTEN 6889 ticks TRANSMIT 9252 ticks OFF      635199 ticks
+00:21.242	ID:2	
+00:21.244	ID:2	Energest resource:
+00:21.251	ID:2	 CPU          32363 ticks LPM      627043 ticks Total ticks 659406 
+00:21.258	ID:2	 Radio LISTEN 7193 ticks TRANSMIT 9252 ticks OFF      643196 ticks
+00:21.365	ID:2	
+00:21.367	ID:2	Energest resource:
+00:21.374	ID:2	 CPU          34857 ticks LPM      628585 ticks Total ticks 663441 
+00:21.381	ID:2	 Radio LISTEN 7431 ticks TRANSMIT 9252 ticks OFF      646994 ticks
+00:21.614	ID:2	
+00:21.616	ID:2	Energest resource:
+00:21.623	ID:2	 CPU          37352 ticks LPM      634241 ticks Total ticks 671592 
+00:21.629	ID:2	 Radio LISTEN 7650 ticks TRANSMIT 9252 ticks OFF      654925 ticks
+00:21.739	ID:2	
+00:21.740	ID:2	Energest resource:
+00:21.747	ID:2	 CPU          39844 ticks LPM      635826 ticks Total ticks 675669 
+00:21.754	ID:2	 Radio LISTEN 7826 ticks TRANSMIT 9252 ticks OFF      658826 ticks
+00:21.989	ID:2	
+00:21.990	ID:2	Energest resource:
+00:21.997	ID:2	 CPU          42330 ticks LPM      641542 ticks Total ticks 683871 
+00:22.004	ID:2	 Radio LISTEN 8038 ticks TRANSMIT 9252 ticks OFF      666816 ticks
+00:22.242	ID:2	
+00:22.244	ID:2	Energest resource:
+00:22.251	ID:2	 CPU          44842 ticks LPM      647332 ticks Total ticks 692174 
+00:22.258	ID:2	 Radio LISTEN 8342 ticks TRANSMIT 9252 ticks OFF      674815 ticks
+00:22.367	ID:2	
+00:22.368	ID:2	Energest resource:
+00:22.375	ID:2	 CPU          47325 ticks LPM      648934 ticks Total ticks 696258 
+00:22.382	ID:2	 Radio LISTEN 8608 ticks TRANSMIT 9252 ticks OFF      678633 ticks
+00:22.617	ID:2	
+00:22.618	ID:2	Energest resource:
+00:22.626	ID:2	 CPU          49829 ticks LPM      654627 ticks Total ticks 704455 
+00:22.632	ID:2	 Radio LISTEN 8906 ticks TRANSMIT 9252 ticks OFF      686532 ticks
+
+
+TODO: zet energest uit
 
 --------------------------
 Energie bij grotere policy
 
+Ticks:
+00:21.619	ID:2	
+00:21.620	ID:2	Energest resource:
+00:21.627	ID:2	 CPU          26835 ticks LPM      644900 ticks Total ticks 671734 
+00:21.634	ID:2	 Radio LISTEN 6744 ticks TRANSMIT 9143 ticks OFF      656083 ticks
+00:21.863	ID:2	
+00:21.865	ID:2	Energest resource:
+00:21.872	ID:2	 CPU          30334 ticks LPM      649425 ticks Total ticks 679758 
+00:21.879	ID:2	 Radio LISTEN 7098 ticks TRANSMIT 9229 ticks OFF      663666 ticks
+00:22.118	ID:2	
+00:22.119	ID:2	Energest resource:
+00:22.126	ID:2	 CPU          34212 ticks LPM      653876 ticks Total ticks 688087 
+00:22.133	ID:2	 Radio LISTEN 7699 ticks TRANSMIT 9422 ticks OFF      671201 ticks
+00:22.365	ID:2	
+00:22.367	ID:2	Energest resource:
+00:22.374	ID:2	 CPU          37528 ticks LPM      658682 ticks Total ticks 696210 
+00:22.381	ID:2	 Radio LISTEN 8092 ticks TRANSMIT 9508 ticks OFF      678845 ticks
+00:22.616	ID:2	
+00:22.617	ID:2	Energest resource:
+00:22.624	ID:2	 CPU          40836 ticks LPM      663577 ticks Total ticks 704412 
+00:22.631	ID:2	 Radio LISTEN 8497 ticks TRANSMIT 9594 ticks OFF      686556 ticks
+00:22.864	ID:2	
+00:22.866	ID:2	Energest resource:
+00:22.873	ID:2	 CPU          44148 ticks LPM      668413 ticks Total ticks 712561 
+00:22.880	ID:2	 Radio LISTEN 8859 ticks TRANSMIT 9680 ticks OFF      694257 ticks
+00:23.117	ID:2	
+00:23.118	ID:2	Energest resource:
+00:23.125	ID:2	 CPU          47601 ticks LPM      673232 ticks Total ticks 720832 
+00:23.132	ID:2	 Radio LISTEN 9302 ticks TRANSMIT 9766 ticks OFF      701999 ticks
+00:23.365	ID:2	
+00:23.366	ID:2	Energest resource:
+00:23.373	ID:2	 CPU          50911 ticks LPM      678035 ticks Total ticks 728946 
+00:23.380	ID:2	 Radio LISTEN 9666 ticks TRANSMIT 9852 ticks OFF      709663 ticks
+00:23.617	ID:2	
+00:23.618	ID:2	Energest resource:
+00:23.625	ID:2	 CPU          54222 ticks LPM      682994 ticks Total ticks 737216 
+00:23.632	ID:2	 Radio LISTEN 10107 ticks TRANSMIT 9938 ticks OFF      717406 ticks
+00:23.866	ID:2	
+00:23.867	ID:2	Energest resource:
+00:23.874	ID:2	 CPU          57529 ticks LPM      687845 ticks Total ticks 745373 
+00:23.881	ID:2	 Radio LISTEN 10513 ticks TRANSMIT 10024 ticks OFF      725071 ticks
 
-
-TODO nog tijd en energie voor demopolicy. Wie weet gebruik je dat nog, want dan heb je 3 meetpunten deny - demo - superset1
+Ticks zonder ACK, maar met 200 ms extra wachttijd: -> 200 ms wrs niet genoeg?
+00:20.242	ID:2	
+00:20.243	ID:2	Energest resource:
+00:20.250	ID:2	 CPU          27018 ticks LPM      599600 ticks Total ticks 626617 
+00:20.257	ID:2	 Radio LISTEN 6448 ticks TRANSMIT 9141 ticks OFF      611263 ticks
+00:20.369	ID:2	
+00:20.370	ID:2	Energest resource:
+00:20.377	ID:2	 CPU          29878 ticks LPM      600902 ticks Total ticks 630780 
+00:20.384	ID:2	 Radio LISTEN 6771 ticks TRANSMIT 9141 ticks OFF      615103 ticks
+00:20.617	ID:2	
+00:20.618	ID:2	Energest resource:
+00:20.625	ID:2	 CPU          32764 ticks LPM      606141 ticks Total ticks 638905 
+00:20.632	ID:2	 Radio LISTEN 7069 ticks TRANSMIT 9141 ticks OFF      622930 ticks
+00:20.740	ID:2	
+00:20.741	ID:2	Energest resource:
+00:20.748	ID:2	 CPU          35621 ticks LPM      607316 ticks Total ticks 642937 
+00:20.755	ID:2	 Radio LISTEN 7281 ticks TRANSMIT 9141 ticks OFF      626749 ticks
+00:20.991	ID:2	
+00:20.992	ID:2	Energest resource:
+00:20.999	ID:2	 CPU          38975 ticks LPM      612182 ticks Total ticks 651156 
+00:21.006	ID:2	 Radio LISTEN 7679 ticks TRANSMIT 9249 ticks OFF      634463 ticks
+00:21.244	ID:2	
+00:21.245	ID:2	Energest resource:
+00:21.252	ID:2	 CPU          41999 ticks LPM      617454 ticks Total ticks 659452 
+00:21.259	ID:2	 Radio LISTEN 8027 ticks TRANSMIT 9249 ticks OFF      642411 ticks
+00:21.366	ID:2	
+00:21.368	ID:2	Energest resource:
+00:21.375	ID:2	 CPU          44875 ticks LPM      618594 ticks Total ticks 663468 
+00:21.382	ID:2	 Radio LISTEN 8290 ticks TRANSMIT 9249 ticks OFF      646165 ticks
+00:21.617	ID:2	
+00:21.619	ID:2	Energest resource:
+00:21.626	ID:2	 CPU          47747 ticks LPM      623945 ticks Total ticks 671691 
+00:21.632	ID:2	 Radio LISTEN 8607 ticks TRANSMIT 9249 ticks OFF      654071 ticks
+00:21.866	ID:2	
+00:21.868	ID:2	Energest resource:
+00:21.875	ID:2	 CPU          50630 ticks LPM      629221 ticks Total ticks 679850 
+00:21.881	ID:2	 Radio LISTEN 8892 ticks TRANSMIT 9249 ticks OFF      661945 ticks
+00:21.993	ID:2	
+00:21.994	ID:2	Energest resource:
+00:22.001	ID:2	 CPU          53492 ticks LPM      630505 ticks Total ticks 683996 
+00:22.008	ID:2	 Radio LISTEN 9203 ticks TRANSMIT 9249 ticks OFF      665780 ticks
 
 
 (Vraag na de deadline nog eens na: Gewoon voor de zekerheid: ik neem nu aan dat mijn demo + presentatie in het Engels zal zijn. Klopt dit?)

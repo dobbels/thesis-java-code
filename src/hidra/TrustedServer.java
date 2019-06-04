@@ -24,6 +24,7 @@ import message.BlacklistMessage;
 import message.HidraCmIndReq;
 import message.HidraCmRep;
 import message.HidraCmReq;
+import message.MediumPolicyUpdateMessage;
 
 /**
  * Class representing a Access Control Server, executing the Hidra protocol.
@@ -573,7 +574,7 @@ public class TrustedServer {
 		return (new Policy((byte) 104, Effect.PERMIT, rules));
 	}
 	
-	private static Policy constructSubset3() {
+	public static Policy constructSubset3() {
 		// r2e1
 		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
 		e1inputset.add(new PolicyAttribute(
@@ -879,12 +880,6 @@ public class TrustedServer {
 		sendPolicy(constructSuperSet4());
 	}
 	public static void policyUpdateEvaluation() {
-		//TODO midrang policy update van 21 bytes
-		System.out.println(Utility.booleanArrayToByteArray(constructSubset2().codifyUsingAPBR()).length);
-		System.out.println(Utility.booleanArrayToByteArray(constructSubset3().codifyUsingAPBR()).length);
-		System.out.println(Utility.booleanArrayToByteArray(constructSuperSet1().codifyUsingAPBR()).length);
-		
-		
 		try {TimeUnit.SECONDS.sleep(3);} catch (InterruptedException e) {e.printStackTrace();}
 		//Policy update evaluation
 		int j = 10;
@@ -892,13 +887,14 @@ public class TrustedServer {
 		while(j-- > 0) {
 //			timestamp  = System.currentTimeMillis();
 //			(new BigPolicyUpdateMessage((byte) 3)).send();
-			
+			(new MediumPolicyUpdateMessage((byte) 3)).send();
 //			(new DemoPolicyUpdateMessage((byte) 3)).send();
 //			(new BlacklistMessage((byte) 3)).send();
-//			System.out.println("Construct and send policy update " + (9 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//			System.out.println("Construct and send policy update " + (10 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 //			timestamp  = System.currentTimeMillis();
-			receiveDataPacket(socketForResource);
-//			System.out.println("Receive response from policy update " + (9 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//			receiveDataPacket(socketForResource);
+			try {TimeUnit.MILLISECONDS.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+//			System.out.println("Receive response from policy update " + (10 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 		}
 	}
 	
