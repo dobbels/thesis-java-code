@@ -315,7 +315,7 @@ public class Utility {
 		byte[] base_key = new byte[16];
         new Random().nextBytes(base_key);
 		byte[] next_key = base_key;
-		int N = 10;
+		int N = 20;
 		ArrayList<byte[]> keyChain = new ArrayList<byte[]>(); 
 		for (int i = 0 ; i < N ; i++) {
 			try {

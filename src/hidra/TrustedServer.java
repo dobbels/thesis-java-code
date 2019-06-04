@@ -17,8 +17,10 @@ import java.util.concurrent.TimeUnit;
 
 import encryption.AliceContext;
 
+import message.BigPolicyUpdateMessage;
+import message.DemoPolicyUpdateMessage;
 import message.HidraAnsReq;
-import message.HidraBlacklistMessage;
+import message.BlacklistMessage;
 import message.HidraCmIndReq;
 import message.HidraCmRep;
 import message.HidraCmReq;
@@ -110,7 +112,7 @@ public class TrustedServer {
 		e2inputset.add(new PolicyAttribute(
 				AttributeType.REQUEST_REFERENCE, 
 				Utility.getId(Utility.requestRereferences, "roles")));
-		e2inputset.add(new PolicyAttribute("admin"));
+		e2inputset.add(new PolicyAttribute("ad"));
 		
 		PolicyExpression r2e2 = new PolicyExpression(
 				Utility.getId(Utility.expressionRereferences, "contains"), e2inputset); 
@@ -374,7 +376,7 @@ public class TrustedServer {
 		return (new Policy((byte) 104, Effect.PERMIT, rules));
 	}
 	
-	private static Policy constructSuperSet1() {
+	public static Policy constructSuperSet1() {
 		// r2e1
 		ArrayList<PolicyAttribute> e1inputset = new ArrayList<>();
 		e1inputset.add(new PolicyAttribute(
@@ -774,14 +776,14 @@ public class TrustedServer {
 	}
 	
 
-	private static Policy constructPermitPolicy() {
+	public static Policy constructPermitPolicy() {
 		return (new Policy((byte) 106, Effect.PERMIT, null));
 	}
 	public static Policy constructDenyPolicy() {
 		return (new Policy((byte) 105, Effect.DENY, null));
 	}
 	
-	private static Policy constructDemoPolicy() {
+	public static Policy constructDemoPolicy() {
 //		// rule 1 obligations
 		PolicyExpression r1o1e1 = new PolicyExpression(
 				Utility.getId(Utility.taskRereferences, "log_request"), null);		
@@ -834,6 +836,27 @@ public class TrustedServer {
 			e.printStackTrace();
 		}
 		
+//		policyEvaluationEvaluation();
+		
+        Utility.computeAndStoreOneWayHashChain();
+		runFirstHidraProtocolDemo();
+		
+		policyUpdateEvaluation();
+
+		int i = 2;
+		while (i > 0) {
+			runHidraProtocolDemo();
+			i--;
+		}
+		
+		//Warning: If the simulation runs at 1000%, 100ms result in a 1s wait from the simulation's perspective
+//		try {TimeUnit.SECONDS.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		//Demo, als je niet van scherm wilt verwisselen: Ze moeten dit niet per se kunnen zien. Het feit dat ze de keuze hebben is het belangrijkste 
+		(new BlacklistMessage((byte) (getUserInput("Which subject should be revoked: 3, 4 or 5?")))).send();  
+		
+}
+	public static void policyEvaluationEvaluation() {
+		//"Policy evaluation" evaluation
 		try {TimeUnit.MILLISECONDS.sleep(5000);} catch (InterruptedException e) {e.printStackTrace();}
 		sendPolicy(constructPermitPolicy());
 		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -854,19 +877,29 @@ public class TrustedServer {
 		sendPolicy(constructSuperSet3());
 		try {TimeUnit.MILLISECONDS.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		sendPolicy(constructSuperSet4());
+	}
+	public static void policyUpdateEvaluation() {
+		//TODO midrang policy update van 21 bytes
+		System.out.println(Utility.booleanArrayToByteArray(constructSubset2().codifyUsingAPBR()).length);
+		System.out.println(Utility.booleanArrayToByteArray(constructSubset3().codifyUsingAPBR()).length);
+		System.out.println(Utility.booleanArrayToByteArray(constructSuperSet1().codifyUsingAPBR()).length);
 		
-        Utility.computeAndStoreOneWayHashChain();
-		runFirstHidraProtocolDemo();
 		
-		int i = 2;
-		while (i > 0) {
-			runHidraProtocolDemo();
-			i--;
+		try {TimeUnit.SECONDS.sleep(3);} catch (InterruptedException e) {e.printStackTrace();}
+		//Policy update evaluation
+		int j = 10;
+		long timestamp;
+		while(j-- > 0) {
+//			timestamp  = System.currentTimeMillis();
+//			(new BigPolicyUpdateMessage((byte) 3)).send();
+			
+//			(new DemoPolicyUpdateMessage((byte) 3)).send();
+//			(new BlacklistMessage((byte) 3)).send();
+//			System.out.println("Construct and send policy update " + (9 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
+//			timestamp  = System.currentTimeMillis();
+			receiveDataPacket(socketForResource);
+//			System.out.println("Receive response from policy update " + (9 - j) + ": " + (System.currentTimeMillis() - timestamp) + " milliseconds");
 		}
-		
-		//Warning: If the simulation runs at 1000%, 100ms result in a 1s wait from the simulation's perspective
-//		try {TimeUnit.SECONDS.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		(new HidraBlacklistMessage((byte) (getUserInput("Which subject should be revoked: 3, 4 or 5?")))).send();
 	}
 	
 	private static Policy getPolicy(byte subjectId) {
@@ -1023,7 +1056,7 @@ public class TrustedServer {
 	public static void blackListSubject(byte subjectId) {
 		//Update policy for subject | Handle one test at a time, because resource handles only 1 subject
 //		getUserInput("Enter to blacklist the subject");
-		(new HidraBlacklistMessage(subjectId)).send();
+		(new BlacklistMessage(subjectId)).send();
 		
 		DatagramPacket receivedDatagram = receiveDataPacket(socketForResource);
 		if (receivedDatagram.getPort() == SERVER_RESOURCE_PORT) {

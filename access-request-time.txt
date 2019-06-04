@@ -1,0 +1,17 @@
+Policy 40 bytes
+-> gelijkaardige waarden! Ook niet veel invloed op tijd om door te sturen dus
+
+Policy: 7 bytes, 4 success, 6 failure
+
+
+01:45.282	ID:3	Access request: 9938 rtimer ticks
+01:49.784	ID:3	Access request: 11018 rtimer ticks
+01:54.658	ID:3	Access request: 11812 rtimer ticks
+02:05.157	ID:3	Access request: 9176 rtimer ticks
+02:14.408	ID:3	Access request: 9841 rtimer ticks
+02:23.155	ID:3	Access request: 11402 rtimer ticks
+02:30.532	ID:3	Access request: 9483 rtimer ticks
+02:37.784	ID:3	Access request: 10255 rtimer ticks
+02:47.157	ID:3	Access request: 8393 rtimer ticks
+02:55.157	ID:3	Access request: 8895 rtimer ticks
+

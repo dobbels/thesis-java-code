@@ -1,0 +1,140 @@
+Geen idee of je zowel gebruiker- als sensornode hier ging meten, maar allebei is eigenlijk niet veel meer werk.
+Dus alles op 100% om zo weinig mogelijk 'listen' tussendoor te hebben.
+Goede manier ook hier ook een idee van te hebben: kijk tussen einde laatste meting en nieuwe meting van subject
+
+
+00:40.382	ID:3	Energest subject:
+00:40.383	ID:3	 CPU          26387 ticks LPM      1238229 ticks Total ticks 1264616 
+00:40.391	ID:3	 Radio LISTEN 10918 ticks TRANSMIT 9381 ticks OFF      1244566 ticks
+00:40.655	ID:3	
+00:40.657	ID:3	Energest subject:
+00:40.664	ID:3	 CPU          29248 ticks LPM      1244567 ticks Total ticks 1273814 
+00:40.671	ID:3	 Radio LISTEN 11326 ticks TRANSMIT 9447 ticks OFF      1253291 ticks
+00:41.624	ID:3	
+
+00:41.624	ID:3	Energest subject:
+00:41.628	ID:3	 CPU          30056 ticks LPM      1275356 ticks Total ticks 1305412 
+00:41.636	ID:3	 Radio LISTEN 11494 ticks TRANSMIT 9447 ticks OFF      1284721 ticks
+00:41.906	ID:3	
+00:41.907	ID:3	Energest subject:
+00:41.915	ID:3	 CPU          33088 ticks LPM      1281707 ticks Total ticks 1314794 
+00:41.922	ID:3	 Radio LISTEN 11904 ticks TRANSMIT 9513 ticks OFF      1293627 ticks
+00:42.725	ID:3	
+
+00:42.725	ID:3	Energest subject:
+00:42.727	ID:3	 CPU          33706 ticks LPM      1307710 ticks Total ticks 1341416 
+00:42.734	ID:3	 Radio LISTEN 12048 ticks TRANSMIT 9513 ticks OFF      1320104 ticks
+00:43.031	ID:3	
+00:43.032	ID:3	Energest subject:
+00:43.040	ID:3	 CPU          36740 ticks LPM      1314911 ticks Total ticks 1351650 
+00:43.047	ID:3	 Radio LISTEN 12468 ticks TRANSMIT 9579 ticks OFF      1329853 ticks
+00:43.848	ID:3	
+
+00:43.848	ID:3	Energest subject:
+00:43.852	ID:3	 CPU          41902 ticks LPM      1336378 ticks Total ticks 1378280 
+00:43.859	ID:3	 Radio LISTEN 12660 ticks TRANSMIT 12662 ticks OFF      1353207 ticks
+00:40.487	ID:2	
+00:44.156	ID:3	
+00:44.157	ID:3	Energest subject:
+00:44.165	ID:3	 CPU          44786 ticks LPM      1343737 ticks Total ticks 1388522 
+00:44.172	ID:3	 Radio LISTEN 13071 ticks TRANSMIT 12728 ticks OFF      1362973 ticks
+00:44.937	ID:3	
+
+00:44.937	ID:3	Energest subject:
+00:44.939	ID:3	 CPU          45939 ticks LPM      1367947 ticks Total ticks 1413886 
+00:44.946	ID:3	 Radio LISTEN 13411 ticks TRANSMIT 12728 ticks OFF      1387995 ticks
+00:45.279	ID:3	
+00:45.280	ID:3	Energest subject:
+00:45.288	ID:3	 CPU          48787 ticks LPM      1376534 ticks Total ticks 1425321 
+00:45.295	ID:3	 Radio LISTEN 13959 ticks TRANSMIT 12794 ticks OFF      1398816 ticks
+00:45.929	ID:3	
+
+00:45.929	ID:3	Energest subject:
+00:45.930	ID:3	 CPU          50039 ticks LPM      1396337 ticks Total ticks 1446376 
+00:45.938	ID:3	 Radio LISTEN 14213 ticks TRANSMIT 12902 ticks OFF      1419511 ticks
+00:46.278	ID:3	
+00:46.280	ID:3	Energest subject:
+00:46.287	ID:3	 CPU          52891 ticks LPM      1405181 ticks Total ticks 1458071 
+00:46.295	ID:3	 Radio LISTEN 14748 ticks TRANSMIT 12968 ticks OFF      1430604 ticks
+00:46.991	ID:3	
+
+00:46.991	ID:3	Energest subject:
+00:46.995	ID:3	 CPU          53675 ticks LPM      1427605 ticks Total ticks 1481279 
+00:47.003	ID:3	 Radio LISTEN 14868 ticks TRANSMIT 12968 ticks OFF      1453693 ticks
+00:47.278	ID:3	
+00:47.279	ID:3	Energest subject:
+00:47.287	ID:3	 CPU          56545 ticks LPM      1434290 ticks Total ticks 1490835 
+00:47.294	ID:3	 Radio LISTEN 15208 ticks TRANSMIT 13034 ticks OFF      1462842 ticks
+00:48.060	ID:3	
+
+00:48.060	ID:3	Energest subject:
+00:48.063	ID:3	 CPU          57335 ticks LPM      1458929 ticks Total ticks 1516264 
+00:48.070	ID:3	 Radio LISTEN 15352 ticks TRANSMIT 13034 ticks OFF      1488127 ticks
+00:48.403	ID:3	
+00:48.404	ID:3	Energest subject:
+00:48.412	ID:3	 CPU          60180 ticks LPM      1467519 ticks Total ticks 1527699 
+00:48.419	ID:3	 Radio LISTEN 15868 ticks TRANSMIT 13100 ticks OFF      1498980 ticks
+00:49.076	ID:3	
+
+00:49.076	ID:3	Energest subject:
+00:49.079	ID:3	 CPU          60959 ticks LPM      1488585 ticks Total ticks 1549544 
+00:49.086	ID:3	 Radio LISTEN 15988 ticks TRANSMIT 13100 ticks OFF      1520705 ticks
+00:49.787	ID:3	
+00:49.788	ID:3	Energest subject:
+00:49.796	ID:3	 CPU          64590 ticks LPM      1508456 ticks Total ticks 1573046 
+00:49.803	ID:3	 Radio LISTEN 16897 ticks TRANSMIT 13166 ticks OFF      1543232 ticks
+00:50.327	ID:3	
+
+00:50.327	ID:3	Energest subject:
+00:50.330	ID:3	 CPU          65184 ticks LPM      1525375 ticks Total ticks 1590559 
+00:50.338	ID:3	 Radio LISTEN 16993 ticks TRANSMIT 13166 ticks OFF      1560648 ticks
+00:50.653	ID:3	
+00:50.654	ID:3	Energest subject:
+00:50.662	ID:3	 CPU          68055 ticks LPM      1533372 ticks Total ticks 1601427 
+00:50.669	ID:3	 Radio LISTEN 17313 ticks TRANSMIT 13232 ticks OFF      1571131 ticks
+
+
+Bereken nu snel verschil tussen eind en begin subject
+-> als substantieel: daarvan gemiddelde berekenen en aannemen dat dit hetzelfde basisgebruik is als op hidra node? 
+
+
+00:40.489	ID:2	Energest resource:
+00:40.496	ID:2	 CPU          30653 ticks LPM      1259373 ticks Total ticks 1290025 
+00:40.503	ID:2	 Radio LISTEN 11016 ticks TRANSMIT 9358 ticks OFF      1269900 ticks
+00:41.738	ID:2	
+00:41.739	ID:2	Energest resource:
+00:41.747	ID:2	 CPU          33766 ticks LPM      1297240 ticks Total ticks 1331006 
+00:41.754	ID:2	 Radio LISTEN 11715 ticks TRANSMIT 9446 ticks OFF      1310094 ticks
+00:42.863	ID:2	
+00:42.864	ID:2	Energest resource:
+00:42.872	ID:2	 CPU          36864 ticks LPM      1331000 ticks Total ticks 1367863 
+00:42.879	ID:2	 Radio LISTEN 12363 ticks TRANSMIT 9534 ticks OFF      1346216 ticks
+00:43.988	ID:2	
+00:43.989	ID:2	Energest resource:
+00:43.997	ID:2	 CPU          40188 ticks LPM      1364547 ticks Total ticks 1404735 
+00:44.004	ID:2	 Radio LISTEN 13211 ticks TRANSMIT 9622 ticks OFF      1382151 ticks
+00:45.114	ID:2	
+00:45.115	ID:2	Energest resource:
+00:45.123	ID:2	 CPU          47997 ticks LPM      1393642 ticks Total ticks 1441639 
+00:45.130	ID:2	 Radio LISTEN 13954 ticks TRANSMIT 12796 ticks OFF      1415138 ticks
+00:46.117	ID:2	
+00:46.119	ID:2	Energest resource:
+00:46.126	ID:2	 CPU          51093 ticks LPM      1423419 ticks Total ticks 1474511 
+00:46.134	ID:2	 Radio LISTEN 14725 ticks TRANSMIT 12884 ticks OFF      1447152 ticks
+00:47.117	ID:2	
+00:47.118	ID:2	Energest resource:
+00:47.126	ID:2	 CPU          54181 ticks LPM      1453092 ticks Total ticks 1507272 
+00:47.133	ID:2	 Radio LISTEN 15495 ticks TRANSMIT 12972 ticks OFF      1479055 ticks
+00:48.238	ID:2	
+00:48.240	ID:2	Energest resource:
+00:48.247	ID:2	 CPU          57285 ticks LPM      1486733 ticks Total ticks 1544017 
+00:48.255	ID:2	 Radio LISTEN 16169 ticks TRANSMIT 13060 ticks OFF      1515038 ticks
+00:49.614	ID:2	
+00:49.615	ID:2	Energest resource:
+00:49.623	ID:2	 CPU          60671 ticks LPM      1528422 ticks Total ticks 1589093 
+00:49.630	ID:2	 Radio LISTEN 17171 ticks TRANSMIT 13148 ticks OFF      1559023 ticks
+00:50.488	ID:2	
+00:50.490	ID:2	Energest resource:
+00:50.497	ID:2	 CPU          63890 ticks LPM      1553854 ticks Total ticks 1617743 
+00:50.505	ID:2	 Radio LISTEN 17807 ticks TRANSMIT 13236 ticks OFF      1586950 ticks
+

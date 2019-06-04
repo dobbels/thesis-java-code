@@ -1,21 +1,3 @@
-11:08.987	ID:2	Test number: 1
-11:08.989	ID:2	Compressed policy size: 2
-11:08.991	ID:2	policy.id : 106
-11:08.992	ID:2	policy.effect : 1
-11:08.993	ID:2	There are no rules
-11:08.995	ID:2	Final policy_size_in_bytes: 4
-11:08.996	ID:2	Test 1
-11:08.999	ID:2	Compressed evaluation time:    1 rtimer ticks
-11:09.003	ID:2	Unpacked evaluation time:    0 rtimer ticks
-11:09.003	ID:2	Test 2
-11:09.006	ID:2	Compressed evaluation time:    1 rtimer ticks
-11:09.010	ID:2	Unpacked evaluation time:    0 rtimer ticks
-11:09.010	ID:2	Test 3
-11:09.014	ID:2	Compressed evaluation time:    0 rtimer ticks
-11:09.017	ID:2	Unpacked evaluation time:    0 rtimer ticks
-12:33.111	ID:2	
-12:33.111	ID:2	
-12:33.112	ID:2	
 12:33.113	ID:2	Test number: 2
 12:33.115	ID:2	Compressed policy size: 10
 12:33.116	ID:2	policy.id : 104
@@ -40,6 +22,9 @@
 12:33.140	ID:2	attr->type : 6
 12:33.142	ID:2	attr->char_value (SYSTEM) : 16
 12:33.145	ID:2	Final policy_size_in_bytes: 40
+
+
+
 12:33.145	ID:2	Test 1
 12:33.149	ID:2	Compressed evaluation time:    5 rtimer ticks
 12:33.152	ID:2	Unpacked evaluation time:    2 rtimer ticks
@@ -102,6 +87,9 @@
 13:55.293	ID:2	attr->type : 6
 13:55.295	ID:2	attr->char_value (SYSTEM) : 17
 13:55.298	ID:2	Final policy_size_in_bytes: 86
+
+
+
 13:55.298	ID:2	Test 1
 13:55.302	ID:2	Compressed evaluation time:   13 rtimer ticks
 13:55.306	ID:2	Unpacked evaluation time:    9 rtimer ticks
@@ -199,6 +187,9 @@
 16:07.761	ID:2	
 16:07.762	ID:2	task->function : 9
 16:07.764	ID:2	Final policy_size_in_bytes: 28
+
+
+
 16:07.765	ID:2	Test 1
 16:07.768	ID:2	Compressed evaluation time:    6 rtimer ticks
 16:07.772	ID:2	Unpacked evaluation time:    3 rtimer ticks
@@ -280,6 +271,8 @@
 17:25.195	ID:2	attr->type : 6
 17:25.197	ID:2	attr->char_value (SYSTEM) : 17
 17:25.199	ID:2	Final policy_size_in_bytes: 108
+
+
 17:25.200	ID:2	Test 1
 17:25.204	ID:2	Compressed evaluation time:   17 rtimer ticks
 17:25.208	ID:2	Unpacked evaluation time:   11 rtimer ticks
@@ -676,4 +669,177 @@
 21:17.054	ID:2	Test 3
 21:17.059	ID:2	Compressed evaluation time:   34 rtimer ticks
 21:17.063	ID:2	Unpacked evaluation time:   22 rtimer ticks
+
+
+13:13.238	ID:2	Test number: 10
+13:13.240	ID:2	Compressed policy size: 70
+13:13.242	ID:2	policy.id : 104
+13:13.243	ID:2	policy.effect : 1
+13:13.243	ID:2	
+13:13.244	ID:2	rule->id : 0
+13:13.245	ID:2	rule->effect : 0
+13:13.248	ID:2	mask '1' for rule->periodicity : 4
+13:13.250	ID:2	mask '0' for rule->iteration :  0
+13:13.253	ID:2	mask '0' for rule->resource : 0
+13:13.255	ID:2	mask '0' for rule->action : 0
+13:13.257	ID:2	mask '0' for rule->obligationset
+13:13.259	ID:2	nb_of_expressions : 1
+13:13.259	ID:2	
+13:13.260	ID:2	exp->function : 4
+13:13.260	ID:2	
+13:13.261	ID:2	rule->id : 0
+13:13.262	ID:2	rule->effect : 0
+13:13.265	ID:2	mask '1' for rule->periodicity : 4
+13:13.267	ID:2	mask '0' for rule->iteration :  0
+13:13.270	ID:2	mask '0' for rule->resource : 0
+13:13.272	ID:2	mask '0' for rule->action : 0
+13:13.274	ID:2	mask '0' for rule->obligationset
+13:13.276	ID:2	nb_of_expressions : 1
+13:13.276	ID:2	
+13:13.277	ID:2	exp->function : 4
+13:13.277	ID:2	
+13:13.278	ID:2	rule->id : 1
+13:13.280	ID:2	rule->effect : 1
+13:13.282	ID:2	mask '0' for rule->periodicity : 0
+13:13.285	ID:2	mask '0' for rule->iteration :  0
+13:13.287	ID:2	mask '0' for rule->resource : 0
+13:13.289	ID:2	mask '0' for rule->action : 0
+13:13.292	ID:2	mask '1' for rule->obligationset
+13:13.293	ID:2	nb_of_expressions : 3
+13:13.293	ID:2	
+13:13.295	ID:2	exp->function : 5
+13:13.295	ID:2	
+13:13.296	ID:2	attr->type : 6
+13:13.298	ID:2	attr->char_value (SYSTEM) : 17
+13:13.298	ID:2	
+13:13.299	ID:2	attr->type : 1
+13:13.301	ID:2	attr->char_value (BYTE) : 3
+13:13.301	ID:2	
+13:13.303	ID:2	exp->function : 6
+13:13.303	ID:2	
+13:13.304	ID:2	attr->type : 5
+13:13.306	ID:2	attr->char_value (REQUEST) : 32
+13:13.306	ID:2	
+13:13.307	ID:2	attr->type : 4
+13:13.309	ID:2	nb_of_characters : 2
+13:13.311	ID:2	attr->string_value : "ad"
+13:13.311	ID:2	
+13:13.312	ID:2	exp->function : 7
+13:13.312	ID:2	
+13:13.313	ID:2	attr->type : 6
+13:13.315	ID:2	attr->char_value (SYSTEM) : 16
+13:13.316	ID:2	
+13:13.317	ID:2	attr->type : 7
+13:13.319	ID:2	attr->local_reference_value (LOCAL) : 0
+13:13.320	ID:2	
+13:13.321	ID:2	attr->type : 7
+13:13.324	ID:2	attr->local_reference_value (LOCAL) : 1
+13:13.325	ID:2	nb_of_obligations : 1
+13:13.325	ID:2	
+13:13.327	ID:2	obl->fulfill_on : 0
+13:13.327	ID:2	
+13:13.328	ID:2	task->function : 10
+13:13.328	ID:2	
+13:13.329	ID:2	attr->type : 6
+13:13.332	ID:2	attr->char_value (SYSTEM) : 17
+13:13.332	ID:2	
+13:13.333	ID:2	rule->id : 1
+13:13.334	ID:2	rule->effect : 1
+13:13.336	ID:2	mask '0' for rule->periodicity : 0
+13:13.339	ID:2	mask '0' for rule->iteration :  0
+13:13.341	ID:2	mask '0' for rule->resource : 0
+13:13.344	ID:2	mask '0' for rule->action : 0
+13:13.346	ID:2	mask '1' for rule->obligationset
+13:13.347	ID:2	nb_of_expressions : 3
+13:13.348	ID:2	
+13:13.349	ID:2	exp->function : 5
+13:13.349	ID:2	
+13:13.350	ID:2	attr->type : 6
+13:13.352	ID:2	attr->char_value (SYSTEM) : 17
+13:13.352	ID:2	
+13:13.353	ID:2	attr->type : 1
+13:13.356	ID:2	attr->char_value (BYTE) : 3
+13:13.357	ID:2	
+13:13.358	ID:2	exp->function : 6
+13:13.358	ID:2	
+13:13.359	ID:2	attr->type : 5
+13:13.361	ID:2	attr->char_value (REQUEST) : 32
+13:13.361	ID:2	
+13:13.363	ID:2	attr->type : 4
+13:13.364	ID:2	nb_of_characters : 2
+13:13.366	ID:2	attr->string_value : "ad"
+13:13.366	ID:2	
+13:13.367	ID:2	exp->function : 7
+13:13.367	ID:2	
+13:13.368	ID:2	attr->type : 6
+13:13.371	ID:2	attr->char_value (SYSTEM) : 16
+13:13.371	ID:2	
+13:13.372	ID:2	attr->type : 7
+13:13.375	ID:2	attr->local_reference_value (LOCAL) : 0
+13:13.375	ID:2	
+13:13.376	ID:2	attr->type : 7
+13:13.379	ID:2	attr->local_reference_value (LOCAL) : 1
+13:13.380	ID:2	nb_of_obligations : 1
+13:13.381	ID:2	
+13:13.382	ID:2	obl->fulfill_on : 0
+13:13.382	ID:2	
+13:13.384	ID:2	task->function : 10
+13:13.384	ID:2	
+13:13.385	ID:2	attr->type : 6
+13:13.387	ID:2	attr->char_value (SYSTEM) : 17
+13:13.387	ID:2	
+13:13.388	ID:2	rule->id : 1
+13:13.389	ID:2	rule->effect : 1
+13:13.392	ID:2	mask '0' for rule->periodicity : 0
+13:13.394	ID:2	mask '0' for rule->iteration :  0
+13:13.397	ID:2	mask '0' for rule->resource : 0
+13:13.399	ID:2	mask '0' for rule->action : 0
+13:13.401	ID:2	mask '1' for rule->obligationset
+13:13.403	ID:2	nb_of_expressions : 3
+13:13.403	ID:2	
+13:13.404	ID:2	exp->function : 5
+13:13.404	ID:2	
+13:13.405	ID:2	attr->type : 6
+13:13.408	ID:2	attr->char_value (SYSTEM) : 17
+13:13.408	ID:2	
+13:13.409	ID:2	attr->type : 1
+13:13.411	ID:2	attr->char_value (BYTE) : 3
+13:13.411	ID:2	
+13:13.412	ID:2	exp->function : 6
+13:13.412	ID:2	
+13:13.413	ID:2	attr->type : 5
+13:13.416	ID:2	attr->char_value (REQUEST) : 32
+13:13.416	ID:2	
+13:13.417	ID:2	attr->type : 4
+13:13.418	ID:2	nb_of_characters : 2
+13:13.420	ID:2	attr->string_value : "ad"
+13:13.420	ID:2	
+13:13.422	ID:2	exp->function : 7
+13:13.422	ID:2	
+13:13.423	ID:2	attr->type : 6
+13:13.425	ID:2	attr->char_value (SYSTEM) : 16
+13:13.425	ID:2	
+13:13.426	ID:2	attr->type : 7
+13:13.429	ID:2	attr->local_reference_value (LOCAL) : 0
+13:13.429	ID:2	
+13:13.430	ID:2	attr->type : 7
+13:13.433	ID:2	attr->local_reference_value (LOCAL) : 1
+13:13.435	ID:2	nb_of_obligations : 1
+13:13.435	ID:2	
+13:13.436	ID:2	obl->fulfill_on : 0
+13:13.437	ID:2	
+13:13.438	ID:2	task->function : 10
+13:13.438	ID:2	
+13:13.439	ID:2	attr->type : 6
+13:13.441	ID:2	attr->char_value (SYSTEM) : 17
+13:13.444	ID:2	Final policy_size_in_bytes: 212
+13:13.444	ID:2	Test 1
+13:13.449	ID:2	Compressed evaluation time:   41 rtimer ticks
+13:13.453	ID:2	Unpacked evaluation time:   29 rtimer ticks
+13:13.454	ID:2	Test 2
+13:13.459	ID:2	Compressed evaluation time:   40 rtimer ticks
+13:13.463	ID:2	Unpacked evaluation time:   31 rtimer ticks
+13:13.464	ID:2	Test 3
+13:13.468	ID:2	Compressed evaluation time:   41 rtimer ticks
+13:13.473	ID:2	Unpacked evaluation time:   29 rtimer ticks
 
